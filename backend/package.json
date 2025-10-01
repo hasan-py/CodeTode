@@ -1,0 +1,24 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node --no-warnings -r dotenv/config dist/index.js",
+    "dev": "tsc-watch --onSuccess \"node --no-warnings -r dotenv/config dist/index.js\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "dotenv": "^17.2.3",
+    "tsc-watch": "^7.2.0",
+    "typescript": "^5.9.3"
+  }
+}
