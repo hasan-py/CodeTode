@@ -13,6 +13,7 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "@packages/logger": "workspace:*",
     "express": "^5.1.0"
   },
   "devDependencies": {

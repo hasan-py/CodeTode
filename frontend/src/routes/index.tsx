@@ -1,12 +1,15 @@
-import { createFileRoute } from '@tanstack/react-router'
-import logo from '../logo.svg'
-import '../App.css'
+import { createFileRoute } from "@tanstack/react-router";
+import logo from "../logo.svg";
+import "../App.css";
+import { Logger } from "@packages/logger";
 
-export const Route = createFileRoute('/')({
+export const Route = createFileRoute("/")({
   component: App,
-})
+});
 
 function App() {
+  Logger.error("This is warning message");
+
   return (
     <div className="App">
       <header className="App-header">
@@ -32,5 +35,5 @@ function App() {
         </a>
       </header>
     </div>
-  )
+  );
 }

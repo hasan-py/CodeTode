@@ -10,6 +10,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@packages/logger": "workspace:*",
     "@tanstack/react-devtools": "^0.7.0",
     "@tanstack/react-router": "^1.132.0",
     "@tanstack/react-router-devtools": "^1.132.0",
