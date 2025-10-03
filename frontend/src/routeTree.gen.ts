@@ -8,28 +8,147 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from './routes/__root'
+import { createFileRoute } from '@tanstack/react-router'
 
-export interface FileRoutesByFullPath {}
-export interface FileRoutesByTo {}
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as websiteLayoutRouteImport } from './routes/(website)/_layout'
+import { Route as websiteLayoutIndexRouteImport } from './routes/(website)/_layout/index'
+import { Route as websiteLayoutauthSigninRouteImport } from './routes/(website)/_layout/(auth)/signin'
+import { Route as websiteLayoutauthGithubCallbackRouteImport } from './routes/(website)/_layout/(auth)/github-callback'
+
+const websiteRouteImport = createFileRoute('/(website)')()
+
+const websiteRoute = websiteRouteImport.update({
+  id: '/(website)',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const websiteLayoutRoute = websiteLayoutRouteImport.update({
+  id: '/_layout',
+  getParentRoute: () => websiteRoute,
+} as any)
+const websiteLayoutIndexRoute = websiteLayoutIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => websiteLayoutRoute,
+} as any)
+const websiteLayoutauthSigninRoute = websiteLayoutauthSigninRouteImport.update({
+  id: '/(auth)/signin',
+  path: '/signin',
+  getParentRoute: () => websiteLayoutRoute,
+} as any)
+const websiteLayoutauthGithubCallbackRoute =
+  websiteLayoutauthGithubCallbackRouteImport.update({
+    id: '/(auth)/github-callback',
+    path: '/github-callback',
+    getParentRoute: () => websiteLayoutRoute,
+  } as any)
+
+export interface FileRoutesByFullPath {
+  '/': typeof websiteLayoutIndexRoute
+  '/github-callback': typeof websiteLayoutauthGithubCallbackRoute
+  '/signin': typeof websiteLayoutauthSigninRoute
+}
+export interface FileRoutesByTo {
+  '/': typeof websiteLayoutIndexRoute
+  '/github-callback': typeof websiteLayoutauthGithubCallbackRoute
+  '/signin': typeof websiteLayoutauthSigninRoute
+}
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/(website)': typeof websiteRouteWithChildren
+  '/(website)/_layout': typeof websiteLayoutRouteWithChildren
+  '/(website)/_layout/': typeof websiteLayoutIndexRoute
+  '/(website)/_layout/(auth)/github-callback': typeof websiteLayoutauthGithubCallbackRoute
+  '/(website)/_layout/(auth)/signin': typeof websiteLayoutauthSigninRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: never
+  fullPaths: '/' | '/github-callback' | '/signin'
   fileRoutesByTo: FileRoutesByTo
-  to: never
-  id: '__root__'
+  to: '/' | '/github-callback' | '/signin'
+  id:
+    | '__root__'
+    | '/(website)'
+    | '/(website)/_layout'
+    | '/(website)/_layout/'
+    | '/(website)/_layout/(auth)/github-callback'
+    | '/(website)/_layout/(auth)/signin'
   fileRoutesById: FileRoutesById
 }
-export interface RootRouteChildren {}
-
-declare module '@tanstack/react-router' {
-  interface FileRoutesByPath {}
+export interface RootRouteChildren {
+  websiteRoute: typeof websiteRouteWithChildren
 }
 
-const rootRouteChildren: RootRouteChildren = {}
+declare module '@tanstack/react-router' {
+  interface FileRoutesByPath {
+    '/(website)': {
+      id: '/(website)'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof websiteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(website)/_layout': {
+      id: '/(website)/_layout'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof websiteLayoutRouteImport
+      parentRoute: typeof websiteRoute
+    }
+    '/(website)/_layout/': {
+      id: '/(website)/_layout/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof websiteLayoutIndexRouteImport
+      parentRoute: typeof websiteLayoutRoute
+    }
+    '/(website)/_layout/(auth)/signin': {
+      id: '/(website)/_layout/(auth)/signin'
+      path: '/signin'
+      fullPath: '/signin'
+      preLoaderRoute: typeof websiteLayoutauthSigninRouteImport
+      parentRoute: typeof websiteLayoutRoute
+    }
+    '/(website)/_layout/(auth)/github-callback': {
+      id: '/(website)/_layout/(auth)/github-callback'
+      path: '/github-callback'
+      fullPath: '/github-callback'
+      preLoaderRoute: typeof websiteLayoutauthGithubCallbackRouteImport
+      parentRoute: typeof websiteLayoutRoute
+    }
+  }
+}
+
+interface websiteLayoutRouteChildren {
+  websiteLayoutIndexRoute: typeof websiteLayoutIndexRoute
+  websiteLayoutauthGithubCallbackRoute: typeof websiteLayoutauthGithubCallbackRoute
+  websiteLayoutauthSigninRoute: typeof websiteLayoutauthSigninRoute
+}
+
+const websiteLayoutRouteChildren: websiteLayoutRouteChildren = {
+  websiteLayoutIndexRoute: websiteLayoutIndexRoute,
+  websiteLayoutauthGithubCallbackRoute: websiteLayoutauthGithubCallbackRoute,
+  websiteLayoutauthSigninRoute: websiteLayoutauthSigninRoute,
+}
+
+const websiteLayoutRouteWithChildren = websiteLayoutRoute._addFileChildren(
+  websiteLayoutRouteChildren,
+)
+
+interface websiteRouteChildren {
+  websiteLayoutRoute: typeof websiteLayoutRouteWithChildren
+}
+
+const websiteRouteChildren: websiteRouteChildren = {
+  websiteLayoutRoute: websiteLayoutRouteWithChildren,
+}
+
+const websiteRouteWithChildren =
+  websiteRoute._addFileChildren(websiteRouteChildren)
+
+const rootRouteChildren: RootRouteChildren = {
+  websiteRoute: websiteRouteWithChildren,
+}
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
