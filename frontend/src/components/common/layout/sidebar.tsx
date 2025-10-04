@@ -80,10 +80,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
 
           <nav className="flex-1 px-2 py-4">
-            {menus?.map((item) => {
+            {menus?.map((item, index) => {
               return (
                 <div
-                  key={item.to}
+                  key={index + 1}
                   onClick={() => {
                     router.navigate({ to: item?.to });
                     setIsMobileOpen(false);

@@ -1,5 +1,5 @@
 {
-  "include": ["**/*.ts", "**/*.tsx"],
+  "include": ["**/*.ts", "**/*.tsx", "../packages/*/src/**/*"],
   "compilerOptions": {
     "target": "ES2022",
     "jsx": "react-jsx",
@@ -23,6 +23,10 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
+      "@packages/definitions": ["../packages/definitions/src"],
+      "@packages/definitions/*": ["../packages/definitions/src/*"],
+      "@packages/logger": ["../packages/logger/src"],
+      "@packages/logger/*": ["../packages/logger/src/*"]
     }
   }
 }
