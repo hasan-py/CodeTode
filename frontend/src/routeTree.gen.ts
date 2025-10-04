@@ -11,16 +11,40 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as LearnerLayoutRouteImport } from './routes/learner/_layout'
+import { Route as AdminLayoutRouteImport } from './routes/admin/_layout'
 import { Route as websiteLayoutRouteImport } from './routes/(website)/_layout'
 import { Route as websiteLayoutIndexRouteImport } from './routes/(website)/_layout/index'
+import { Route as LearnerLayoutProfileRouteImport } from './routes/learner/_layout/profile'
+import { Route as AdminLayoutProfileRouteImport } from './routes/admin/_layout/profile'
 import { Route as websiteLayoutauthSigninRouteImport } from './routes/(website)/_layout/(auth)/signin'
 import { Route as websiteLayoutauthGithubCallbackRouteImport } from './routes/(website)/_layout/(auth)/github-callback'
 
+const LearnerRouteImport = createFileRoute('/learner')()
+const AdminRouteImport = createFileRoute('/admin')()
 const websiteRouteImport = createFileRoute('/(website)')()
 
+const LearnerRoute = LearnerRouteImport.update({
+  id: '/learner',
+  path: '/learner',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const websiteRoute = websiteRouteImport.update({
   id: '/(website)',
   getParentRoute: () => rootRouteImport,
+} as any)
+const LearnerLayoutRoute = LearnerLayoutRouteImport.update({
+  id: '/_layout',
+  getParentRoute: () => LearnerRoute,
+} as any)
+const AdminLayoutRoute = AdminLayoutRouteImport.update({
+  id: '/_layout',
+  getParentRoute: () => AdminRoute,
 } as any)
 const websiteLayoutRoute = websiteLayoutRouteImport.update({
   id: '/_layout',
@@ -30,6 +54,16 @@ const websiteLayoutIndexRoute = websiteLayoutIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => websiteLayoutRoute,
+} as any)
+const LearnerLayoutProfileRoute = LearnerLayoutProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => LearnerLayoutRoute,
+} as any)
+const AdminLayoutProfileRoute = AdminLayoutProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AdminLayoutRoute,
 } as any)
 const websiteLayoutauthSigninRoute = websiteLayoutauthSigninRouteImport.update({
   id: '/(auth)/signin',
@@ -45,10 +79,18 @@ const websiteLayoutauthGithubCallbackRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof websiteLayoutIndexRoute
+  '/admin': typeof AdminLayoutRouteWithChildren
+  '/learner': typeof LearnerLayoutRouteWithChildren
+  '/admin/profile': typeof AdminLayoutProfileRoute
+  '/learner/profile': typeof LearnerLayoutProfileRoute
   '/github-callback': typeof websiteLayoutauthGithubCallbackRoute
   '/signin': typeof websiteLayoutauthSigninRoute
 }
 export interface FileRoutesByTo {
+  '/admin': typeof AdminLayoutRouteWithChildren
+  '/learner': typeof LearnerLayoutRouteWithChildren
+  '/admin/profile': typeof AdminLayoutProfileRoute
+  '/learner/profile': typeof LearnerLayoutProfileRoute
   '/': typeof websiteLayoutIndexRoute
   '/github-callback': typeof websiteLayoutauthGithubCallbackRoute
   '/signin': typeof websiteLayoutauthSigninRoute
@@ -57,19 +99,45 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/(website)': typeof websiteRouteWithChildren
   '/(website)/_layout': typeof websiteLayoutRouteWithChildren
+  '/admin': typeof AdminRouteWithChildren
+  '/admin/_layout': typeof AdminLayoutRouteWithChildren
+  '/learner': typeof LearnerRouteWithChildren
+  '/learner/_layout': typeof LearnerLayoutRouteWithChildren
+  '/admin/_layout/profile': typeof AdminLayoutProfileRoute
+  '/learner/_layout/profile': typeof LearnerLayoutProfileRoute
   '/(website)/_layout/': typeof websiteLayoutIndexRoute
   '/(website)/_layout/(auth)/github-callback': typeof websiteLayoutauthGithubCallbackRoute
   '/(website)/_layout/(auth)/signin': typeof websiteLayoutauthSigninRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/github-callback' | '/signin'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/learner'
+    | '/admin/profile'
+    | '/learner/profile'
+    | '/github-callback'
+    | '/signin'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/github-callback' | '/signin'
+  to:
+    | '/admin'
+    | '/learner'
+    | '/admin/profile'
+    | '/learner/profile'
+    | '/'
+    | '/github-callback'
+    | '/signin'
   id:
     | '__root__'
     | '/(website)'
     | '/(website)/_layout'
+    | '/admin'
+    | '/admin/_layout'
+    | '/learner'
+    | '/learner/_layout'
+    | '/admin/_layout/profile'
+    | '/learner/_layout/profile'
     | '/(website)/_layout/'
     | '/(website)/_layout/(auth)/github-callback'
     | '/(website)/_layout/(auth)/signin'
@@ -77,16 +145,46 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   websiteRoute: typeof websiteRouteWithChildren
+  AdminRoute: typeof AdminRouteWithChildren
+  LearnerRoute: typeof LearnerRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/learner': {
+      id: '/learner'
+      path: '/learner'
+      fullPath: '/learner'
+      preLoaderRoute: typeof LearnerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/(website)': {
       id: '/(website)'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof websiteRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/learner/_layout': {
+      id: '/learner/_layout'
+      path: '/learner'
+      fullPath: '/learner'
+      preLoaderRoute: typeof LearnerLayoutRouteImport
+      parentRoute: typeof LearnerRoute
+    }
+    '/admin/_layout': {
+      id: '/admin/_layout'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminLayoutRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/(website)/_layout': {
       id: '/(website)/_layout'
@@ -101,6 +199,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof websiteLayoutIndexRouteImport
       parentRoute: typeof websiteLayoutRoute
+    }
+    '/learner/_layout/profile': {
+      id: '/learner/_layout/profile'
+      path: '/profile'
+      fullPath: '/learner/profile'
+      preLoaderRoute: typeof LearnerLayoutProfileRouteImport
+      parentRoute: typeof LearnerLayoutRoute
+    }
+    '/admin/_layout/profile': {
+      id: '/admin/_layout/profile'
+      path: '/profile'
+      fullPath: '/admin/profile'
+      preLoaderRoute: typeof AdminLayoutProfileRouteImport
+      parentRoute: typeof AdminLayoutRoute
     }
     '/(website)/_layout/(auth)/signin': {
       id: '/(website)/_layout/(auth)/signin'
@@ -146,8 +258,55 @@ const websiteRouteChildren: websiteRouteChildren = {
 const websiteRouteWithChildren =
   websiteRoute._addFileChildren(websiteRouteChildren)
 
+interface AdminLayoutRouteChildren {
+  AdminLayoutProfileRoute: typeof AdminLayoutProfileRoute
+}
+
+const AdminLayoutRouteChildren: AdminLayoutRouteChildren = {
+  AdminLayoutProfileRoute: AdminLayoutProfileRoute,
+}
+
+const AdminLayoutRouteWithChildren = AdminLayoutRoute._addFileChildren(
+  AdminLayoutRouteChildren,
+)
+
+interface AdminRouteChildren {
+  AdminLayoutRoute: typeof AdminLayoutRouteWithChildren
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminLayoutRoute: AdminLayoutRouteWithChildren,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
+interface LearnerLayoutRouteChildren {
+  LearnerLayoutProfileRoute: typeof LearnerLayoutProfileRoute
+}
+
+const LearnerLayoutRouteChildren: LearnerLayoutRouteChildren = {
+  LearnerLayoutProfileRoute: LearnerLayoutProfileRoute,
+}
+
+const LearnerLayoutRouteWithChildren = LearnerLayoutRoute._addFileChildren(
+  LearnerLayoutRouteChildren,
+)
+
+interface LearnerRouteChildren {
+  LearnerLayoutRoute: typeof LearnerLayoutRouteWithChildren
+}
+
+const LearnerRouteChildren: LearnerRouteChildren = {
+  LearnerLayoutRoute: LearnerLayoutRouteWithChildren,
+}
+
+const LearnerRouteWithChildren =
+  LearnerRoute._addFileChildren(LearnerRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   websiteRoute: websiteRouteWithChildren,
+  AdminRoute: AdminRouteWithChildren,
+  LearnerRoute: LearnerRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
