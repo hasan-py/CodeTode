@@ -1,4 +1,7 @@
 import { Link } from "@tanstack/react-router";
+import Button from "../common/button";
+import { LogOut, Moon, Sun } from "lucide-react";
+import { useTheme } from "@/hooks/ui/useTheme";
 
 interface NavbarProps {
   navLinks?: Array<{
@@ -15,6 +18,8 @@ export default function Navbar({
     { to: "/leaderboard", label: "Leaderboard" },
   ],
 }: NavbarProps) {
+  const { mode, setMode } = useTheme();
+
   return (
     <nav className="sticky top-0 z-50 bg-white dark:bg-gradient-to-r dark:from-gray-900 dark:to-gray-800 border-b border-gray-200 dark:border-gray-700 backdrop-blur-sm bg-opacity-80 dark:bg-opacity-80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -42,6 +47,34 @@ export default function Navbar({
                 </Link>
               ))}
             </div>
+          </div>
+
+          <div className="flex items-center space-x-3">
+            <Link to={"/signin"}>
+              <Button>{"Sign in"}</Button>
+            </Link>
+
+            <div className="flex items-center space-x-3">
+              <Button variant="outline">Admin Panel</Button>
+
+              <Button variant="outline">My Courses</Button>
+
+              <Button variant="secondary">
+                <div className="flex items-center">
+                  <span className="mr-1">Logout</span>
+                  <LogOut
+                    size={16}
+                    className="text-gray-500 ml-4 dark:text-gray-400"
+                  />
+                </div>
+              </Button>
+            </div>
+
+            <Button
+              onClick={() => setMode(mode === "light" ? "dark" : "light")}
+              icon={mode === "light" ? <Sun /> : <Moon />}
+              variant="secondary"
+            />
           </div>
         </div>
       </div>
