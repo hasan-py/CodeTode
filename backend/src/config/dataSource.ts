@@ -1,8 +1,12 @@
 import { DataSource } from "typeorm";
 import path from "path";
 import { Logger } from "@packages/logger";
+import { config } from "dotenv";
+
+config();
 
 const NEON_DB_CONNECTION_STRING = process.env.NEON_DB_CONNECTION_STRING;
+const isDevelopment = process.env.NODE_ENV === "development";
 
 export const AppDataSource = NEON_DB_CONNECTION_STRING
   ? new DataSource({
@@ -10,7 +14,7 @@ export const AppDataSource = NEON_DB_CONNECTION_STRING
       url: NEON_DB_CONNECTION_STRING,
       logging: false,
       poolSize: 5,
-      synchronize: true,
+      synchronize: !!isDevelopment,
       ssl: {
         rejectUnauthorized: false,
       },
@@ -25,7 +29,7 @@ export const AppDataSource = NEON_DB_CONNECTION_STRING
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      synchronize: true,
+      synchronize: !!isDevelopment,
       logging: false,
       entities: [path.join(__dirname, "..", "entity", "**", "*.{ts,js}")],
       migrations: [path.join(__dirname, "..", "migrations", "**", "*.{ts,js}")],

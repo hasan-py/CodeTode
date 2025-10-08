@@ -6,19 +6,25 @@
   "scripts": {
     "build": "tsc",
     "start": "node --no-warnings -r dotenv/config dist/index.js",
-    "dev": "tsc-watch --onSuccess \"node --no-warnings -r dotenv/config dist/index.js\""
+    "dev": "tsc-watch --onSuccess \"node --no-warnings -r dotenv/config dist/index.js\"",
+    "migration:create": "npx typeorm migration:create src/migrations/migration",
+    "migration:generate": "npx typeorm-ts-node-commonjs migration:generate -d src/config/dataSource.ts src/migrations/migration",
+    "migration:run": "npx typeorm-ts-node-commonjs migration:run -d src/config/dataSource.ts",
+    "migration:revert": "npx typeorm-ts-node-commonjs migration:revert -d src/config/dataSource.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "@packages/definitions": "workspace:*",
     "@packages/logger": "workspace:*",
     "cookie-parser": "^1.4.7",
     "express": "^5.1.0",
     "ioredis": "^5.8.0",
     "morgan": "^1.10.1",
     "pg": "^8.16.3",
+    "ts-node": "^10.9.2",
     "typeorm": "^0.3.27"
   },
   "devDependencies": {
@@ -26,6 +32,7 @@
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@types/morgan": "^1.9.10",
+    "@types/node": "^24.6.2",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "tsc-watch": "^7.2.0",
