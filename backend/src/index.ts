@@ -1,10 +1,10 @@
 import { Logger } from "@packages/logger";
-import express from "express";
-import { initializedDatabase } from "./config/dataSource";
-import redis, { CACHE_TIMES, generateCacheKey } from "./config/redisClient";
-import { corsConfig } from "./config/cors";
-import morgan from "morgan";
 import cookieParser from "cookie-parser";
+import express from "express";
+import morgan from "morgan";
+import { corsConfig } from "./config/cors";
+import { initializedDatabase } from "./config/dataSource";
+import { Routes } from "./routes";
 
 class Server {
   public app: express.Application;
@@ -30,25 +30,16 @@ class Server {
     // Middleware for logging HTTP requests
     this.app.use(morgan("tiny"));
 
+    // Help to parse JSON payloads and URL-encoded payloads
+    this.app.use(express.json());
+    this.app.use(express.urlencoded({ extended: true }));
+
     // Add cookie parser middleware
     this.app.use(cookieParser());
   }
 
   public routes(): void {
-    this.app.get("/", async (req, res) => {
-      const key = generateCacheKey("test");
-
-      let value = await redis.get(key);
-
-      if (!value) {
-        Logger.info(`Setting ${key} in Redis`);
-        await redis.set(key, "testValue", "EX", CACHE_TIMES.fifteenMinutes);
-      } else {
-        Logger.info(`Getting ${key} from Redis`);
-      }
-
-      res.send("Hello World!");
-    });
+    Routes.Endpoints(this.app);
   }
 
   public start(): void {
