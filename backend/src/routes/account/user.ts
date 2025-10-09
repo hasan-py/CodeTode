@@ -1,4 +1,9 @@
+import {
+  SIdParams,
+  SUpdateUserProfileWithId
+} from "@packages/definitions";
 import { Router } from "express";
+import { validator } from "../../ middleware/validator";
 import { UserController } from "../../controllers/account/user";
 
 class UserRoutes {
@@ -13,8 +18,18 @@ class UserRoutes {
   routes() {
     const { updateUserProfile, getUserProfile } = this.userController;
 
-    this.router.get("/", getUserProfile);
-    this.router.put("/update-profile", updateUserProfile);
+    this.router.get(
+      "/",
+      validator({
+        query: SIdParams,
+      }),
+      getUserProfile
+    );
+    this.router.put(
+      "/update-profile",
+      validator({ body: SUpdateUserProfileWithId }),
+      updateUserProfile
+    );
   }
 }
 
