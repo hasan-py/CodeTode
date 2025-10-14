@@ -1,6 +1,7 @@
 import { Logger } from "@packages/logger";
 import express, { Request, Response } from "express";
 import { UserRouter } from "./account/user";
+import { AuthRouter } from "./account/auth";
 
 export class Routes {
   static Endpoints(app: express.Application) {
@@ -9,6 +10,7 @@ export class Routes {
     });
 
     app.use(`/api/profile`, UserRouter);
+    app.use(`/api/auth`, AuthRouter);
 
     app.use((req: Request, res: Response) => {
       Logger.error("404 Not found!");
