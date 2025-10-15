@@ -12,10 +12,12 @@ class AuthRoutes {
   }
 
   routes() {
-    const { getGithubAuthUrl, handleGithubCallback } = this.authController;
+    const { getGithubAuthUrl, handleGithubCallback, logout } =
+      this.authController;
 
     this.router.get("/github/url", getGithubAuthUrl);
     this.router.get("/github/callback", handleGithubCallback);
+    this.router.post("/logout", logout);
   }
 }
 

@@ -68,4 +68,25 @@ export class AuthController {
       return sendError(res, "Authentication failed", 401);
     }
   }
+
+  @catchErrors("Failed to log out")
+  async logout(req: Request, res: Response) {
+    const refreshToken = req.cookies[COOKIE_CONFIG.refreshToken.name];
+    if (!refreshToken) return sendError(res, "Refresh token is required", 400);
+
+    const result = await authService.logout(refreshToken);
+
+    res.clearCookie(COOKIE_CONFIG.refreshToken.name, {
+      path: "/",
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    });
+
+    if (result) {
+      sendSuccess(res, { success: true });
+    } else {
+      sendError(res, "Invalid refresh token", 400);
+    }
+  }
 }

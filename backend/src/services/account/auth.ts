@@ -105,6 +105,15 @@ export class AuthService {
     }
   }
 
+  async logout(refreshTokenString: string): Promise<boolean> {
+    const result = await this.RefreshTokenRepository.update(
+      { token: refreshTokenString },
+      { isRevoked: true }
+    );
+
+    return result.affected ? result.affected > 0 : false;
+  }
+
   private generateJwtToken(user: User): string {
     const payload = {
       userId: user.id,
