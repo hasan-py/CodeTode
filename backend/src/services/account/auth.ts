@@ -114,6 +114,50 @@ export class AuthService {
     return result.affected ? result.affected > 0 : false;
   }
 
+  async refreshAccessToken(
+    refreshTokenString: string
+  ): Promise<{ accessToken: string; refreshToken: string }> {
+    const refreshToken = await this.RefreshTokenRepository.findOne({
+      where: { token: refreshTokenString, isRevoked: false },
+    });
+
+    if (!refreshToken || new Date() > refreshToken.expiresAt) {
+      throw new Error("Invalid or expired refresh token");
+    }
+
+    // Find the user
+    const user = await this.UserRepository.findOne({
+      where: { id: refreshToken.userId },
+    });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Generate new access token
+    const accessToken = this.generateJwtToken(user);
+
+    // Check if token needs expiration extension
+    const now = new Date();
+    const remainingTime = refreshToken.expiresAt.getTime() - now.getTime();
+    const halfExpirationTime = this.refreshTokenExpiresIn / 2;
+
+    // Only update expiration if less than half the time remains
+    if (remainingTime < halfExpirationTime) {
+      const newExpiryDate = new Date();
+      newExpiryDate.setTime(
+        newExpiryDate.getTime() + this.refreshTokenExpiresIn
+      );
+      refreshToken.expiresAt = newExpiryDate;
+      await this.RefreshTokenRepository.save(refreshToken);
+    }
+
+    return {
+      accessToken,
+      refreshToken: refreshToken.token,
+    };
+  }
+
   private generateJwtToken(user: User): string {
     const payload = {
       userId: user.id,

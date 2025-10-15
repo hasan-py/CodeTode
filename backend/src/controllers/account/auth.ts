@@ -89,4 +89,22 @@ export class AuthController {
       sendError(res, "Invalid refresh token", 400);
     }
   }
+
+  @catchErrors("Access token generation failed")
+  async refreshAccessToken(req: Request, res: Response) {
+    const refreshToken = req.cookies[COOKIE_CONFIG.refreshToken.name];
+    if (!refreshToken) return sendError(res, "Refresh token is required", 400);
+
+    const tokens = await authService.refreshAccessToken(refreshToken);
+
+    res.cookie(
+      COOKIE_CONFIG.refreshToken.name,
+      tokens.refreshToken,
+      COOKIE_CONFIG.refreshToken.options
+    );
+
+    sendSuccess(res, {
+      accessToken: tokens.accessToken,
+    });
+  }
 }
