@@ -158,6 +158,28 @@ export class AuthService {
     };
   }
 
+  verifyToken(token: string): { userId: number; role: EUserRole } {
+    try {
+      const decoded = jwt.verify(token, this.jwtSecret as jwt.Secret) as {
+        userId: number;
+        role: EUserRole;
+      };
+      return decoded;
+    } catch (error) {
+      Logger.debug("Token verification failed:", error.message);
+      if (error instanceof jwt.TokenExpiredError) {
+        throw new Error("Token expired");
+      } else if (error instanceof jwt.JsonWebTokenError) {
+        throw new Error(`JWT error: ${error.message}`);
+      }
+      throw new Error(
+        `Invalid token: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
+      );
+    }
+  }
+
   private generateJwtToken(user: User): string {
     const payload = {
       userId: user.id,

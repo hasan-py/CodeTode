@@ -6,12 +6,8 @@ import { catchErrors } from "../../decorators/catchErrors";
 export class UserController {
   @catchErrors()
   async getUserProfile(req: Request, res: Response) {
-    if (!req.query || !req.query.id) {
-      sendError(res, "User not authenticated", 401);
-      return;
-    }
+    const userId = req.user.userId;
 
-    const userId = +req.query.id;
     const user = await userService.getUserProfile(userId);
 
     if (!user) {
