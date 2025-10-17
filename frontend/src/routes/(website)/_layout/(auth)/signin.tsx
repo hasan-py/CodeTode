@@ -1,4 +1,5 @@
 import Button from "@/components/common/button";
+import { useGetGithubUrl } from "@/hooks/query/account/auth";
 import { createFileRoute } from "@tanstack/react-router";
 // import { GithubIcon } from "lucide-react";
 
@@ -7,7 +8,12 @@ export const Route = createFileRoute("/(website)/_layout/(auth)/signin")({
 });
 
 function RouteComponent() {
-  const signinHandler = async () => {};
+  const githubAuthMutation = useGetGithubUrl();
+
+  const signinHandler = async () => {
+    if (githubAuthMutation?.isPending || githubAuthMutation?.data) return;
+    await githubAuthMutation.mutateAsync();
+  };
 
   return (
     <div className="text-gray-800 flex flex-col justify-center dark:text-gray-200">
