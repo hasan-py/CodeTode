@@ -3,7 +3,13 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev:backend": "pnpm --filter=backend dev",
+    "dev:frontend": "pnpm --filter=frontend dev",
+    "dev:packages": "pnpm --filter=@packages/definitions dev",
+    "build": "pnpm --recursive build",
+    "build:definitions": "pnpm --filter=@packages/definitions build",
+    "dev:all": "pnpm --filter=@packages/definitions dev & pnpm --filter=backend dev & pnpm --filter=frontend dev",
+    "clean": "find . -type d -name 'node_modules' -o -name '.turbo' -o -name 'dist' -o -name 'build' -o -name '.next' -o -name 'out' | xargs rm -rf && find . -name 'pnpm-lock.yaml' -not -path './pnpm-lock.yaml' -o -name '*.log' -o -name '.DS_Store' | xargs rm -f"
   },
   "keywords": [],
   "author": "",
