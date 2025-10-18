@@ -11,4 +11,13 @@ export enum EUserStatus {
   DEACTIVATE = "deactivate",
 }
 
+export interface IUser {
+  id: number;
+  username?: string;
+  name?: string;
+  email?: string;
+  imageUrl?: string;
+  role: EUserRole;
+}
+
 export type TUpdateUserProfile = z.infer<typeof SUpdateUserProfile>;
