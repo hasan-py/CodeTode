@@ -11,3 +11,8 @@ export const getGithubCallbackApi = async (code: string) => {
   });
   return res;
 };
+
+export const postLogoutApi = async () => {
+  const res = await api.post("/auth/logout");
+  return res;
+};

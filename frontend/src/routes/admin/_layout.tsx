@@ -1,4 +1,5 @@
 import { Sidebar, type ISidebarMenu } from "@/components/common/layout/sidebar";
+import { useAuthController } from "@/hooks/controller/account/useAuthController";
 import { useTheme } from "@/hooks/ui/useTheme";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import {
@@ -17,6 +18,7 @@ export const Route = createFileRoute("/admin/_layout")({
 
 function RouteComponent() {
   useTheme();
+  const { handleLogout, userInfo } = useAuthController();
 
   const menus: ISidebarMenu[] = [
     {
@@ -31,17 +33,9 @@ function RouteComponent() {
     { icon: User, label: "Profile" },
   ];
 
-  const logoutHandler = () => {};
-
   return (
     <div className="min-h-screen bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-200 flex">
-      <Sidebar
-        menus={menus}
-        userInfo={{
-          name: "Admin Hasan",
-        }}
-        logoutHandler={logoutHandler}
-      />
+      <Sidebar menus={menus} userInfo={userInfo} logoutHandler={handleLogout} />
 
       <div className="flex-1 lg:ml-64 pt-16 lg:pt-8 px-4 sm:px-6 lg:px-8">
         <div className="max-full mx-auto">

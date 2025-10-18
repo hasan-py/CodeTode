@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import Button from "../common/button";
 import { LogOut, Moon, Sun } from "lucide-react";
 import { useTheme } from "@/hooks/ui/useTheme";
+import { EUserRole, type IUser } from "@packages/definitions";
 
 interface NavbarProps {
   navLinks?: Array<{
@@ -9,6 +10,11 @@ interface NavbarProps {
     label: string;
     isExact?: boolean;
   }>;
+  auth?: {
+    isAuthenticated?: boolean;
+    handleLogout: () => void;
+    user?: IUser | null;
+  };
 }
 
 export default function Navbar({
@@ -17,6 +23,7 @@ export default function Navbar({
     { to: "/courses", label: "Courses" },
     { to: "/leaderboard", label: "Leaderboard" },
   ],
+  auth,
 }: NavbarProps) {
   const { mode, setMode } = useTheme();
 
@@ -50,25 +57,35 @@ export default function Navbar({
           </div>
 
           <div className="flex items-center space-x-3">
-            <Link to={"/signin"}>
-              <Button>{"Sign in"}</Button>
-            </Link>
+            {!auth?.isAuthenticated ? (
+              <Link to={"/signin"}>
+                <Button>{"Sign in"}</Button>
+              </Link>
+            ) : (
+              <div className="flex items-center space-x-3">
+                {auth.user?.role === EUserRole.ADMIN && (
+                  <Link to="/admin/profile">
+                    <Button variant="outline">Admin Panel</Button>
+                  </Link>
+                )}
 
-            <div className="flex items-center space-x-3">
-              <Button variant="outline">Admin Panel</Button>
+                {auth.user?.role === EUserRole.LEARNER && (
+                  <Link to="/learner/profile">
+                    <Button variant="outline">Learner Panel</Button>
+                  </Link>
+                )}
 
-              <Button variant="outline">My Courses</Button>
-
-              <Button variant="secondary">
-                <div className="flex items-center">
-                  <span className="mr-1">Logout</span>
-                  <LogOut
-                    size={16}
-                    className="text-gray-500 ml-4 dark:text-gray-400"
-                  />
-                </div>
-              </Button>
-            </div>
+                <Button variant="secondary" onClick={auth.handleLogout}>
+                  <div className="flex items-center">
+                    <span className="mr-1">Logout</span>
+                    <LogOut
+                      size={16}
+                      className="text-gray-500 ml-4 dark:text-gray-400"
+                    />
+                  </div>
+                </Button>
+              </div>
+            )}
 
             <Button
               onClick={() => setMode(mode === "light" ? "dark" : "light")}

@@ -1,4 +1,8 @@
-import { getGithubCallbackApi, getGithubUrlApi } from "@/api/endpoints/auth";
+import {
+  getGithubCallbackApi,
+  getGithubUrlApi,
+  postLogoutApi,
+} from "@/api/endpoints/auth";
 import { Logger } from "@packages/logger";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
@@ -31,5 +35,14 @@ export function useGetGithubCallback(code: string | null) {
     },
     enabled: !!code,
     refetchOnWindowFocus: false,
+  });
+}
+
+export function useLogoutMutation() {
+  return useMutation({
+    mutationFn: async () => {
+      const response = await postLogoutApi();
+      return response.data;
+    },
   });
 }
