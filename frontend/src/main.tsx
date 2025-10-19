@@ -10,6 +10,7 @@ import "./styles.css";
 import reportWebVitals from "./reportWebVitals.ts";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./api/index.ts";
+import NotFound from "./components/common/notFound.tsx";
 
 // Create a new router instance
 const router = createRouter({
@@ -19,6 +20,7 @@ const router = createRouter({
   scrollRestoration: true,
   defaultStructuralSharing: true,
   defaultPreloadStaleTime: 0,
+  defaultNotFoundComponent: () => <NotFound />,
 });
 
 // Register the router instance for type safety
