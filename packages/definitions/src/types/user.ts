@@ -18,6 +18,9 @@ export interface IUser {
   email?: string;
   imageUrl?: string;
   role: EUserRole;
+  lastLogin?: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export type TUpdateUserProfile = z.infer<typeof SUpdateUserProfile>;

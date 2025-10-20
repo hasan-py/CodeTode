@@ -6,12 +6,17 @@ import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Logger } from "@packages/logger";
 import toast from "react-hot-toast";
+import { useAuthController } from "./useAuthController";
+import { useEffect } from "react";
 
 export function useProfileFormController() {
+  const { user } = useAuthController();
+
   const {
     control,
     handleSubmit,
     formState: { errors, isSubmitting },
+    reset,
   } = useForm<TUpdateUserProfile>({
     defaultValues: {
       name: "",
@@ -19,6 +24,15 @@ export function useProfileFormController() {
     },
     resolver: zodResolver(SUpdateUserProfile),
   });
+
+  useEffect(() => {
+    if (user) {
+      reset({
+        name: user.name || "",
+        imageUrl: user.imageUrl || "",
+      });
+    }
+  }, [user]);
 
   const onSubmit: SubmitHandler<TUpdateUserProfile> = async (formData) => {
     Logger.info("formData", formData);
@@ -36,12 +50,6 @@ export function useProfileFormController() {
     errors,
     isSubmitting,
     onSubmit,
-    user: {
-      email: "user@example.com",
-      username: "user123",
-      name: "User",
-      lastLogin: new Date(),
-      createdAt: new Date(),
-    },
+    user,
   };
 }
