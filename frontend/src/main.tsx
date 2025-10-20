@@ -11,6 +11,7 @@ import reportWebVitals from "./reportWebVitals.ts";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./api/index.ts";
 import NotFound from "./components/common/notFound.tsx";
+import { AppInitializer } from "./components/common/appInitializer.tsx";
 
 // Create a new router instance
 const router = createRouter({
@@ -38,7 +39,10 @@ if (rootElement && !rootElement.innerHTML) {
     <StrictMode>
       <QueryClientProvider client={queryClient}>
         <Toaster />
-        <RouterProvider router={router} />
+
+        <AppInitializer>
+          <RouterProvider router={router} />
+        </AppInitializer>
       </QueryClientProvider>
     </StrictMode>
   );

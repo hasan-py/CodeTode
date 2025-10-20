@@ -1,3 +1,4 @@
+import { authStore } from "@/stores/authStore";
 import { QueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
@@ -20,3 +21,17 @@ export const queryClient = new QueryClient({
     },
   },
 });
+
+// Setup request interceptor to add auth token
+api.interceptors.request.use(
+  (config) => {
+    const accessToken = authStore.getState().accessToken;
+
+    if (accessToken && config.headers) {
+      config.headers["Authorization"] = `Bearer ${accessToken}`;
+    }
+
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
