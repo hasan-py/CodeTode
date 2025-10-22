@@ -1,7 +1,7 @@
-import { getUserProfileApi } from "@/api/endpoints/user";
+import { getUserProfileApi, putUpdateProfileApi } from "@/api/endpoints/user";
 import { authStore } from "@/stores/authStore";
-import type { IUser } from "@packages/definitions";
-import { useQuery } from "@tanstack/react-query";
+import type { IUser, TUpdateUserProfileWithId } from "@packages/definitions";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 const PROFILE_KEYS = {
   userData: ["userData"] as const,
@@ -26,5 +26,21 @@ export function useGetUserProfileQuery() {
     },
     enabled: !!accessToken,
     refetchOnWindowFocus: false,
+  });
+}
+
+export function useUpdateProfileMutation() {
+  const updateUser = authStore((state) => state.updateUser);
+
+  return useMutation({
+    mutationFn: async (profileData: TUpdateUserProfileWithId) => {
+      const response = await putUpdateProfileApi(profileData);
+      return response.data;
+    },
+    onSuccess: (data) => {
+      if (data) {
+        updateUser(data);
+      }
+    },
   });
 }

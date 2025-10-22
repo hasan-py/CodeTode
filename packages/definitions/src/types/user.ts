@@ -1,5 +1,8 @@
 import z from "zod";
-import { SUpdateUserProfile } from "../validations/user";
+import {
+  SUpdateUserProfile,
+  SUpdateUserProfileWithId,
+} from "../validations/user";
 
 export enum EUserRole {
   LEARNER = "learner",
@@ -24,3 +27,4 @@ export interface IUser {
 }
 
 export type TUpdateUserProfile = z.infer<typeof SUpdateUserProfile>;
+export type TUpdateUserProfileWithId = z.infer<typeof SUpdateUserProfileWithId>;

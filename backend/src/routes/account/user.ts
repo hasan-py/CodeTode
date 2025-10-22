@@ -17,7 +17,7 @@ class UserRoutes {
 
     this.router.get("/", getUserProfile);
     this.router.put(
-      "/update-profile",
+      "/",
       validator({ body: SUpdateUserProfileWithId }),
       updateUserProfile
     );

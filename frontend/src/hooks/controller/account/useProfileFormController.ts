@@ -1,16 +1,17 @@
+import { useUpdateProfileMutation } from "@/hooks/query/account/user";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   SUpdateUserProfile,
   type TUpdateUserProfile,
 } from "@packages/definitions";
+import { useEffect } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Logger } from "@packages/logger";
 import toast from "react-hot-toast";
 import { useAuthController } from "./useAuthController";
-import { useEffect } from "react";
 
 export function useProfileFormController() {
   const { user } = useAuthController();
+  const updateProfileMutation = useUpdateProfileMutation();
 
   const {
     control,
@@ -35,13 +36,16 @@ export function useProfileFormController() {
   }, [user]);
 
   const onSubmit: SubmitHandler<TUpdateUserProfile> = async (formData) => {
-    Logger.info("formData", formData);
+    if (!user?.id) return;
 
-    await toast.promise(new Promise((resolve) => setTimeout(resolve, 2000)), {
-      loading: `Updating profile...`,
-      success: "Profile updated successfully!",
-      error: "Failed to update profile",
-    });
+    await toast.promise(
+      updateProfileMutation.mutateAsync({ ...formData, id: user.id }),
+      {
+        loading: `Updating profile...`,
+        success: "Profile updated successfully!",
+        error: "Failed to update profile",
+      }
+    );
   };
 
   return {
