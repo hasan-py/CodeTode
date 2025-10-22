@@ -1,6 +1,7 @@
 import React from "react";
 import { Breadcrumbs } from "../common/layout/breadCrumbs";
 import { useAdminLayout } from "@/hooks/ui/adminLayout";
+import Tabs from "../common/layout/tabs";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -19,7 +20,8 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({
   isFormLayout = false,
   isDashboard = false,
 }) => {
-  const { currentPath } = useAdminLayout();
+  const { currentPath, routeTab } = useAdminLayout();
+  const displayTabs = routeTab?.tabs?.length && isTab;
 
   const ChildrenComponent = (
     <div
@@ -38,12 +40,16 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({
     <>
       <div className="w-full">
         <Breadcrumbs
-          title={title || ""}
+          title={title || routeTab?.title}
           isTab={isTab}
           breadcrumbs={isBreadcrumbs ? currentPath : []}
         />
 
-        {<>{ChildrenComponent}</>}
+        {displayTabs && isTab ? (
+          <Tabs tabs={routeTab?.tabs}>{ChildrenComponent}</Tabs>
+        ) : null}
+
+        {!displayTabs && !isTab ? <>{ChildrenComponent}</> : null}
       </div>
     </>
   );
