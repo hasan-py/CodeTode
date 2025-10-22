@@ -1,4 +1,8 @@
 import Button from "@/components/common/button";
+import {
+  generateSidebarRoutes,
+  mapRoutesToMenuItems,
+} from "@/utilities/ui/sidebarMenuUtils";
 import { useRouter, useRouterState } from "@tanstack/react-router";
 import { LogOut, Menu, X } from "lucide-react";
 import React, { useState } from "react";
@@ -19,16 +23,29 @@ interface SidebarProps {
   userInfo: ISidebarUserInfo;
   menus: ISidebarMenu[];
   logoutHandler?: () => void;
+  isAdmin?: boolean;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
   userInfo,
   menus,
   logoutHandler,
+  isAdmin = true,
 }) => {
   const routerState = useRouterState();
   const router = useRouter();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+
+  const routeObj = generateSidebarRoutes(
+    isAdmin,
+    router.flatRoutes
+      ?.map((item) => ({ url: item?.to, id: item?.id }))
+      ?.filter((item) =>
+        isAdmin ? item.url.includes("admin") : item?.url.includes("learner")
+      )
+  );
+
+  const _menus = mapRoutesToMenuItems(routeObj, menus);
 
   const isActive = (label: string) => {
     return routerState.location.pathname?.includes(label?.toLocaleLowerCase());
@@ -80,7 +97,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
 
           <nav className="flex-1 px-2 py-4">
-            {menus?.map((item, index) => {
+            {_menus?.map((item, index) => {
               return (
                 <div
                   key={index + 1}

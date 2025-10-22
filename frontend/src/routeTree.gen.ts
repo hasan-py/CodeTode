@@ -17,6 +17,7 @@ import { Route as websiteLayoutRouteImport } from './routes/(website)/_layout'
 import { Route as websiteLayoutIndexRouteImport } from './routes/(website)/_layout/index'
 import { Route as LearnerLayoutProfileRouteImport } from './routes/learner/_layout/profile'
 import { Route as AdminLayoutProfileRouteImport } from './routes/admin/_layout/profile'
+import { Route as AdminLayoutCourseAllCoursesRouteImport } from './routes/admin/_layout/course/all-courses'
 import { Route as websiteLayoutauthSigninRouteImport } from './routes/(website)/_layout/(auth)/signin'
 import { Route as websiteLayoutauthGithubCallbackRouteImport } from './routes/(website)/_layout/(auth)/github-callback'
 
@@ -65,6 +66,12 @@ const AdminLayoutProfileRoute = AdminLayoutProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => AdminLayoutRoute,
 } as any)
+const AdminLayoutCourseAllCoursesRoute =
+  AdminLayoutCourseAllCoursesRouteImport.update({
+    id: '/course/all-courses',
+    path: '/course/all-courses',
+    getParentRoute: () => AdminLayoutRoute,
+  } as any)
 const websiteLayoutauthSigninRoute = websiteLayoutauthSigninRouteImport.update({
   id: '/(auth)/signin',
   path: '/signin',
@@ -85,6 +92,7 @@ export interface FileRoutesByFullPath {
   '/learner/profile': typeof LearnerLayoutProfileRoute
   '/github-callback': typeof websiteLayoutauthGithubCallbackRoute
   '/signin': typeof websiteLayoutauthSigninRoute
+  '/admin/course/all-courses': typeof AdminLayoutCourseAllCoursesRoute
 }
 export interface FileRoutesByTo {
   '/admin': typeof AdminLayoutRouteWithChildren
@@ -94,6 +102,7 @@ export interface FileRoutesByTo {
   '/': typeof websiteLayoutIndexRoute
   '/github-callback': typeof websiteLayoutauthGithubCallbackRoute
   '/signin': typeof websiteLayoutauthSigninRoute
+  '/admin/course/all-courses': typeof AdminLayoutCourseAllCoursesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -108,6 +117,7 @@ export interface FileRoutesById {
   '/(website)/_layout/': typeof websiteLayoutIndexRoute
   '/(website)/_layout/(auth)/github-callback': typeof websiteLayoutauthGithubCallbackRoute
   '/(website)/_layout/(auth)/signin': typeof websiteLayoutauthSigninRoute
+  '/admin/_layout/course/all-courses': typeof AdminLayoutCourseAllCoursesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -119,6 +129,7 @@ export interface FileRouteTypes {
     | '/learner/profile'
     | '/github-callback'
     | '/signin'
+    | '/admin/course/all-courses'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/admin'
@@ -128,6 +139,7 @@ export interface FileRouteTypes {
     | '/'
     | '/github-callback'
     | '/signin'
+    | '/admin/course/all-courses'
   id:
     | '__root__'
     | '/(website)'
@@ -141,6 +153,7 @@ export interface FileRouteTypes {
     | '/(website)/_layout/'
     | '/(website)/_layout/(auth)/github-callback'
     | '/(website)/_layout/(auth)/signin'
+    | '/admin/_layout/course/all-courses'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -214,6 +227,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminLayoutProfileRouteImport
       parentRoute: typeof AdminLayoutRoute
     }
+    '/admin/_layout/course/all-courses': {
+      id: '/admin/_layout/course/all-courses'
+      path: '/course/all-courses'
+      fullPath: '/admin/course/all-courses'
+      preLoaderRoute: typeof AdminLayoutCourseAllCoursesRouteImport
+      parentRoute: typeof AdminLayoutRoute
+    }
     '/(website)/_layout/(auth)/signin': {
       id: '/(website)/_layout/(auth)/signin'
       path: '/signin'
@@ -260,10 +280,12 @@ const websiteRouteWithChildren =
 
 interface AdminLayoutRouteChildren {
   AdminLayoutProfileRoute: typeof AdminLayoutProfileRoute
+  AdminLayoutCourseAllCoursesRoute: typeof AdminLayoutCourseAllCoursesRoute
 }
 
 const AdminLayoutRouteChildren: AdminLayoutRouteChildren = {
   AdminLayoutProfileRoute: AdminLayoutProfileRoute,
+  AdminLayoutCourseAllCoursesRoute: AdminLayoutCourseAllCoursesRoute,
 }
 
 const AdminLayoutRouteWithChildren = AdminLayoutRoute._addFileChildren(
