@@ -17,13 +17,10 @@ function ProfileForm() {
             render={({ field }) => (
               <img
                 className="h-full w-full object-cover rounded-full"
-                src={
-                  field.value || "https://your-website.com/i/width-50/height-50"
-                }
+                src={field.value || "https://placehold.co/24"}
                 alt="Profile"
                 onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-                  e.currentTarget.src =
-                    "https://your-website.com/i/width-50/height-50";
+                  e.currentTarget.src = "https://placehold.co/50";
                 }}
               />
             )}

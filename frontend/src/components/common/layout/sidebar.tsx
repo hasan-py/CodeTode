@@ -133,6 +133,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     className="h-8 w-8 rounded-full"
                     src={userInfo?.image || "https://placehold.co/400"}
                     alt="profile"
+                    onError={(
+                      e: React.SyntheticEvent<HTMLImageElement, Event>
+                    ) => {
+                      e.currentTarget.src = "https://placehold.co/50";
+                    }}
                   />
                 </div>
                 <span className="ml-3 text-sm font-medium text-gray-700 dark:text-gray-300">
