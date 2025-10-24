@@ -1,4 +1,5 @@
 import AdminLayout from "@/components/admin/adminLayout";
+import CourseForm from "@/components/admin/course/courseForm";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/admin/_layout/course/new-course")({
@@ -8,7 +9,7 @@ export const Route = createFileRoute("/admin/_layout/course/new-course")({
 function RouteComponent() {
   return (
     <AdminLayout isFormLayout>
-      <div className="p-6">Course Creation Form</div>
+      <CourseForm />
     </AdminLayout>
   );
 }
