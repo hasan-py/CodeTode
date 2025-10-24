@@ -10,7 +10,7 @@ export interface Option {
 
 interface SelectProps {
   options: Option[];
-  value: string | number | (string | number)[] | null | undefined;
+  value: string | number | (string | number)[] | unknown;
   onChange: (value: string | number | (string | number)[] | null) => void;
   placeholder?: string;
   isMulti?: boolean;
@@ -26,7 +26,7 @@ interface SelectProps {
     isSelected: boolean
   ) => React.ReactNode | React.JSX.Element;
   renderSelectedValue?: (
-    value: string | number | (string | number)[] | null | undefined,
+    value: string | number | (string | number)[] | unknown,
     placeholder: string
   ) => React.ReactNode | React.JSX.Element;
   searchOptions?: (query: string) => Option[];

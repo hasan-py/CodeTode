@@ -12,3 +12,4 @@ export const SIdParams = z.object({
 });
 
 export * from "./user";
+export * from "./course";
