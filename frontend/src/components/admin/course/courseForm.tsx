@@ -3,7 +3,7 @@ import Loading from "@/components/common/loading";
 import { ECourseStatus } from "@packages/definitions";
 import ActionFooter from "../actionFooter";
 import Select from "@/components/common/form/select";
-import { useCourseFormController } from "@/hooks/controller/course/useCourseController";
+import { useCourseFormController } from "@/hooks/controller/course/useCourseFormController";
 import { Controller } from "react-hook-form";
 
 function CourseForm({ id }: { id?: number }) {
