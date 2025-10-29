@@ -2,7 +2,8 @@ import { Logger } from "@packages/logger";
 import express, { Request, Response } from "express";
 import { UserRouter } from "./account/user";
 import { AuthRouter } from "./account/auth";
-import { authenticateJwt } from "../ middleware/auth";
+import { authenticateAdmin, authenticateJwt } from "../ middleware/auth";
+import { CourseRouter } from "./course/course";
 
 export class Routes {
   static Endpoints(app: express.Application) {
@@ -25,5 +26,9 @@ export class Routes {
         message: err.message || "An unexpected error occurred",
       });
     });
+  }
+
+  static adminEndpoints(app: express.Application) {
+    app.use(`/api/admin/course`, authenticateAdmin, CourseRouter);
   }
 }

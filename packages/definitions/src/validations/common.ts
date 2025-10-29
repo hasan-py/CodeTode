@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { ECourseStatus } from "../types";
 
 export const SIdParams = z.object({
   id: z.coerce
@@ -20,4 +21,10 @@ export const SUpdatePositionArray = z
 
 export const SUpdatePositions = z.object({
   positions: SUpdatePositionArray,
+});
+
+export const SPaginationQuery = z.object({
+  status: z.enum(ECourseStatus).optional(),
+  limit: z.coerce.number().int().positive().optional(),
+  page: z.coerce.number().int().positive().optional(),
 });
