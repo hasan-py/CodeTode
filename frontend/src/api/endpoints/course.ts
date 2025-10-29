@@ -27,8 +27,8 @@ export const createCourseApi = async (data: TCourseCreate) => {
   return res;
 };
 
-export const updateCourseApi = async (id: number, data: TCourseUpdate) => {
-  const res = await api.put(`/admin/course/${id}`, data);
+export const updateCourseApi = async (data: TCourseUpdate) => {
+  const res = await api.put(`/admin/course/${data?.id}`, data);
   return res;
 };
 

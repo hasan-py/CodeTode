@@ -15,6 +15,8 @@ export class Routes {
     app.use(`/api/profile`, authenticateJwt, UserRouter);
     app.use(`/api/auth`, AuthRouter);
 
+    this.adminEndpoints(app);
+
     app.use((req: Request, res: Response) => {
       Logger.error("404 Not found!");
       res.status(404).send("404 Not found!");

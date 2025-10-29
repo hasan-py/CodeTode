@@ -15,6 +15,7 @@ function CourseForm({ id }: { id?: number }) {
     courseDataLoading,
     lemonSqueezyData,
     onSubmit,
+    setOtherFieldValues,
   } = useCourseFormController({
     id,
   });
@@ -72,6 +73,7 @@ function CourseForm({ id }: { id?: number }) {
               <Select
                 label="Select Lemon Squeezy Course"
                 error={errors.lemonSqueezyProductId?.message}
+                disabled={!!id}
                 options={
                   lemonSqueezyData?.map((product) => ({
                     value: product.id,
@@ -86,6 +88,7 @@ function CourseForm({ id }: { id?: number }) {
                 }
                 onChange={(val) => {
                   field.onChange(val);
+                  setOtherFieldValues(val);
                 }}
               />
             )}

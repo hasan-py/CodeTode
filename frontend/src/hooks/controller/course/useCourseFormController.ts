@@ -1,22 +1,29 @@
+import {
+  useCreateCourseMutation,
+  useGetCourseQuery,
+  useLemonSqueezyProductsQuery,
+  useUpdateCourseMutation,
+} from "@/hooks/query/course";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  SCourseCreate,
   ECourseStatus,
+  SCourseCreate,
   type TCourseCreate,
 } from "@packages/definitions";
+import { useEffect } from "react";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
 export function useCourseFormController({ id }: { id?: number }) {
-  const courseDataLoading = false;
-  const lemonSqueezyData: any[] = [
-    {
-      id: 1,
-      attributes: { name: "test product" },
-    },
-  ];
+  const { data: lemonSqueezyData } = useLemonSqueezyProductsQuery();
+  const { data: courseData, isLoading: courseDataLoading } =
+    useGetCourseQuery(id);
 
-  const isPending = false;
+  const createCourseMutation = useCreateCourseMutation();
+  const updateCourseMutation = useUpdateCourseMutation();
+
+  const isPending =
+    createCourseMutation.isPending || updateCourseMutation.isPending;
 
   const {
     control,
@@ -37,35 +44,61 @@ export function useCourseFormController({ id }: { id?: number }) {
     resolver: zodResolver(SCourseCreate),
   });
 
+  useEffect(() => {
+    if (id && courseData) {
+      reset({
+        validityYear: courseData?.validityYear || 0,
+        status: courseData?.status,
+        lemonSqueezyProductId: courseData?.lemonSqueezyProductId || "",
+        name: courseData?.name,
+        price: courseData?.price ? +courseData.price : 0,
+        description: courseData?.description,
+        imageUrl: courseData?.imageUrl,
+        enrollLink: courseData?.enrollLink || "",
+      });
+    }
+  }, [id, courseData]);
+
   const onSubmit: SubmitHandler<TCourseCreate> = async (data) => {
-    console.log("data", data);
     if (id) {
-      await toast.promise(
-        new Promise((resolve) => {
-          setTimeout(() => {
-            resolve(true);
-          }, 1000);
-        }),
-        {
-          loading: `Updating course...`,
-          success: "Course updated successfully!",
-          error: "Failed to update course",
-        }
-      );
+      await toast.promise(updateCourseMutation.mutateAsync({ ...data, id }), {
+        loading: `Updating course...`,
+        success: "Course updated successfully!",
+        error: "Failed to update course",
+      });
     } else {
-      await toast.promise(
-        new Promise((resolve) => {
-          setTimeout(() => {
-            resolve(true);
-          }, 1000);
-        }),
-        {
-          loading: `Updating course...`,
-          success: "Course updated successfully!",
-          error: "Failed to update course",
-        }
-      );
+      await toast.promise(createCourseMutation.mutateAsync(data), {
+        loading: `Creating course...`,
+        success: "Course created successfully!",
+        error: "Failed to create course",
+      });
       reset();
+    }
+  };
+
+  const setOtherFieldValues = (
+    val: string | number | (string | number)[] | null
+  ) => {
+    const selectedProduct = lemonSqueezyData?.find(
+      (product) => product.id === val
+    );
+
+    if (selectedProduct) {
+      setValue("price", selectedProduct?.attributes.price, {
+        shouldValidate: true,
+      });
+      setValue("name", selectedProduct?.attributes.name, {
+        shouldValidate: true,
+      });
+      setValue("description", selectedProduct?.attributes.description, {
+        shouldValidate: true,
+      });
+      setValue("imageUrl", selectedProduct?.attributes.large_thumb_url, {
+        shouldValidate: true,
+      });
+      setValue("enrollLink", selectedProduct?.attributes.buy_now_url, {
+        shouldValidate: true,
+      });
     }
   };
 
@@ -78,5 +111,6 @@ export function useCourseFormController({ id }: { id?: number }) {
     lemonSqueezyData,
     setValue,
     onSubmit,
+    setOtherFieldValues,
   };
 }

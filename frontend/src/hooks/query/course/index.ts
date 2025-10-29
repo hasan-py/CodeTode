@@ -78,7 +78,7 @@ export function useUpdateCourseMutation() {
 
   return useMutation({
     mutationFn: async (courseData: TCourseUpdate) => {
-      const response = await updateCourseApi(courseData.id, courseData);
+      const response = await updateCourseApi(courseData);
       return response.data;
     },
     onSuccess: (_data, variables) => {
