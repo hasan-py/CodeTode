@@ -6,7 +6,7 @@ import {
 import { Logger } from "@packages/logger";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-export function useGetGithubUrl() {
+export function useGetGithubUrlMutation() {
   return useMutation({
     mutationFn: async () => {
       const response = await getGithubUrlApi();
@@ -25,7 +25,7 @@ export function useGetGithubUrl() {
   });
 }
 
-export function useGetGithubCallback(code: string | null) {
+export function useGetGithubCallbackQuery(code: string | null) {
   return useQuery({
     queryKey: ["githubAuth", code],
     queryFn: async () => {

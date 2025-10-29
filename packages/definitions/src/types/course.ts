@@ -1,6 +1,6 @@
 import z from "zod";
 import { SCourseCreate } from "../validations";
-import { PaginatedResult } from "./common";
+import type { PaginatedResult } from "./common";
 
 export enum ECourseStatus {
   DRAFT = "draft",

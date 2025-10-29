@@ -1,4 +1,4 @@
-import { useGetGithubCallback } from "@/hooks/query/account/auth";
+import { useGetGithubCallbackQuery } from "@/hooks/query/account/auth";
 import { authStore } from "@/stores/authStore";
 import { EUserRole } from "@packages/definitions";
 import { Logger } from "@packages/logger";
@@ -12,7 +12,7 @@ export function useGithubCallbackController() {
   const searchParams = new URLSearchParams(window.location.search);
   const code = searchParams.get("code");
 
-  const { isLoading, isError, data, error } = useGetGithubCallback(code);
+  const { isLoading, isError, data, error } = useGetGithubCallbackQuery(code);
 
   useEffect(() => {
     if (!code && !isLoading) {
