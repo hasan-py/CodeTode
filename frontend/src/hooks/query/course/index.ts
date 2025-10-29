@@ -22,7 +22,8 @@ import { AxiosError } from "axios";
 
 export const COURSE_KEYS = {
   lsProducts: ["lsProducts"] as const,
-  courses: (filters?: ICommonFilters) => ["courses", { filters }] as const,
+  courses: (filters?: ICommonFilters) =>
+    filters ? (["courses", "list", { filters }] as const) : ["courses", "list"],
   details: (id?: number) => ["course", id] as const,
 };
 

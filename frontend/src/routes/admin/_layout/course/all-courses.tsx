@@ -3,7 +3,9 @@ import { CourseItem } from "@/components/admin/course/courseItem";
 import Button from "@/components/common/button";
 import Select from "@/components/common/form/select";
 import ModuleHeader from "@/components/common/layout/moduleHeader";
+import Loading from "@/components/common/loading";
 import { AlertModal } from "@/components/common/modal/alertModal";
+import NoDataFound from "@/components/common/noDataFound";
 import { SortableList } from "@/components/common/sortableList";
 import { useCourseListController } from "@/hooks/controller/course/useCourseListController";
 import { ECourseStatus, type ICourse } from "@packages/definitions";
@@ -27,6 +29,9 @@ function RouteComponent() {
     archivedModalOpen,
     cancelArchivedOperationModal,
     confirmArchivedOperation,
+    isLoading,
+    statusFilter,
+    setStatusFilter,
   } = useCourseListController();
 
   return (
@@ -43,8 +48,8 @@ function RouteComponent() {
             { value: ECourseStatus.DRAFT, label: "Draft" },
             { value: ECourseStatus.ARCHIVED, label: "Archived" },
           ]}
-          value={undefined}
-          onChange={() => {}}
+          value={statusFilter}
+          onChange={(val) => setStatusFilter(val as ICourse["status"])}
           placeholder="All Status"
           className="w-38"
         />
@@ -84,6 +89,17 @@ function RouteComponent() {
           onArchived: (id) => setArchivedModalOpen(id),
         }}
       />
+
+      {isLoading ? (
+        <Loading
+          variant="spinner"
+          text="Loading data..."
+          size="md"
+          color="primary"
+        />
+      ) : !courses?.length ? (
+        <NoDataFound />
+      ) : null}
 
       <AlertModal
         open={!!archivedModalOpen}
