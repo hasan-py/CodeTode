@@ -1,11 +1,19 @@
 import { z } from "zod";
 import { SUpdatePositionArray, SUpdatePositions } from "../validations";
+import { ECourseStatus } from "./course";
 
 export interface PaginatedResult {
   total: number;
   page: number;
   limit: number;
   totalPages: number;
+}
+
+export interface ICommonFilters {
+  search?: string;
+  page?: number;
+  limit?: number;
+  status?: ECourseStatus;
 }
 
 export type AnyZodObject = z.ZodObject<any, any>;

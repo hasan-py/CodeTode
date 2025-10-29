@@ -38,3 +38,6 @@ export interface IPaginatedCourseResult extends PaginatedResult {
 }
 
 export type TCourseCreate = z.infer<typeof SCourseCreate>;
+export type TCourseUpdate = Partial<TCourseCreate> & {
+  id: number;
+};
