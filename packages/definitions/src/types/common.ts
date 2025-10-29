@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { SUpdatePositionArray } from "../validations";
+import { SUpdatePositionArray, SUpdatePositions } from "../validations";
 
 export interface PaginatedResult {
   total: number;
@@ -10,3 +10,4 @@ export interface PaginatedResult {
 
 export type AnyZodObject = z.ZodObject<any, any>;
 export type TUpdatePositionArray = z.infer<typeof SUpdatePositionArray>;
+export type TUpdatePositions = z.infer<typeof SUpdatePositions>;

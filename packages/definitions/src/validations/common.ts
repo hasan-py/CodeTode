@@ -17,3 +17,7 @@ export const SUpdatePositionArray = z
     })
   )
   .nonempty("The list of items cannot be empty.");
+
+export const SUpdatePositions = z.object({
+  positions: SUpdatePositionArray,
+});
