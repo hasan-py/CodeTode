@@ -1,0 +1,56 @@
+import { ECourseStatus } from "@packages/definitions";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  Unique,
+  UpdateDateColumn,
+} from "typeorm";
+
+@Entity()
+@Unique(["lemonSqueezyProductId"])
+export class Course {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column()
+  name: string;
+
+  @Column({ type: "text", nullable: true })
+  description: string;
+
+  @Column({ nullable: true })
+  imageUrl: string;
+
+  @Column({ nullable: true })
+  lemonSqueezyProductId: string;
+
+  @Column()
+  enrollLink: string;
+
+  @Column({
+    type: "enum",
+    enum: ECourseStatus,
+    default: ECourseStatus.DRAFT,
+  })
+  status: ECourseStatus;
+
+  @Column({ type: "int", default: 1 })
+  validityYear: number;
+
+  @Column({ default: "1.0.0" })
+  version: string;
+
+  @Column({ type: "decimal", precision: 10, scale: 2, nullable: true })
+  price: number;
+
+  @Column({ type: "int" })
+  position: number;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+}

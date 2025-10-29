@@ -1,5 +1,6 @@
 import z from "zod";
 import { SCourseCreate } from "../validations";
+import { PaginatedResult } from "./common";
 
 export enum ECourseStatus {
   DRAFT = "draft",
@@ -24,6 +25,16 @@ export interface ICourse {
   lessonCount: number;
   quizCount: number;
   enrollLink?: string;
+}
+
+export interface ICourseListQueryOptions {
+  page?: number;
+  limit?: number;
+  status?: ECourseStatus;
+}
+
+export interface IPaginatedCourseResult extends PaginatedResult {
+  courses: ICourse[];
 }
 
 export type TCourseCreate = z.infer<typeof SCourseCreate>;
