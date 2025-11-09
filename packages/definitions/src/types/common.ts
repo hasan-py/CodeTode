@@ -16,6 +16,13 @@ export interface ICommonFilters {
   status?: ECourseStatus;
 }
 
+export interface IProgress {
+  totalLessons: number;
+  completedLessons: number;
+  progressPercentage: number;
+  totalXpEarned: number;
+}
+
 export type AnyZodObject = z.ZodObject<any, any>;
 export type TUpdatePositionArray = z.infer<typeof SUpdatePositionArray>;
 export type TUpdatePositions = z.infer<typeof SUpdatePositions>;

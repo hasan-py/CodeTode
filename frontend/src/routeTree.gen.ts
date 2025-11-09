@@ -17,10 +17,12 @@ import { Route as websiteLayoutRouteImport } from './routes/(website)/_layout'
 import { Route as websiteLayoutIndexRouteImport } from './routes/(website)/_layout/index'
 import { Route as LearnerLayoutProfileRouteImport } from './routes/learner/_layout/profile'
 import { Route as AdminLayoutProfileRouteImport } from './routes/admin/_layout/profile'
+import { Route as AdminLayoutModuleNewModuleRouteImport } from './routes/admin/_layout/module/new-module'
 import { Route as AdminLayoutCourseNewCourseRouteImport } from './routes/admin/_layout/course/new-course'
 import { Route as AdminLayoutCourseAllCoursesRouteImport } from './routes/admin/_layout/course/all-courses'
 import { Route as websiteLayoutauthSigninRouteImport } from './routes/(website)/_layout/(auth)/signin'
 import { Route as websiteLayoutauthGithubCallbackRouteImport } from './routes/(website)/_layout/(auth)/github-callback'
+import { Route as AdminLayoutModuleModuleIdEditModuleRouteImport } from './routes/admin/_layout/module/$moduleId.edit-module'
 import { Route as AdminLayoutCourseCourseIdEditCourseRouteImport } from './routes/admin/_layout/course/$courseId.edit-course'
 
 const LearnerRouteImport = createFileRoute('/learner')()
@@ -68,6 +70,12 @@ const AdminLayoutProfileRoute = AdminLayoutProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => AdminLayoutRoute,
 } as any)
+const AdminLayoutModuleNewModuleRoute =
+  AdminLayoutModuleNewModuleRouteImport.update({
+    id: '/module/new-module',
+    path: '/module/new-module',
+    getParentRoute: () => AdminLayoutRoute,
+  } as any)
 const AdminLayoutCourseNewCourseRoute =
   AdminLayoutCourseNewCourseRouteImport.update({
     id: '/course/new-course',
@@ -91,6 +99,12 @@ const websiteLayoutauthGithubCallbackRoute =
     path: '/github-callback',
     getParentRoute: () => websiteLayoutRoute,
   } as any)
+const AdminLayoutModuleModuleIdEditModuleRoute =
+  AdminLayoutModuleModuleIdEditModuleRouteImport.update({
+    id: '/module/$moduleId/edit-module',
+    path: '/module/$moduleId/edit-module',
+    getParentRoute: () => AdminLayoutRoute,
+  } as any)
 const AdminLayoutCourseCourseIdEditCourseRoute =
   AdminLayoutCourseCourseIdEditCourseRouteImport.update({
     id: '/course/$courseId/edit-course',
@@ -108,7 +122,9 @@ export interface FileRoutesByFullPath {
   '/signin': typeof websiteLayoutauthSigninRoute
   '/admin/course/all-courses': typeof AdminLayoutCourseAllCoursesRoute
   '/admin/course/new-course': typeof AdminLayoutCourseNewCourseRoute
+  '/admin/module/new-module': typeof AdminLayoutModuleNewModuleRoute
   '/admin/course/$courseId/edit-course': typeof AdminLayoutCourseCourseIdEditCourseRoute
+  '/admin/module/$moduleId/edit-module': typeof AdminLayoutModuleModuleIdEditModuleRoute
 }
 export interface FileRoutesByTo {
   '/admin': typeof AdminLayoutRouteWithChildren
@@ -120,7 +136,9 @@ export interface FileRoutesByTo {
   '/signin': typeof websiteLayoutauthSigninRoute
   '/admin/course/all-courses': typeof AdminLayoutCourseAllCoursesRoute
   '/admin/course/new-course': typeof AdminLayoutCourseNewCourseRoute
+  '/admin/module/new-module': typeof AdminLayoutModuleNewModuleRoute
   '/admin/course/$courseId/edit-course': typeof AdminLayoutCourseCourseIdEditCourseRoute
+  '/admin/module/$moduleId/edit-module': typeof AdminLayoutModuleModuleIdEditModuleRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -137,7 +155,9 @@ export interface FileRoutesById {
   '/(website)/_layout/(auth)/signin': typeof websiteLayoutauthSigninRoute
   '/admin/_layout/course/all-courses': typeof AdminLayoutCourseAllCoursesRoute
   '/admin/_layout/course/new-course': typeof AdminLayoutCourseNewCourseRoute
+  '/admin/_layout/module/new-module': typeof AdminLayoutModuleNewModuleRoute
   '/admin/_layout/course/$courseId/edit-course': typeof AdminLayoutCourseCourseIdEditCourseRoute
+  '/admin/_layout/module/$moduleId/edit-module': typeof AdminLayoutModuleModuleIdEditModuleRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -151,7 +171,9 @@ export interface FileRouteTypes {
     | '/signin'
     | '/admin/course/all-courses'
     | '/admin/course/new-course'
+    | '/admin/module/new-module'
     | '/admin/course/$courseId/edit-course'
+    | '/admin/module/$moduleId/edit-module'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/admin'
@@ -163,7 +185,9 @@ export interface FileRouteTypes {
     | '/signin'
     | '/admin/course/all-courses'
     | '/admin/course/new-course'
+    | '/admin/module/new-module'
     | '/admin/course/$courseId/edit-course'
+    | '/admin/module/$moduleId/edit-module'
   id:
     | '__root__'
     | '/(website)'
@@ -179,7 +203,9 @@ export interface FileRouteTypes {
     | '/(website)/_layout/(auth)/signin'
     | '/admin/_layout/course/all-courses'
     | '/admin/_layout/course/new-course'
+    | '/admin/_layout/module/new-module'
     | '/admin/_layout/course/$courseId/edit-course'
+    | '/admin/_layout/module/$moduleId/edit-module'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -253,6 +279,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminLayoutProfileRouteImport
       parentRoute: typeof AdminLayoutRoute
     }
+    '/admin/_layout/module/new-module': {
+      id: '/admin/_layout/module/new-module'
+      path: '/module/new-module'
+      fullPath: '/admin/module/new-module'
+      preLoaderRoute: typeof AdminLayoutModuleNewModuleRouteImport
+      parentRoute: typeof AdminLayoutRoute
+    }
     '/admin/_layout/course/new-course': {
       id: '/admin/_layout/course/new-course'
       path: '/course/new-course'
@@ -280,6 +313,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/github-callback'
       preLoaderRoute: typeof websiteLayoutauthGithubCallbackRouteImport
       parentRoute: typeof websiteLayoutRoute
+    }
+    '/admin/_layout/module/$moduleId/edit-module': {
+      id: '/admin/_layout/module/$moduleId/edit-module'
+      path: '/module/$moduleId/edit-module'
+      fullPath: '/admin/module/$moduleId/edit-module'
+      preLoaderRoute: typeof AdminLayoutModuleModuleIdEditModuleRouteImport
+      parentRoute: typeof AdminLayoutRoute
     }
     '/admin/_layout/course/$courseId/edit-course': {
       id: '/admin/_layout/course/$courseId/edit-course'
@@ -322,15 +362,20 @@ interface AdminLayoutRouteChildren {
   AdminLayoutProfileRoute: typeof AdminLayoutProfileRoute
   AdminLayoutCourseAllCoursesRoute: typeof AdminLayoutCourseAllCoursesRoute
   AdminLayoutCourseNewCourseRoute: typeof AdminLayoutCourseNewCourseRoute
+  AdminLayoutModuleNewModuleRoute: typeof AdminLayoutModuleNewModuleRoute
   AdminLayoutCourseCourseIdEditCourseRoute: typeof AdminLayoutCourseCourseIdEditCourseRoute
+  AdminLayoutModuleModuleIdEditModuleRoute: typeof AdminLayoutModuleModuleIdEditModuleRoute
 }
 
 const AdminLayoutRouteChildren: AdminLayoutRouteChildren = {
   AdminLayoutProfileRoute: AdminLayoutProfileRoute,
   AdminLayoutCourseAllCoursesRoute: AdminLayoutCourseAllCoursesRoute,
   AdminLayoutCourseNewCourseRoute: AdminLayoutCourseNewCourseRoute,
+  AdminLayoutModuleNewModuleRoute: AdminLayoutModuleNewModuleRoute,
   AdminLayoutCourseCourseIdEditCourseRoute:
     AdminLayoutCourseCourseIdEditCourseRoute,
+  AdminLayoutModuleModuleIdEditModuleRoute:
+    AdminLayoutModuleModuleIdEditModuleRoute,
 }
 
 const AdminLayoutRouteWithChildren = AdminLayoutRoute._addFileChildren(
