@@ -1,7 +1,7 @@
 import z from "zod";
 import { SModuleCreate, SModuleUpdate } from "../validations/module";
-import { IProgress } from "./common";
-import { ECourseStatus, ICourse } from "./course";
+import type { ICommonFilters, IProgress } from "./common";
+import type { ECourseStatus, ICourse } from "./course";
 
 export interface IModule {
   id: number;
@@ -21,5 +21,17 @@ export interface IModule {
   isCurrent?: boolean;
 }
 
-export type TModuleCreateSchema = z.infer<typeof SModuleCreate>;
-export type TModuleUpdateSchema = z.infer<typeof SModuleUpdate>;
+export interface IModuleFilters extends ICommonFilters {
+  courseId?: number;
+}
+
+export interface IModuleResponse {
+  modules: IModule[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
+export type TModuleCreate = z.infer<typeof SModuleCreate>;
+export type TModuleUpdate = z.infer<typeof SModuleUpdate>;

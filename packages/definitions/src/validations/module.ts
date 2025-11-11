@@ -3,8 +3,8 @@ import { ECourseStatus } from "../types";
 
 const SModuleBase = z.object({
   name: z
-    .string({ message: "Course name is required" })
-    .nonempty("Course name is required")
+    .string({ message: "Module name is required" })
+    .nonempty("Module name is required")
     .min(3, "Name must be at least 3 characters"),
   description: z
     .string({ message: "Description is required" })

@@ -12,7 +12,7 @@ function CourseForm({ id }: { id?: number }) {
     handleSubmit,
     errors,
     isPending,
-    courseDataLoading,
+    isLoading,
     lemonSqueezyData,
     onSubmit,
     setOtherFieldValues,
@@ -20,7 +20,7 @@ function CourseForm({ id }: { id?: number }) {
     id,
   });
 
-  if (courseDataLoading) {
+  if (isLoading) {
     return <Loading fullscreen />;
   }
 

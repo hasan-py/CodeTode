@@ -10,7 +10,7 @@ import LucideIconSelector from "@/components/common/form/lucideIconSelector";
 function ModuleForm({ id }: { id?: number }) {
   const {
     CourseList,
-    listDataLoading,
+    isLoading,
     isPending,
     control,
     handleSubmit,
@@ -21,7 +21,7 @@ function ModuleForm({ id }: { id?: number }) {
     id,
   });
 
-  if (listDataLoading) {
+  if (isLoading) {
     return <Loading fullscreen />;
   }
 

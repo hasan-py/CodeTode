@@ -1,4 +1,9 @@
 import { useGetCoursesQuery } from "@/hooks/query/course";
+import {
+  useArchivedModuleMutation,
+  useGetModulesQuery,
+  useUpdateModulePositionsMutation,
+} from "@/hooks/query/course/module";
 import { ECourseStatus, type IModule } from "@packages/definitions";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -9,12 +14,42 @@ export function useModuleListController() {
   });
 
   const [archivedModalOpen, setArchivedModalOpen] = useState<number>(0);
-  const [modules, setModules] = useState<IModule[]>(ModuleData);
+  const [modules, setModules] = useState<IModule[]>([]);
 
   const [selectedCourse, setSelectedCourse] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [isReorderMode, setIsReorderMode] = useState(false);
+
+  const { data, isLoading } = useGetModulesQuery({
+    status: statusFilter as ECourseStatus,
+    courseId: selectedCourse || undefined,
+  });
+  const updatePositionsMutation = useUpdateModulePositionsMutation();
+  const archivedModuleMutation = useArchivedModuleMutation();
+
+  useEffect(() => {
+    if (data?.modules) {
+      setModules(data.modules);
+    }
+  }, [data?.modules]);
+
+  useEffect(() => {
+    if (searchQuery) {
+      const filteredModules = data?.modules?.filter((module) =>
+        module.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setModules(filteredModules || []);
+    } else {
+      setModules(data?.modules || []);
+    }
+  }, [searchQuery, data?.modules]);
+
+  useEffect(() => {
+    if (CourseList?.courses) {
+      setSelectedCourse(CourseList.courses[0].id);
+    }
+  }, [CourseList]);
 
   const handleReorder = (newList: IModule[]) => {
     const reorderedModules = newList.map((module, index) => ({
@@ -26,9 +61,15 @@ export function useModuleListController() {
   };
 
   const saveChanges = async () => {
+    const positions = modules.map(({ id, position }) => ({
+      id,
+      position,
+    }));
+
     await toast.promise(
-      new Promise((resolve) => {
-        resolve(true);
+      updatePositionsMutation.mutateAsync({
+        positions,
+        courseId: modules[0]?.courseId?.toString(),
       }),
       {
         loading: "Saving module positions...",
@@ -41,20 +82,16 @@ export function useModuleListController() {
   };
 
   const confirmArchivedOperation = async (moduleId: number) => {
-    await toast.promise(
-      new Promise((resolve) => {
-        resolve(true);
-      }),
-      {
-        loading: "Archiving module..." + moduleId,
-        success: "Module archived successfully!",
-        error: "Failed to archive module",
-      }
-    );
+    await toast.promise(archivedModuleMutation.mutateAsync(moduleId), {
+      loading: "Archiving module...",
+      success: "Module archived successfully!",
+      error: "Failed to archive module",
+    });
     setArchivedModalOpen(0);
   };
 
   const cancelChanges = () => {
+    setModules(data?.modules || []);
     setIsReorderMode(false);
   };
 
@@ -83,9 +120,10 @@ export function useModuleListController() {
     CourseList,
     isLoadingCourses,
     archivedModalOpen,
-    isLoading: false,
+    isLoading,
     isReorderMode,
-    isUpdating: false,
+    isUpdating:
+      updatePositionsMutation.isPending || archivedModuleMutation.isPending,
     selectedCourse,
 
     handleReorder,
@@ -100,73 +138,3 @@ export function useModuleListController() {
     setSelectedCourse,
   };
 }
-
-const ModuleData: IModule[] = [
-  {
-    id: 1,
-    name: "Introduction to TypeScript",
-    description:
-      "Learn the basics of TypeScript, including types and interfaces.",
-    status: ECourseStatus.PUBLISHED,
-    position: 1,
-    createdAt: "2025-01-01T10:00:00Z",
-    updatedAt: "2025-01-15T12:00:00Z",
-    courseId: 101,
-    iconName: "book",
-    chapterCount: 5,
-    lessonCount: 20,
-    quizCount: 3,
-    course: {
-      id: 101,
-      name: "TypeScript Mastery",
-      description: "A comprehensive course on TypeScript.",
-      imageUrl: "https://example.com/images/typescript.jpg",
-      status: ECourseStatus.PUBLISHED,
-      price: "$49.99",
-      position: 1,
-      createdAt: "2025-01-01T10:00:00Z",
-      updatedAt: "2025-01-15T12:00:00Z",
-      validityYear: 1,
-      lemonSqueezyProductId: "prod_12345",
-      moduleCount: 10,
-      chapterCount: 50,
-      lessonCount: 200,
-      quizCount: 20,
-      enrollLink: "https://example.com/enroll/typescript",
-    },
-    isCurrent: true,
-  },
-  {
-    id: 2,
-    name: "Advanced React",
-    description: "Dive deep into React concepts like hooks and context.",
-    status: ECourseStatus.DRAFT,
-    position: 2,
-    createdAt: "2025-02-01T10:00:00Z",
-    updatedAt: "2025-02-10T12:00:00Z",
-    courseId: 102,
-    iconName: "react",
-    chapterCount: 8,
-    lessonCount: 30,
-    quizCount: 5,
-    course: undefined,
-    isCurrent: false,
-  },
-  {
-    id: 3,
-    name: "Node.js Basics",
-    description:
-      "Learn how to build scalable backend applications with Node.js.",
-    status: ECourseStatus.ARCHIVED,
-    position: 3,
-    createdAt: "2025-03-01T10:00:00Z",
-    updatedAt: "2025-03-15T12:00:00Z",
-    courseId: 103,
-    iconName: "server",
-    chapterCount: 6,
-    lessonCount: 25,
-    quizCount: 4,
-    course: undefined,
-    isCurrent: false,
-  },
-];

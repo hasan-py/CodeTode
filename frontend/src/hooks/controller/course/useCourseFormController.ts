@@ -16,8 +16,7 @@ import toast from "react-hot-toast";
 
 export function useCourseFormController({ id }: { id?: number }) {
   const { data: lemonSqueezyData } = useLemonSqueezyProductsQuery();
-  const { data: courseData, isLoading: courseDataLoading } =
-    useGetCourseQuery(id);
+  const { data: courseData, isLoading } = useGetCourseQuery(id);
 
   const createCourseMutation = useCreateCourseMutation();
   const updateCourseMutation = useUpdateCourseMutation();
@@ -107,7 +106,7 @@ export function useCourseFormController({ id }: { id?: number }) {
     handleSubmit,
     errors,
     isPending,
-    courseDataLoading,
+    isLoading,
     lemonSqueezyData,
     setValue,
     onSubmit,

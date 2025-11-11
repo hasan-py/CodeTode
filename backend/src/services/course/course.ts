@@ -35,8 +35,8 @@ export class CourseService extends BaseService<Course> {
         "course.validityYear",
         "course.createdAt",
         "course.updatedAt",
-      ]);
-    // .loadRelationCountAndMap("course.moduleCount", "course.modules")
+      ])
+      .loadRelationCountAndMap("course.moduleCount", "course.modules");
     // .loadRelationCountAndMap("course.chapterCount", "course.chapters")
     // .loadRelationCountAndMap("course.lessonCount", "course.lessons")
     // .loadRelationCountAndMap("course.quizCount", "course.quizzes");
