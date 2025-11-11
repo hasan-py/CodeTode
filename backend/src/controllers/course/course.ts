@@ -1,8 +1,8 @@
 import { ECourseStatus, TUpdatePositions } from "@packages/definitions";
 import { Request, Response } from "express";
-import { catchErrors } from "../../../decorators/catchErrors";
-import { courseService } from "../../../services/course/course";
-import { sendError, sendSuccess } from "../../../utils/response";
+import { catchErrors } from "../../decorators/catchErrors";
+import { courseService } from "../../services/course/course";
+import { sendError, sendSuccess } from "../../utils/response";
 
 export class CourseController {
   @catchErrors()

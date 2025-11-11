@@ -1,8 +1,10 @@
 import { ECourseStatus } from "@packages/definitions";
+import { Module } from "./module";
 import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   Unique,
   UpdateDateColumn,
@@ -53,4 +55,7 @@ export class Course {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @OneToMany(() => Module, (module) => module.course)
+  modules: Module[];
 }

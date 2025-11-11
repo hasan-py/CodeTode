@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { catchErrors } from "../../../decorators/catchErrors";
-import { sendSuccess } from "../../../utils/response";
-import { lemonSqueezyProductService } from "../../../services/course/lemonSqueezyProduct";
+import { catchErrors } from "../../decorators/catchErrors";
+import { lemonSqueezyProductService } from "../../services/course/lemonSqueezyProduct";
+import { sendSuccess } from "../../utils/response";
 
 export class LemonSqueezyProductController {
   @catchErrors()

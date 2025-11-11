@@ -1,7 +1,7 @@
 import type { TUpdatePositionArray } from "@packages/definitions";
 import {
   ECourseStatus,
-  ICourseListQueryOptions,
+  IListOptions,
   IPaginatedCourseResult,
 } from "@packages/definitions";
 import { Course } from "../../entity/course/course";
@@ -13,7 +13,7 @@ export class CourseService extends BaseService<Course> {
     super(CourseRepository);
   }
 
-  async listCourses(options: ICourseListQueryOptions = {}): Promise<
+  async listCourses(options: IListOptions = {}): Promise<
     Omit<IPaginatedCourseResult, "courses"> & {
       courses: Course[];
     }

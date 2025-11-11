@@ -5,8 +5,8 @@ import {
   SUpdatePositions,
 } from "@packages/definitions";
 import { Router } from "express";
-import { CourseController } from "../../controllers/account/course/course";
 import { validator } from "../../ middleware/validator";
+import { CourseController } from "../../controllers/course/course";
 
 class CourseRoutes {
   router: Router;

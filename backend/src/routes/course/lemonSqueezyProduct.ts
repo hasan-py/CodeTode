@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { lemonSqueezyProductController } from "../../controllers/account/course/lemonSqueezyProduct";
+import { lemonSqueezyProductController } from "../../controllers/course/lemonSqueezyProduct";
 
 class LemonSqueezyRoutes {
   router: Router;

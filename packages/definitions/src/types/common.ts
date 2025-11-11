@@ -2,7 +2,7 @@ import { z } from "zod";
 import { SUpdatePositionArray, SUpdatePositions } from "../validations";
 import { ECourseStatus } from "./course";
 
-export interface PaginatedResult {
+export interface IPaginatedResult {
   total: number;
   page: number;
   limit: number;
@@ -21,6 +21,12 @@ export interface IProgress {
   completedLessons: number;
   progressPercentage: number;
   totalXpEarned: number;
+}
+
+export interface IListOptions {
+  page?: number;
+  limit?: number;
+  status?: ECourseStatus;
 }
 
 export type AnyZodObject = z.ZodObject<any, any>;
