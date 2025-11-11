@@ -19,6 +19,8 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import React from "react";
+import NoDataFound from "./noDataFound";
+import Loading from "./loading";
 
 interface DragHandleProps {
   attributes: DraggableAttributes;
@@ -39,6 +41,7 @@ interface SortableListProps<
   itemIdKey?: keyof T;
   containerClassName?: string;
   extraProps?: ExtraProps;
+  isLoading?: boolean;
 }
 
 export function SortableList<
@@ -51,6 +54,7 @@ export function SortableList<
   itemIdKey = "id" as keyof T,
   containerClassName,
   extraProps,
+  isLoading = false,
 }: SortableListProps<T, ExtraProps>) {
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -79,26 +83,39 @@ export function SortableList<
   const itemIds = items.map((item) => item[itemIdKey] as UniqueIdentifier);
 
   return (
-    <DndContext
-      sensors={sensors}
-      collisionDetection={closestCenter}
-      autoScroll={{ acceleration: 0 }}
-      onDragEnd={handleDragEnd}
-    >
-      <SortableContext items={itemIds} strategy={verticalListSortingStrategy}>
-        <div className={containerClassName}>
-          {items.map((item) => (
-            <SortableItem<T, ExtraProps>
-              key={item[itemIdKey] as React.Key}
-              id={item[itemIdKey] as UniqueIdentifier}
-              item={item}
-              renderItem={renderItem}
-              extraProps={extraProps}
-            />
-          ))}
-        </div>
-      </SortableContext>
-    </DndContext>
+    <>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        autoScroll={{ acceleration: 0 }}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext items={itemIds} strategy={verticalListSortingStrategy}>
+          <div className={containerClassName}>
+            {items.map((item) => (
+              <SortableItem<T, ExtraProps>
+                key={item[itemIdKey] as React.Key}
+                id={item[itemIdKey] as UniqueIdentifier}
+                item={item}
+                renderItem={renderItem}
+                extraProps={extraProps}
+              />
+            ))}
+          </div>
+        </SortableContext>
+      </DndContext>
+
+      {isLoading ? (
+        <Loading
+          variant="spinner"
+          text="Loading data..."
+          size="md"
+          color="primary"
+        />
+      ) : !items?.length ? (
+        <NoDataFound />
+      ) : null}
+    </>
   );
 }
 

@@ -20,6 +20,9 @@ export function useCourseListController() {
   const updatePositionsMutation = useUpdateCoursePositionsMutation();
   const archivedCourseMutation = useArchivedCourseMutation();
 
+  const isUpdating =
+    updatePositionsMutation.isPending || archivedCourseMutation.isPending;
+
   useEffect(() => {
     if (data?.courses) {
       setCourses(data.courses);
@@ -92,6 +95,7 @@ export function useCourseListController() {
     isReorderMode,
     archivedModalOpen,
     isLoading,
+    isUpdating,
     toggleReorderMode,
     handleReorder,
     setSearchQuery,
