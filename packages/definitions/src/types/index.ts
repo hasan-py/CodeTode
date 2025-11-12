@@ -4,3 +4,4 @@ export * from "./course";
 export * from "./common";
 export * from "./lemonSqueezy";
 export * from "./module";
+export * from "./chapter";

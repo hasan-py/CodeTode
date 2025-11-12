@@ -5,36 +5,36 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 import { Course } from "./course";
-import { Chapter } from "./chapter";
+import { Module } from "./module";
 
 @Entity()
-export class Module {
+export class Chapter {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
+  moduleId: number;
+
+  @ManyToOne(() => Module, (module) => module.chapters)
+  @JoinColumn({ name: "moduleId" })
+  module: Module;
+
+  @Column()
   courseId: number;
 
-  @ManyToOne(() => Course, (course) => course.modules)
+  @ManyToOne(() => Course)
   @JoinColumn({ name: "courseId" })
   course: Course;
-
-  @Column({ type: "int" })
-  position: number;
 
   @Column()
   name: string;
 
   @Column({ type: "text", nullable: true })
   description: string;
-
-  @Column({ nullable: true })
-  iconName: string;
 
   @Column({
     type: "enum",
@@ -43,12 +43,12 @@ export class Module {
   })
   status: ECourseStatus;
 
+  @Column({ type: "int" })
+  position: number;
+
   @CreateDateColumn()
   createdAt: Date;
 
   @UpdateDateColumn()
   updatedAt: Date;
-
-  @OneToMany(() => Chapter, (chapter) => chapter.course)
-  chapters: Chapter[];
 }

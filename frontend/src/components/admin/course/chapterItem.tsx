@@ -1,0 +1,112 @@
+import Badge from "@/components/common/badge";
+import Button from "@/components/common/button";
+import {
+  type DraggableAttributes,
+  type DraggableSyntheticListeners,
+} from "@dnd-kit/core";
+import { ECourseStatus, type IChapter } from "@packages/definitions";
+import { useNavigate } from "@tanstack/react-router";
+import { ArchiveIcon, Edit, GripVertical } from "lucide-react";
+
+export const ChapterItem = (
+  chapter: IChapter,
+  {
+    attributes,
+    listeners,
+  }: {
+    attributes: DraggableAttributes;
+    listeners: DraggableSyntheticListeners | undefined;
+  },
+  extraProps?: {
+    isReorderMode: boolean;
+    onArchived?: (courseId: number) => void;
+  }
+): React.ReactNode => {
+  const navigate = useNavigate();
+  return (
+    <div className="py-4 flex items-center justify-between">
+      <div
+        className={`flex items-center ${
+          extraProps?.isReorderMode ? "w-20" : "w-12"
+        }`}
+      >
+        {extraProps?.isReorderMode && (
+          <div
+            {...attributes}
+            {...listeners}
+            className="cursor-grab active:cursor-grabbing mr-3"
+          >
+            <GripVertical className="text-gray-500 h-5 w-5" />
+          </div>
+        )}
+
+        <span className="w-8 h-8 flex items-center justify-center bg-indigo-600 text-white rounded-full text-sm">
+          {chapter.position}
+        </span>
+      </div>
+
+      <div className="w-full">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center w-full justify-between">
+            <div className="flex items-center space-x-2">
+              <h3 className="font-medium text-gray-900 dark:text-white">
+                {chapter.name}
+              </h3>
+            </div>
+            <Badge
+              label={
+                chapter.status === ECourseStatus.PUBLISHED
+                  ? "Published"
+                  : chapter.status === ECourseStatus.ARCHIVED
+                  ? "Archived"
+                  : "Draft"
+              }
+              status={
+                chapter.status === ECourseStatus.PUBLISHED
+                  ? "done"
+                  : chapter.status === ECourseStatus.ARCHIVED
+                  ? "error"
+                  : "pending"
+              }
+            />
+          </div>
+        </div>
+
+        <p className="text-gray-600 dark:text-gray-400 text-sm">
+          {chapter.description}
+        </p>
+
+        <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-500">
+          <span>{chapter.lessonCount} Lessons</span>
+
+          <div className="space-x-2">
+            <Button
+              size="xs"
+              variant="secondary"
+              icon={<Edit className="w-4 h-4" />}
+              onClick={() =>
+                navigate({
+                  to: "/admin/chapter/$chapterId/edit-chapter",
+                  params: { chapterId: chapter?.id.toString() },
+                })
+              }
+            />
+
+            {chapter.status !== "archived" ? (
+              <Button
+                size="xs"
+                variant="danger"
+                icon={<ArchiveIcon className="w-4 h-4" />}
+                onClick={() => {
+                  if (extraProps?.onArchived) {
+                    extraProps.onArchived(chapter.id);
+                  }
+                }}
+              />
+            ) : null}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};

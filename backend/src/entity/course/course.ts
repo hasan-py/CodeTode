@@ -9,6 +9,7 @@ import {
   Unique,
   UpdateDateColumn,
 } from "typeorm";
+import { Chapter } from "./chapter";
 
 @Entity()
 @Unique(["lemonSqueezyProductId"])
@@ -58,4 +59,7 @@ export class Course {
 
   @OneToMany(() => Module, (module) => module.course)
   modules: Module[];
+
+  @OneToMany(() => Chapter, (chapter) => chapter.course)
+  chapters: Chapter[];
 }

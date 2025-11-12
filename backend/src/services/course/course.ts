@@ -1,7 +1,7 @@
 import type { TUpdatePositionArray } from "@packages/definitions";
 import {
   ECourseStatus,
-  IListOptions,
+  ICommonFilters,
   IPaginatedCourseResult,
 } from "@packages/definitions";
 import { Course } from "../../entity/course/course";
@@ -13,7 +13,7 @@ export class CourseService extends BaseService<Course> {
     super(CourseRepository);
   }
 
-  async listCourses(options: IListOptions = {}): Promise<
+  async listCourses(options: ICommonFilters = {}): Promise<
     Omit<IPaginatedCourseResult, "courses"> & {
       courses: Course[];
     }
@@ -36,8 +36,8 @@ export class CourseService extends BaseService<Course> {
         "course.createdAt",
         "course.updatedAt",
       ])
-      .loadRelationCountAndMap("course.moduleCount", "course.modules");
-    // .loadRelationCountAndMap("course.chapterCount", "course.chapters")
+      .loadRelationCountAndMap("course.moduleCount", "course.modules")
+      .loadRelationCountAndMap("course.chapterCount", "course.chapters");
     // .loadRelationCountAndMap("course.lessonCount", "course.lessons")
     // .loadRelationCountAndMap("course.quizCount", "course.quizzes");
 

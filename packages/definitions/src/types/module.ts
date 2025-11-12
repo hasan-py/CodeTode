@@ -1,6 +1,6 @@
 import z from "zod";
 import { SModuleCreate, SModuleUpdate } from "../validations/module";
-import type { ICommonFilters, IProgress } from "./common";
+import type { ICommonFilters, IPaginatedResult, IProgress } from "./common";
 import type { ECourseStatus, ICourse } from "./course";
 
 export interface IModule {
@@ -25,12 +25,8 @@ export interface IModuleFilters extends ICommonFilters {
   courseId?: number;
 }
 
-export interface IModuleResponse {
+export interface IModuleResponse extends IPaginatedResult {
   modules: IModule[];
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
 }
 
 export type TModuleCreate = z.infer<typeof SModuleCreate>;

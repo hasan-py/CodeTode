@@ -23,12 +23,6 @@ export interface IProgress {
   totalXpEarned: number;
 }
 
-export interface IListOptions {
-  page?: number;
-  limit?: number;
-  status?: ECourseStatus;
-}
-
 export type AnyZodObject = z.ZodObject<any, any>;
 export type TUpdatePositionArray = z.infer<typeof SUpdatePositionArray>;
 export type TUpdatePositions = z.infer<typeof SUpdatePositions>;

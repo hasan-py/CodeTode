@@ -21,10 +21,13 @@ import { Route as AdminLayoutModuleNewModuleRouteImport } from './routes/admin/_
 import { Route as AdminLayoutModuleAllModulesRouteImport } from './routes/admin/_layout/module/all-modules'
 import { Route as AdminLayoutCourseNewCourseRouteImport } from './routes/admin/_layout/course/new-course'
 import { Route as AdminLayoutCourseAllCoursesRouteImport } from './routes/admin/_layout/course/all-courses'
+import { Route as AdminLayoutChapterNewChapterRouteImport } from './routes/admin/_layout/chapter/new-chapter'
+import { Route as AdminLayoutChapterAllChaptersRouteImport } from './routes/admin/_layout/chapter/all-chapters'
 import { Route as websiteLayoutauthSigninRouteImport } from './routes/(website)/_layout/(auth)/signin'
 import { Route as websiteLayoutauthGithubCallbackRouteImport } from './routes/(website)/_layout/(auth)/github-callback'
 import { Route as AdminLayoutModuleModuleIdEditModuleRouteImport } from './routes/admin/_layout/module/$moduleId.edit-module'
 import { Route as AdminLayoutCourseCourseIdEditCourseRouteImport } from './routes/admin/_layout/course/$courseId.edit-course'
+import { Route as AdminLayoutChapterChapterIdEditChapterRouteImport } from './routes/admin/_layout/chapter/$chapterId.edit-chapter'
 
 const LearnerRouteImport = createFileRoute('/learner')()
 const AdminRouteImport = createFileRoute('/admin')()
@@ -95,6 +98,18 @@ const AdminLayoutCourseAllCoursesRoute =
     path: '/course/all-courses',
     getParentRoute: () => AdminLayoutRoute,
   } as any)
+const AdminLayoutChapterNewChapterRoute =
+  AdminLayoutChapterNewChapterRouteImport.update({
+    id: '/chapter/new-chapter',
+    path: '/chapter/new-chapter',
+    getParentRoute: () => AdminLayoutRoute,
+  } as any)
+const AdminLayoutChapterAllChaptersRoute =
+  AdminLayoutChapterAllChaptersRouteImport.update({
+    id: '/chapter/all-chapters',
+    path: '/chapter/all-chapters',
+    getParentRoute: () => AdminLayoutRoute,
+  } as any)
 const websiteLayoutauthSigninRoute = websiteLayoutauthSigninRouteImport.update({
   id: '/(auth)/signin',
   path: '/signin',
@@ -118,6 +133,12 @@ const AdminLayoutCourseCourseIdEditCourseRoute =
     path: '/course/$courseId/edit-course',
     getParentRoute: () => AdminLayoutRoute,
   } as any)
+const AdminLayoutChapterChapterIdEditChapterRoute =
+  AdminLayoutChapterChapterIdEditChapterRouteImport.update({
+    id: '/chapter/$chapterId/edit-chapter',
+    path: '/chapter/$chapterId/edit-chapter',
+    getParentRoute: () => AdminLayoutRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof websiteLayoutIndexRoute
@@ -127,10 +148,13 @@ export interface FileRoutesByFullPath {
   '/learner/profile': typeof LearnerLayoutProfileRoute
   '/github-callback': typeof websiteLayoutauthGithubCallbackRoute
   '/signin': typeof websiteLayoutauthSigninRoute
+  '/admin/chapter/all-chapters': typeof AdminLayoutChapterAllChaptersRoute
+  '/admin/chapter/new-chapter': typeof AdminLayoutChapterNewChapterRoute
   '/admin/course/all-courses': typeof AdminLayoutCourseAllCoursesRoute
   '/admin/course/new-course': typeof AdminLayoutCourseNewCourseRoute
   '/admin/module/all-modules': typeof AdminLayoutModuleAllModulesRoute
   '/admin/module/new-module': typeof AdminLayoutModuleNewModuleRoute
+  '/admin/chapter/$chapterId/edit-chapter': typeof AdminLayoutChapterChapterIdEditChapterRoute
   '/admin/course/$courseId/edit-course': typeof AdminLayoutCourseCourseIdEditCourseRoute
   '/admin/module/$moduleId/edit-module': typeof AdminLayoutModuleModuleIdEditModuleRoute
 }
@@ -142,10 +166,13 @@ export interface FileRoutesByTo {
   '/': typeof websiteLayoutIndexRoute
   '/github-callback': typeof websiteLayoutauthGithubCallbackRoute
   '/signin': typeof websiteLayoutauthSigninRoute
+  '/admin/chapter/all-chapters': typeof AdminLayoutChapterAllChaptersRoute
+  '/admin/chapter/new-chapter': typeof AdminLayoutChapterNewChapterRoute
   '/admin/course/all-courses': typeof AdminLayoutCourseAllCoursesRoute
   '/admin/course/new-course': typeof AdminLayoutCourseNewCourseRoute
   '/admin/module/all-modules': typeof AdminLayoutModuleAllModulesRoute
   '/admin/module/new-module': typeof AdminLayoutModuleNewModuleRoute
+  '/admin/chapter/$chapterId/edit-chapter': typeof AdminLayoutChapterChapterIdEditChapterRoute
   '/admin/course/$courseId/edit-course': typeof AdminLayoutCourseCourseIdEditCourseRoute
   '/admin/module/$moduleId/edit-module': typeof AdminLayoutModuleModuleIdEditModuleRoute
 }
@@ -162,10 +189,13 @@ export interface FileRoutesById {
   '/(website)/_layout/': typeof websiteLayoutIndexRoute
   '/(website)/_layout/(auth)/github-callback': typeof websiteLayoutauthGithubCallbackRoute
   '/(website)/_layout/(auth)/signin': typeof websiteLayoutauthSigninRoute
+  '/admin/_layout/chapter/all-chapters': typeof AdminLayoutChapterAllChaptersRoute
+  '/admin/_layout/chapter/new-chapter': typeof AdminLayoutChapterNewChapterRoute
   '/admin/_layout/course/all-courses': typeof AdminLayoutCourseAllCoursesRoute
   '/admin/_layout/course/new-course': typeof AdminLayoutCourseNewCourseRoute
   '/admin/_layout/module/all-modules': typeof AdminLayoutModuleAllModulesRoute
   '/admin/_layout/module/new-module': typeof AdminLayoutModuleNewModuleRoute
+  '/admin/_layout/chapter/$chapterId/edit-chapter': typeof AdminLayoutChapterChapterIdEditChapterRoute
   '/admin/_layout/course/$courseId/edit-course': typeof AdminLayoutCourseCourseIdEditCourseRoute
   '/admin/_layout/module/$moduleId/edit-module': typeof AdminLayoutModuleModuleIdEditModuleRoute
 }
@@ -179,10 +209,13 @@ export interface FileRouteTypes {
     | '/learner/profile'
     | '/github-callback'
     | '/signin'
+    | '/admin/chapter/all-chapters'
+    | '/admin/chapter/new-chapter'
     | '/admin/course/all-courses'
     | '/admin/course/new-course'
     | '/admin/module/all-modules'
     | '/admin/module/new-module'
+    | '/admin/chapter/$chapterId/edit-chapter'
     | '/admin/course/$courseId/edit-course'
     | '/admin/module/$moduleId/edit-module'
   fileRoutesByTo: FileRoutesByTo
@@ -194,10 +227,13 @@ export interface FileRouteTypes {
     | '/'
     | '/github-callback'
     | '/signin'
+    | '/admin/chapter/all-chapters'
+    | '/admin/chapter/new-chapter'
     | '/admin/course/all-courses'
     | '/admin/course/new-course'
     | '/admin/module/all-modules'
     | '/admin/module/new-module'
+    | '/admin/chapter/$chapterId/edit-chapter'
     | '/admin/course/$courseId/edit-course'
     | '/admin/module/$moduleId/edit-module'
   id:
@@ -213,10 +249,13 @@ export interface FileRouteTypes {
     | '/(website)/_layout/'
     | '/(website)/_layout/(auth)/github-callback'
     | '/(website)/_layout/(auth)/signin'
+    | '/admin/_layout/chapter/all-chapters'
+    | '/admin/_layout/chapter/new-chapter'
     | '/admin/_layout/course/all-courses'
     | '/admin/_layout/course/new-course'
     | '/admin/_layout/module/all-modules'
     | '/admin/_layout/module/new-module'
+    | '/admin/_layout/chapter/$chapterId/edit-chapter'
     | '/admin/_layout/course/$courseId/edit-course'
     | '/admin/_layout/module/$moduleId/edit-module'
   fileRoutesById: FileRoutesById
@@ -320,6 +359,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminLayoutCourseAllCoursesRouteImport
       parentRoute: typeof AdminLayoutRoute
     }
+    '/admin/_layout/chapter/new-chapter': {
+      id: '/admin/_layout/chapter/new-chapter'
+      path: '/chapter/new-chapter'
+      fullPath: '/admin/chapter/new-chapter'
+      preLoaderRoute: typeof AdminLayoutChapterNewChapterRouteImport
+      parentRoute: typeof AdminLayoutRoute
+    }
+    '/admin/_layout/chapter/all-chapters': {
+      id: '/admin/_layout/chapter/all-chapters'
+      path: '/chapter/all-chapters'
+      fullPath: '/admin/chapter/all-chapters'
+      preLoaderRoute: typeof AdminLayoutChapterAllChaptersRouteImport
+      parentRoute: typeof AdminLayoutRoute
+    }
     '/(website)/_layout/(auth)/signin': {
       id: '/(website)/_layout/(auth)/signin'
       path: '/signin'
@@ -346,6 +399,13 @@ declare module '@tanstack/react-router' {
       path: '/course/$courseId/edit-course'
       fullPath: '/admin/course/$courseId/edit-course'
       preLoaderRoute: typeof AdminLayoutCourseCourseIdEditCourseRouteImport
+      parentRoute: typeof AdminLayoutRoute
+    }
+    '/admin/_layout/chapter/$chapterId/edit-chapter': {
+      id: '/admin/_layout/chapter/$chapterId/edit-chapter'
+      path: '/chapter/$chapterId/edit-chapter'
+      fullPath: '/admin/chapter/$chapterId/edit-chapter'
+      preLoaderRoute: typeof AdminLayoutChapterChapterIdEditChapterRouteImport
       parentRoute: typeof AdminLayoutRoute
     }
   }
@@ -380,20 +440,27 @@ const websiteRouteWithChildren =
 
 interface AdminLayoutRouteChildren {
   AdminLayoutProfileRoute: typeof AdminLayoutProfileRoute
+  AdminLayoutChapterAllChaptersRoute: typeof AdminLayoutChapterAllChaptersRoute
+  AdminLayoutChapterNewChapterRoute: typeof AdminLayoutChapterNewChapterRoute
   AdminLayoutCourseAllCoursesRoute: typeof AdminLayoutCourseAllCoursesRoute
   AdminLayoutCourseNewCourseRoute: typeof AdminLayoutCourseNewCourseRoute
   AdminLayoutModuleAllModulesRoute: typeof AdminLayoutModuleAllModulesRoute
   AdminLayoutModuleNewModuleRoute: typeof AdminLayoutModuleNewModuleRoute
+  AdminLayoutChapterChapterIdEditChapterRoute: typeof AdminLayoutChapterChapterIdEditChapterRoute
   AdminLayoutCourseCourseIdEditCourseRoute: typeof AdminLayoutCourseCourseIdEditCourseRoute
   AdminLayoutModuleModuleIdEditModuleRoute: typeof AdminLayoutModuleModuleIdEditModuleRoute
 }
 
 const AdminLayoutRouteChildren: AdminLayoutRouteChildren = {
   AdminLayoutProfileRoute: AdminLayoutProfileRoute,
+  AdminLayoutChapterAllChaptersRoute: AdminLayoutChapterAllChaptersRoute,
+  AdminLayoutChapterNewChapterRoute: AdminLayoutChapterNewChapterRoute,
   AdminLayoutCourseAllCoursesRoute: AdminLayoutCourseAllCoursesRoute,
   AdminLayoutCourseNewCourseRoute: AdminLayoutCourseNewCourseRoute,
   AdminLayoutModuleAllModulesRoute: AdminLayoutModuleAllModulesRoute,
   AdminLayoutModuleNewModuleRoute: AdminLayoutModuleNewModuleRoute,
+  AdminLayoutChapterChapterIdEditChapterRoute:
+    AdminLayoutChapterChapterIdEditChapterRoute,
   AdminLayoutCourseCourseIdEditCourseRoute:
     AdminLayoutCourseCourseIdEditCourseRoute,
   AdminLayoutModuleModuleIdEditModuleRoute:

@@ -1,6 +1,6 @@
 import {
   ECourseStatus,
-  IListOptions,
+  ICommonFilters,
   IPaginatedResult,
   TUpdatePositionArray,
 } from "@packages/definitions";
@@ -14,15 +14,15 @@ export class ModuleService extends BaseService<Module> {
   }
 
   async listModules(
-    options: IListOptions & { courseId?: number } = {}
+    options: ICommonFilters & { courseId?: number } = {}
   ): Promise<IPaginatedResult & { modules: Module[] }> {
     const { page = 1, limit = 10, status, courseId } = options;
     const offset = (page - 1) * limit;
 
     const queryBuilder = this.repository
       .createQueryBuilder("module")
-      .leftJoinAndSelect("module.course", "course");
-    // .loadRelationCountAndMap("module.chapterCount", "module.chapters");
+      .leftJoinAndSelect("module.course", "course")
+      .loadRelationCountAndMap("module.chapterCount", "module.chapters");
 
     if (status) {
       queryBuilder.andWhere("module.status = :status", { status });

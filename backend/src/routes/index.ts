@@ -6,6 +6,7 @@ import { authenticateAdmin, authenticateJwt } from "../ middleware/auth";
 import { CourseRouter } from "./course/course";
 import { LemonSqueezyRouter } from "./course/lemonSqueezyProduct";
 import { ModuleRouter } from "./course/module";
+import { ChapterRouter } from "./course/chapter";
 
 export class Routes {
   static Endpoints(app: express.Application) {
@@ -36,5 +37,6 @@ export class Routes {
     app.use(`/api/admin/course`, authenticateAdmin, CourseRouter);
     app.use(`/api/admin/products`, authenticateAdmin, LemonSqueezyRouter);
     app.use(`/api/admin/module`, authenticateAdmin, ModuleRouter);
+    app.use(`/api/admin/chapter`, authenticateAdmin, ChapterRouter);
   }
 }
