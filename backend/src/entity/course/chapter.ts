@@ -5,11 +5,13 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 import { Course } from "./course";
 import { Module } from "./module";
+import { Lesson } from "./lesson";
 
 @Entity()
 export class Chapter {
@@ -51,4 +53,7 @@ export class Chapter {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @OneToMany(() => Lesson, (lesson) => lesson.chapter)
+  lessons: Lesson[];
 }
