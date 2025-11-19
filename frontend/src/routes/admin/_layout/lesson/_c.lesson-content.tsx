@@ -1,5 +1,11 @@
 import AdminLayout from "@/components/admin/adminLayout";
+import Loading from "@/components/common/loading";
 import { createFileRoute } from "@tanstack/react-router";
+import { lazy, Suspense } from "react";
+
+const LazyLessonContentForm = lazy(
+  () => import("@/components/admin/lesson/lessonContentForm")
+);
 
 export const Route = createFileRoute("/admin/_layout/lesson/_c/lesson-content")(
   {
@@ -10,7 +16,9 @@ export const Route = createFileRoute("/admin/_layout/lesson/_c/lesson-content")(
 function RouteComponent() {
   return (
     <AdminLayout title="Lesson" isFormLayout>
-      <h1>Lesson Content</h1>
+      <Suspense fallback={<Loading />}>
+        <LazyLessonContentForm />
+      </Suspense>
     </AdminLayout>
   );
 }
