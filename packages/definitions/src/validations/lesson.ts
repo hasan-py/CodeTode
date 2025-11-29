@@ -126,3 +126,34 @@ export const SQuizUpdate = SQuizBase.extend({
       message: "At least one option must be marked as correct",
     }),
 });
+
+export const SLessonUpdatePositionsParams = z.object({
+  courseId: z.coerce
+    .number({
+      message: "courseId must be a number",
+    })
+    .int("courseId must be an integer")
+    .positive("courseId must be a positive integer"),
+  moduleId: z.coerce
+    .number({
+      message: "moduleId must be a number",
+    })
+    .int("moduleId must be an integer")
+    .positive("moduleId must be a positive integer"),
+  chapterId: z.coerce
+    .number({
+      message: "chapterId must be a number",
+    })
+    .int("chapterId must be an integer")
+    .positive("chapterId must be a positive integer"),
+});
+
+export const SMarkdownLessonContentParams = z.object({
+  path: z
+    .string()
+    .nonempty("path is required")
+    .regex(
+      dynamicPathRegexForLessonContent,
+      "path must be like 'directory/file.md'"
+    ),
+});
