@@ -1,6 +1,16 @@
+import {
+  useCreateLessonContentLinkMutation,
+  useGetLessonsQuery,
+  useGetMarkdownFileListQuery,
+  useGetSingleMarkdownFileMutation,
+  useUpdateLessonContentLinkMutation,
+} from "@/hooks/query/course/lesson";
+import { useDropdownSelectionStore } from "@/stores/dropdownSelectionStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
+  ECourseStatus,
   ELessonContentLinkType,
+  ELessonType,
   SLessonContentLinkCreate,
   type TLessonContentLinkCreate,
 } from "@packages/definitions";
@@ -9,33 +19,34 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
 export function useLessonContentFormController() {
-  const [markdownContent, setMarkdownContent] = useState(`
-# My Markdown Title
+  const [markdownContent, setMarkdownContent] = useState("");
+  const { selectedCourse, selectedModule, selectedChapter } =
+    useDropdownSelectionStore();
 
-This is some **bold** text and *italic* text.
+  const { data: lessonsData, isLoading: lessonsLoading } = useGetLessonsQuery({
+    status: ECourseStatus.DRAFT,
+    courseId: selectedCourse || undefined,
+    moduleId: selectedModule || undefined,
+    chapterId: selectedChapter || undefined,
+  });
+  const { data: markDownFileList } = useGetMarkdownFileListQuery();
+  const { mutate: getSingleMarkdownFile } = useGetSingleMarkdownFileMutation();
 
-- List item 1
-- List item 2
+  const createLessonContentMutation = useCreateLessonContentLinkMutation({
+    courseId: selectedCourse || undefined,
+    moduleId: selectedModule || undefined,
+    chapterId: selectedChapter || undefined,
+  });
+  const updateLessonContentMutation = useUpdateLessonContentLinkMutation({
+    courseId: selectedCourse || undefined,
+    moduleId: selectedModule || undefined,
+    chapterId: selectedChapter || undefined,
+  });
 
-\`\`\`javascript
-console.log("Hello, Markdown!");
-\`\`\`
-
-\`\`\`
-console.log("Hello, Markdown!");
-print("hello")
-\`\`\`
-
-\`\`\`mermaid
-graph TD;
-    A[Start] --> B(Process Data);
-    B --> C{Decision};
-    C --> D[End];
-\`\`\`
-`);
-
-  const isLoadingLessons = false;
-  const isPending = false;
+  const isLoading = lessonsLoading;
+  const isPending =
+    createLessonContentMutation.isPending ||
+    updateLessonContentMutation.isPending;
 
   const {
     control,
@@ -54,23 +65,22 @@ graph TD;
     resolver: zodResolver(SLessonContentLinkCreate),
   });
 
-  const markDownFileList: string[] = [];
-
-  const handleMarkdownFileChange = (val: string) => {
-    console.log("val", val);
+  const handleMarkdownFileChange = (path: string) => {
+    getSingleMarkdownFile(path, {
+      onSuccess: (data) => {
+        setMarkdownContent(data.content);
+      },
+    });
   };
 
   const onSubmit = async (data: TLessonContentLinkCreate) => {
-    console.log("data", data);
-    const id = false;
+    const id = lessonsData?.lessons?.find(
+      (lesson) => lesson.id === data.lessonId
+    )?.contentLinks?.[0]?.id;
 
     if (id) {
       await toast.promise(
-        new Promise((resolve) => {
-          setTimeout(() => {
-            resolve(true);
-          }, 1000);
-        }),
+        updateLessonContentMutation.mutateAsync({ ...data, id }),
         {
           loading: `Updating lesson content...`,
           success: "Lesson content updated successfully!",
@@ -78,18 +88,11 @@ graph TD;
         }
       );
     } else {
-      await toast.promise(
-        new Promise((resolve) => {
-          setTimeout(() => {
-            resolve(true);
-          }, 1000);
-        }),
-        {
-          loading: `Creating lesson content...`,
-          success: "Lesson content created successfully!",
-          error: "Failed to create lesson content",
-        }
-      );
+      await toast.promise(createLessonContentMutation.mutateAsync(data), {
+        loading: `Creating lesson content...`,
+        success: "Lesson content created successfully!",
+        error: "Failed to create lesson content",
+      });
       reset();
       setMarkdownContent("");
     }
@@ -104,10 +107,17 @@ graph TD;
     reset,
     markdownContent,
     setMarkdownContent,
-    isLoadingLessons,
+    isLoading,
     isPending,
     markDownFileList,
     handleMarkdownFileChange,
     onSubmit,
+    lessonsData: {
+      ...lessonsData,
+      lessons:
+        lessonsData?.lessons?.filter(
+          (item) => item?.type !== ELessonType.QUIZ
+        ) || [],
+    },
   };
 }

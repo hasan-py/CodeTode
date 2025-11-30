@@ -40,7 +40,7 @@ export const SLessonUpdate = SLessonBase.extend({
 
 // Regex for markdown file
 const dynamicPathRegexForLessonContent =
-  /^([a-zA-Z0-9-]+[/])+[a-zA-Z0-9-]+\.md$/;
+  /^([a-zA-Z0-9-_]+[/])*[a-zA-Z0-9-_]+\.md$/;
 
 export const SLessonContentLinkBase = z.object({
   lessonId: z.coerce

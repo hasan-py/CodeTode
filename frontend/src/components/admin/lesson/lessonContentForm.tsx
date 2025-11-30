@@ -16,9 +16,11 @@ function LessonContentForm() {
     onSubmit,
     isPending,
     markdownContent,
-    isLoadingLessons,
+    isLoading,
     markDownFileList,
     handleMarkdownFileChange,
+    setMarkdownContent,
+    lessonsData,
   } = useLessonContentFormController();
 
   return (
@@ -37,7 +39,7 @@ function LessonContentForm() {
                   { value: ELessonContentLinkType.VIDEO, label: "Video" },
                 ]}
                 placeholder="Select content type"
-                disabled={isLoadingLessons}
+                disabled={isLoading}
                 {...field}
                 onChange={(val) => {
                   setValue("linkType", val as ELessonContentLinkType, {
@@ -56,14 +58,55 @@ function LessonContentForm() {
               <Select
                 label="Select Lesson"
                 error={errors.lessonId?.message}
-                options={[]}
+                options={
+                  lessonsData?.lessons?.map((lesson) => ({
+                    value: lesson.id,
+                    label: lesson.name,
+                  })) || []
+                }
                 searchable
-                value={undefined}
+                value={
+                  lessonsData?.lessons?.find(
+                    (lesson) => +lesson.id === +(field.value ?? 0)
+                  )?.id
+                }
                 onChange={async (val) => {
-                  console.log("val", val, field);
+                  setValue("lessonId", Number(val), { shouldValidate: true });
+                  const selectedLesson = lessonsData?.lessons?.find(
+                    (lesson) => lesson.id === Number(val)
+                  );
+                  if (!selectedLesson?.contentLinks?.length) {
+                    setValue("url", "");
+                    setValue("title", "");
+                    setMarkdownContent("");
+                    return;
+                  }
+                  if (selectedLesson?.contentLinks?.length) {
+                    handleMarkdownFileChange(
+                      selectedLesson.contentLinks[0].url
+                    );
+
+                    if (selectedLesson?.contentLinks?.[0]?.linkType) {
+                      setValue(
+                        "linkType",
+                        selectedLesson.contentLinks[0]
+                          .linkType as ELessonContentLinkType,
+                        { shouldValidate: true }
+                      );
+                    }
+
+                    setValue("url", selectedLesson.contentLinks[0].url, {
+                      shouldValidate: true,
+                    });
+                    setValue(
+                      "title",
+                      selectedLesson.contentLinks[0].title || "",
+                      { shouldValidate: true }
+                    );
+                  }
                 }}
                 placeholder="Select lesson"
-                disabled={isLoadingLessons}
+                disabled={isLoading}
               />
             )}
           />
