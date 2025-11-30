@@ -1,5 +1,10 @@
 import { useGetCoursesQuery } from "@/hooks/query/course";
 import { useGetChaptersMutation } from "@/hooks/query/course/chapter";
+import {
+  useCreateLessonMutation,
+  useGetLessonQuery,
+  useUpdateLessonMutation,
+} from "@/hooks/query/course/lesson";
 import { useGetModulesMutation } from "@/hooks/query/course/module";
 import { useDropdownSelectionStore } from "@/stores/dropdownSelectionStore";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,6 +31,12 @@ export function useLessonFormController({ id }: { id?: number }) {
   const { data: courseList, isLoading: courseDataLoading } =
     useGetCoursesQuery();
 
+  const { data: singleLessonData, isLoading: lessonLoading } =
+    useGetLessonQuery(id);
+
+  const createLessonMutation = useCreateLessonMutation();
+  const updateLessonMutation = useUpdateLessonMutation();
+
   const {
     data: modulesDataList,
     isPending: modulesLoading,
@@ -37,9 +48,11 @@ export function useLessonFormController({ id }: { id?: number }) {
     mutate: chapterListMutate,
   } = useGetChaptersMutation();
 
-  const isLoading = courseDataLoading || modulesLoading || chaptersLoading;
+  const isLoading =
+    lessonLoading || courseDataLoading || modulesLoading || chaptersLoading;
 
-  const isPending = false;
+  const isPending =
+    createLessonMutation.isPending || updateLessonMutation.isPending;
 
   const {
     control,
@@ -62,42 +75,55 @@ export function useLessonFormController({ id }: { id?: number }) {
   });
 
   useEffect(() => {
-    if (selectedCourse) {
-      moduleListMutate({ courseId: selectedCourse });
+    if (id && singleLessonData) {
+      moduleListMutate({ courseId: singleLessonData?.courseId });
+      chapterListMutate({ moduleId: singleLessonData?.moduleId });
+    } else {
+      if (selectedCourse) {
+        moduleListMutate({ courseId: selectedCourse });
+      }
+      if (selectedModule) {
+        chapterListMutate({ moduleId: selectedModule });
+      }
     }
-    if (selectedModule) {
-      chapterListMutate({ moduleId: selectedModule });
+  }, [
+    id,
+    singleLessonData,
+    moduleListMutate,
+    chapterListMutate,
+    selectedCourse,
+    selectedModule,
+  ]);
+
+  useEffect(() => {
+    if (id && singleLessonData) {
+      const lesson = singleLessonData;
+      reset({
+        name: lesson.name,
+        description: lesson.description,
+        courseId: lesson.courseId,
+        moduleId: lesson.moduleId,
+        chapterId: lesson.chapterId,
+        status: lesson.status,
+        type: lesson.type,
+        xpPoints: lesson.xpPoints,
+      });
     }
-  }, [id, selectedCourse, selectedModule]);
+  }, [singleLessonData, id]);
 
   const onSubmit = async (data: TLessonCreate) => {
-    console.log("data", data);
     if (id) {
-      await toast.promise(
-        new Promise((resolve) => {
-          setTimeout(() => {
-            resolve(true);
-          }, 1000);
-        }),
-        {
-          loading: `Updating lesson...`,
-          success: "Lesson updated successfully!",
-          error: "Failed to update lesson",
-        }
-      );
+      await toast.promise(updateLessonMutation.mutateAsync({ ...data, id }), {
+        loading: `Updating lesson...`,
+        success: "Lesson updated successfully!",
+        error: "Failed to update lesson",
+      });
     } else {
-      await toast.promise(
-        new Promise((resolve) => {
-          setTimeout(() => {
-            resolve(true);
-          }, 1000);
-        }),
-        {
-          loading: `Creating lesson...`,
-          success: "Lesson created successfully!",
-          error: "Failed to create lesson",
-        }
-      );
+      await toast.promise(createLessonMutation.mutateAsync(data), {
+        loading: `Creating lesson...`,
+        success: "Lesson created successfully!",
+        error: "Failed to create lesson",
+      });
       reset({
         courseId: selectedCourse ?? undefined,
         moduleId: selectedModule ?? undefined,

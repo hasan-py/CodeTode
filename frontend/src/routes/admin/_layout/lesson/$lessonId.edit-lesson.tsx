@@ -1,4 +1,5 @@
 import AdminLayout from "@/components/admin/adminLayout";
+import LessonForm from "@/components/admin/lesson/lessonForm";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute(
@@ -8,6 +9,7 @@ export const Route = createFileRoute(
 });
 
 function RouteComponent() {
+  const { lessonId } = Route.useParams();
   return (
     <AdminLayout
       isTab={false}
@@ -15,7 +17,7 @@ function RouteComponent() {
       isBreadcrumbs={false}
       isFormLayout
     >
-      <h1>Edit Lesson</h1>
+      <LessonForm id={+lessonId} />
     </AdminLayout>
   );
 }

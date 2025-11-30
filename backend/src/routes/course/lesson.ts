@@ -50,12 +50,12 @@ class LessonRoutes {
     );
     this.router.get(
       "/lesson-content-link/:id",
-      validator({ query: SIdParams }),
+      validator({ params: SIdParams }),
       getLessonContentLink
     );
     this.router.put(
       "/lesson-content-link/:id",
-      validator({ body: SLessonContentLinkUpdate, query: SIdParams }),
+      validator({ body: SLessonContentLinkUpdate, params: SIdParams }),
       updateLessonContentLink
     );
 
@@ -79,16 +79,16 @@ class LessonRoutes {
     this.router.get("/", getLessons);
     this.router.post("/", validator({ body: SLessonCreate }), createLesson);
 
-    this.router.get("/:id", validator({ query: SIdParams }), getLesson);
+    this.router.get("/:id", validator({ params: SIdParams }), getLesson);
     this.router.put(
       "/:id",
-      validator({ body: SLessonUpdate, query: SIdParams }),
+      validator({ body: SLessonUpdate, params: SIdParams }),
       updateLesson
     );
 
     this.router.post(
       "/:id/archive",
-      validator({ query: SIdParams }),
+      validator({ params: SIdParams }),
       archiveLesson
     );
 
