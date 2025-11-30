@@ -44,10 +44,11 @@ export class QuizService extends BaseService<Quiz> {
       const quiz = await transactionalEntityManager.save(quizEntity);
 
       if (options && options.length > 0) {
-        const optionEntities = options.map((option) =>
+        const optionEntities = options.map((option, i) =>
           this.QuizOptionRepository.create({
             ...option, // spread the incoming option data
             quizId: quiz.id, // ensure it's linked to the new quiz
+            position: option.position ?? i + 1,
           })
         );
         await transactionalEntityManager.save(optionEntities);
@@ -78,13 +79,15 @@ export class QuizService extends BaseService<Quiz> {
 
       if (options) {
         await transactionalEntityManager.delete("QuizOption", { quizId: id });
-
+        let i = 0;
         for (const option of options) {
           const optionEntity = this.QuizOptionRepository.create({
             ...option,
             quizId: id,
+            position: option.position ?? i + 1,
           });
           await transactionalEntityManager.save(optionEntity);
+          i += 1;
         }
       }
 

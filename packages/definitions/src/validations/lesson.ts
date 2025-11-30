@@ -94,9 +94,7 @@ export const SQuizOptionBase = z.object({
 });
 
 export const SQuizOptionCreate = SQuizOptionBase;
-export const SQuizOptionUpdate = SQuizOptionBase.extend({
-  id: z.coerce.number().int().positive("ID is required"),
-});
+export const SQuizOptionUpdate = SQuizOptionBase;
 
 export const SQuizBase = z.object({
   courseId: z.coerce.number().int().positive("Course ID is required"),

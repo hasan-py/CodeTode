@@ -1,16 +1,39 @@
+import {
+  useCreateQuizMutation,
+  useGetLessonsQuery,
+  useUpdateQuizMutation,
+} from "@/hooks/query/course/lesson";
 import { useDropdownSelectionStore } from "@/stores/dropdownSelectionStore";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { SQuizCreate, type TQuizCreate } from "@packages/definitions";
+import {
+  ELessonType,
+  SQuizCreate,
+  type IQuizOption,
+  type TQuizCreate,
+} from "@packages/definitions";
 import { useCallback } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
-export function useQuizForm() {
-  const { selectedCourse } = useDropdownSelectionStore();
+export function useQuizFormController() {
+  const { selectedCourse, selectedModule, selectedChapter } =
+    useDropdownSelectionStore();
 
-  const lessonsData = { lessons: [] };
-  const isPending = false;
-  const isLoading = false;
+  const { data: lessonsData, isLoading: isLoadingLessons } = useGetLessonsQuery(
+    {
+      courseId: selectedCourse || undefined,
+      moduleId: selectedModule || undefined,
+      chapterId: selectedChapter || undefined,
+      type: ELessonType.QUIZ,
+    }
+  );
+
+  const quizCreateMutation = useCreateQuizMutation();
+  const quizUpdateMutation = useUpdateQuizMutation();
+
+  const isPending =
+    quizCreateMutation.isPending || quizUpdateMutation.isPending;
+  const isLoading = isLoadingLessons;
 
   const {
     handleSubmit,
@@ -101,15 +124,19 @@ export function useQuizForm() {
 
   const onSubmit = useCallback(
     async (data: TQuizCreate) => {
-      console.log("data", data);
-      const selectedLesson = undefined;
+      const selectedLesson = lessonsData?.lessons?.find(
+        (lesson) => lesson.id === data.lessonId
+      );
 
-      if (selectedLesson) {
+      if (selectedLesson?.quizzes?.length) {
         await toast.promise(
-          new Promise((resolve) => {
-            setTimeout(() => {
-              resolve(true);
-            }, 1000);
+          quizUpdateMutation.mutateAsync({
+            id: selectedLesson.quizzes[0].id,
+            ...data,
+            options: (data?.options as IQuizOption[])?.map((item, key) => ({
+              ...item,
+              position: key + 1,
+            })),
           }),
           {
             loading: `Updating quiz...`,
@@ -119,10 +146,12 @@ export function useQuizForm() {
         );
       } else {
         await toast.promise(
-          new Promise((resolve) => {
-            setTimeout(() => {
-              resolve(true);
-            }, 1000);
+          quizCreateMutation.mutateAsync({
+            ...data,
+            options: data?.options?.map((item, key) => ({
+              ...item,
+              position: key + 1,
+            })),
           }),
           {
             loading: `Creating quiz...`,

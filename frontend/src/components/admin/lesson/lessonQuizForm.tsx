@@ -5,7 +5,7 @@ import { Check, GripVertical, Plus, X } from "lucide-react";
 import { useCallback } from "react";
 import { Controller } from "react-hook-form";
 import ActionFooter from "../actionFooter";
-import { useQuizForm } from "@/hooks/controller/lesson/useQuizForm";
+import { useQuizFormController } from "@/hooks/controller/lesson/useQuizFormController";
 import Button from "@/components/common/button";
 
 export function LessonQuizForm() {
@@ -21,7 +21,11 @@ export function LessonQuizForm() {
     updateOptionCorrect,
     handleReorder,
     onSubmit,
-  } = useQuizForm();
+    setValue,
+    reset,
+    trigger,
+    lessonsData,
+  } = useQuizFormController();
 
   const RenderQuizOption = useCallback(
     (
@@ -118,11 +122,40 @@ export function LessonQuizForm() {
               <Select
                 label="Select Lesson"
                 error={errors.lessonId?.message}
-                options={[]}
+                options={
+                  lessonsData?.lessons?.map((lesson) => ({
+                    value: lesson.id,
+                    label: lesson.name,
+                  })) || []
+                }
                 searchable
-                value={undefined}
+                value={
+                  lessonsData?.lessons?.find(
+                    (lesson) => +lesson.id === +(field.value ?? 0)
+                  )?.id
+                }
                 onChange={async (val) => {
-                  console.log("val", val, field);
+                  const selectedLesson = lessonsData?.lessons?.find(
+                    (lesson) => lesson.id === val
+                  );
+                  if (selectedLesson?.quizzes?.length) {
+                    setValue("question", selectedLesson.quizzes[0].question, {
+                      shouldValidate: true,
+                    });
+                    setValue(
+                      "explanation",
+                      selectedLesson.quizzes[0].explanation,
+                      { shouldValidate: true }
+                    );
+                    setValue("options", selectedLesson.quizzes[0].options, {
+                      shouldValidate: true,
+                    });
+
+                    await trigger("options");
+                  } else {
+                    reset();
+                  }
+                  setValue("lessonId", Number(val), { shouldValidate: true });
                 }}
                 placeholder="Select lesson"
                 disabled={isLoading}
