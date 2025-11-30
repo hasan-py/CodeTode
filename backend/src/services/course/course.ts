@@ -37,9 +37,9 @@ export class CourseService extends BaseService<Course> {
         "course.updatedAt",
       ])
       .loadRelationCountAndMap("course.moduleCount", "course.modules")
-      .loadRelationCountAndMap("course.chapterCount", "course.chapters");
-    // .loadRelationCountAndMap("course.lessonCount", "course.lessons")
-    // .loadRelationCountAndMap("course.quizCount", "course.quizzes");
+      .loadRelationCountAndMap("course.chapterCount", "course.chapters")
+      .loadRelationCountAndMap("course.lessonCount", "course.lessons")
+      .loadRelationCountAndMap("course.quizCount", "course.quizzes");
 
     if (status) {
       queryBuilder.where("course.status = :status", { status });

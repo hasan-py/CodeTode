@@ -19,7 +19,7 @@ function ModuleHeader({
 }) {
   return (
     <div className="w-full">
-      <div className={`flex justify-between items-center mb-6`}>
+      <div className={`flex justify-between items-start mb-6`}>
         {title ? <h1 className="text-2xl font-semibold">{title}</h1> : null}
 
         {isSearch ? (
@@ -36,7 +36,9 @@ function ModuleHeader({
           </div>
         ) : null}
 
-        {children ? <div className="flex space-x-4">{children}</div> : null}
+        {children ? (
+          <div className="flex flex-wrap gap-4 justify-end">{children}</div>
+        ) : null}
       </div>
     </div>
   );

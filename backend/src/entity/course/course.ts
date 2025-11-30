@@ -11,6 +11,7 @@ import {
 } from "typeorm";
 import { Chapter } from "./chapter";
 import { Lesson } from "./lesson";
+import { Quiz } from "./quiz";
 
 @Entity()
 @Unique(["lemonSqueezyProductId"])
@@ -66,4 +67,7 @@ export class Course {
 
   @OneToMany(() => Lesson, (lesson) => lesson.course)
   lessons: Lesson[];
+
+  @OneToMany(() => Quiz, (quiz) => quiz.course)
+  quizzes: Quiz[];
 }

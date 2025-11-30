@@ -86,16 +86,18 @@ export const LessonItem = (
               }}
             />
 
-            <Button
-              size="xs"
-              variant="danger"
-              icon={<ArchiveIcon className="w-4 h-4" />}
-              onClick={() => {
-                if (extraProps?.onArchived) {
-                  extraProps.onArchived(lesson.id);
-                }
-              }}
-            />
+            {lesson.status !== ECourseStatus.ARCHIVED ? (
+              <Button
+                size="xs"
+                variant="danger"
+                icon={<ArchiveIcon className="w-4 h-4" />}
+                onClick={() => {
+                  if (extraProps?.onArchived) {
+                    extraProps.onArchived(lesson.id);
+                  }
+                }}
+              />
+            ) : null}
           </div>
         </div>
         <p className="text-sm text-gray-600 dark:text-gray-400">

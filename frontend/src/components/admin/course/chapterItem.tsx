@@ -92,7 +92,7 @@ export const ChapterItem = (
               }
             />
 
-            {chapter.status !== "archived" ? (
+            {chapter.status !== ECourseStatus.ARCHIVED ? (
               <Button
                 size="xs"
                 variant="danger"

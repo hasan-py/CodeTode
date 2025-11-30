@@ -96,7 +96,7 @@ export const ModuleItem = (
               }
             />
 
-            {module.status !== "archived" ? (
+            {module.status !== ECourseStatus.ARCHIVED ? (
               <Button
                 size="xs"
                 variant="danger"

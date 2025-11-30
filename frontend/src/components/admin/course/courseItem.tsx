@@ -116,7 +116,7 @@ export const CourseItem = (
                 }
               />
 
-              {course.status !== "archived" ? (
+              {course.status !== ECourseStatus.ARCHIVED ? (
                 <Button
                   size="xs"
                   variant="danger"
