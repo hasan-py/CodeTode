@@ -1,10 +1,20 @@
 import Button from "@/components/common/button";
 import { useGetGithubUrlMutation } from "@/hooks/query/account/auth";
-import { createFileRoute } from "@tanstack/react-router";
+import { authStore } from "@/stores/authStore";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 // import { GithubIcon } from "lucide-react";
 
 export const Route = createFileRoute("/(website)/_layout/(auth)/signin")({
   component: RouteComponent,
+  beforeLoad: () => {
+    const isAuthenticated = authStore.getState().isAuthenticated;
+    if (isAuthenticated) {
+      return redirect({
+        to: "/",
+      });
+    }
+    return {};
+  },
 });
 
 function RouteComponent() {
