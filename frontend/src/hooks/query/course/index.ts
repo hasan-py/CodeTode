@@ -4,17 +4,20 @@ import {
   getCourseApi,
   getCoursesApi,
   getLsProductsApi,
+  getPublishedCourseApi,
+  getPublishedCoursesApi,
   updateCourseApi,
   updateCoursesPositionApi,
 } from "@/api/endpoints/course";
-import type {
-  ICommonFilters,
-  ICourse,
-  ILemonSqueezyProduct,
-  IPaginatedCourseResult,
-  TCourseCreate,
-  TCourseUpdate,
-  TUpdatePositions,
+import {
+  ECourseStatus,
+  type ICommonFilters,
+  type ICourse,
+  type ILemonSqueezyProduct,
+  type IPaginatedCourseResult,
+  type TCourseCreate,
+  type TCourseUpdate,
+  type TUpdatePositions,
 } from "@packages/definitions";
 import { Logger } from "@packages/logger";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -26,6 +29,16 @@ export const COURSE_KEYS = {
     filters ? (["courses", "list", { filters }] as const) : ["courses", "list"],
   details: (id?: number) => ["course", id] as const,
 };
+
+export function useGetPublishedCoursesQuery() {
+  return useQuery({
+    queryKey: COURSE_KEYS.courses({ status: ECourseStatus.PUBLISHED }),
+    queryFn: async () => {
+      const response = await getPublishedCoursesApi();
+      return response.data as IPaginatedCourseResult;
+    },
+  });
+}
 
 export function useLemonSqueezyProductsQuery() {
   return useQuery({
@@ -52,7 +65,7 @@ export function useGetCourseQuery(courseId?: number, isPublished = false) {
     queryKey: COURSE_KEYS.details(courseId),
     queryFn: async () => {
       const response = isPublished
-        ? { data: [] }
+        ? await getPublishedCourseApi(courseId as number)
         : await getCourseApi(courseId as number);
       return response.data as ICourse;
     },

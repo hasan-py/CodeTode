@@ -7,6 +7,15 @@ import type {
 import { api } from "..";
 import { buildQueryString } from "@/utilities/helper/buildQueryString";
 
+export const getPublishedCoursesApi = async () => {
+  return api.get(`/course/published`);
+};
+
+export const getPublishedCourseApi = async (id: number) => {
+  const res = await api.get(`/course/${id}`);
+  return res;
+};
+
 export const getLsProductsApi = async () => {
   const res = await api.get(`/admin/products/?page=1&limit=100`);
   return res;

@@ -3,7 +3,7 @@ import express, { Request, Response } from "express";
 import { UserRouter } from "./account/user";
 import { AuthRouter } from "./account/auth";
 import { authenticateAdmin, authenticateJwt } from "../ middleware/auth";
-import { CourseRouter } from "./course/course";
+import { CoursePublicRouter, CourseRouter } from "./course/course";
 import { LemonSqueezyRouter } from "./course/lemonSqueezyProduct";
 import { ModuleRouter } from "./course/module";
 import { ChapterRouter } from "./course/chapter";
@@ -18,6 +18,7 @@ export class Routes {
     app.use(`/api/profile`, authenticateJwt, UserRouter);
     app.use(`/api/auth`, AuthRouter);
 
+    this.publicEndpoints(app);
     this.adminEndpoints(app);
 
     app.use((req: Request, res: Response) => {
@@ -32,6 +33,10 @@ export class Routes {
         message: err.message || "An unexpected error occurred",
       });
     });
+  }
+
+  static publicEndpoints(app: express.Application) {
+    app.use(`/api/course`, CoursePublicRouter);
   }
 
   static adminEndpoints(app: express.Application) {

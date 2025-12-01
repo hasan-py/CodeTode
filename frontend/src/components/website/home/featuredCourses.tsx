@@ -1,3 +1,4 @@
+import Loading from "@/components/common/loading";
 import NoDataFound from "@/components/common/noDataFound";
 import type { ICourse } from "@packages/definitions";
 import { Link } from "@tanstack/react-router";
@@ -14,12 +15,14 @@ interface ICourseWithEnrollLink extends Omit<ICourse, "enrollLink"> {
 interface IFeaturedCoursesProps extends ISectionProps {
   viewAllLink?: { to: string; label: string } | null;
   courses?: ICourseWithEnrollLink[];
+  isLoading?: boolean;
 }
 
 export function FeaturedCourses({
   title = "Featured Courses",
   viewAllLink = { to: "/courses", label: "View All Courses →" },
   courses,
+  isLoading,
 }: IFeaturedCoursesProps) {
   return (
     <section className="pt-8">
@@ -45,7 +48,9 @@ export function FeaturedCourses({
           ))}
         </div>
 
-        {courses?.length === 0 ? <NoDataFound /> : null}
+        {courses?.length === 0 && !isLoading ? <NoDataFound /> : null}
+
+        {isLoading ? <Loading text="Loading Courses" /> : null}
       </div>
     </section>
   );

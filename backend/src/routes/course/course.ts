@@ -11,11 +11,14 @@ import { CourseController } from "../../controllers/course/course";
 class CourseRoutes {
   router: Router;
   courseController: CourseController;
+  publicRouter: Router;
 
   constructor() {
     this.router = Router();
+    this.publicRouter = Router();
     this.courseController = new CourseController();
     this.adminRoutes();
+    this.publicRoutes();
   }
 
   adminRoutes() {
@@ -52,6 +55,22 @@ class CourseRoutes {
       archiveCourse
     );
   }
+
+  publicRoutes() {
+    const { getPublicCourses, getPublicCourse } = this.courseController;
+    this.publicRouter.get(
+      "/published",
+      validator({ query: SPaginationQuery }),
+      getPublicCourses
+    );
+
+    this.publicRouter.get(
+      "/:id",
+      validator({ params: SIdParams }),
+      getPublicCourse
+    );
+  }
 }
 
 export const CourseRouter = new CourseRoutes().router;
+export const CoursePublicRouter = new CourseRoutes().publicRouter;
