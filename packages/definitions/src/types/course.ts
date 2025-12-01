@@ -1,6 +1,7 @@
 import z from "zod";
 import { SCourseCreate } from "../validations";
 import type { IPaginatedResult } from "./common";
+import { IModule } from "./module";
 
 export enum ECourseStatus {
   DRAFT = "draft",
@@ -25,6 +26,7 @@ export interface ICourse {
   lessonCount: number;
   quizCount: number;
   enrollLink?: string;
+  modules?: IModule[];
 }
 
 export interface IPaginatedCourseResult extends IPaginatedResult {
