@@ -6,8 +6,9 @@ import {
 } from "@/components/website/course/courseModules";
 import { CoursePricing } from "@/components/website/course/coursePricing";
 import { useAuthController } from "@/hooks/controller/account/useAuthController";
+import { useLemonSqueezyCheckout } from "@/hooks/controller/course/lemonSqueezyCheckoutUrl";
 import { useGetCourseQuery } from "@/hooks/query/course";
-import { createFileRoute, Navigate, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Navigate } from "@tanstack/react-router";
 import { DynamicIcon, type IconName } from "lucide-react/dynamic";
 
 export const Route = createFileRoute("/(website)/_layout/courses/$courseId/")({
@@ -17,9 +18,9 @@ export const Route = createFileRoute("/(website)/_layout/courses/$courseId/")({
 function RouteComponent() {
   const { courseId } = Route.useParams();
   const { user } = useAuthController();
-  const navigate = useNavigate();
+  const { checkout, checkoutLoading } = useLemonSqueezyCheckout();
 
-  const isCoursePurchased = false; // TODO: get from user course enrollment list
+  const isCoursePurchased = user?.courseEnrollments?.includes(+courseId);
 
   const { data: course, isLoading } = useGetCourseQuery(+courseId, true);
 
@@ -45,10 +46,16 @@ function RouteComponent() {
             imageUrl: course?.imageUrl,
             isSignedIn: !!user,
             onEnroll: () => {
-              // TODO: handle enroll link
+              checkout(course?.enrollLink, user, course?.id);
             },
-            onPreview: () => {}, // TODO: handle preview link
-            onEnrollLoading: false, // TODO: get from enroll api call loading state
+            onPreview: () => {
+              // When Learner tracking is implemented, It will take to the modules page
+              // navigate({
+              //   to: `/learner/courses/$courseId/modules`,
+              //   params: { courseId },
+              // });
+            },
+            onEnrollLoading: checkoutLoading,
             isCoursePurchased,
           }}
         />
@@ -80,16 +87,8 @@ function RouteComponent() {
                     pricePeriod: `/ ${course?.validityYear} year`,
                     onEnroll: isCoursePurchased
                       ? undefined
-                      : () => {
-                          if (!user) {
-                            navigate({
-                              to: "/signin",
-                            });
-                          } else {
-                            // TODO: handle enroll link
-                          }
-                        },
-                    loading: false, // TODO: get from enroll api call loading state
+                      : () => checkout(course?.enrollLink, user, course?.id),
+                    loading: checkoutLoading,
                   }}
                 />
               </div>
