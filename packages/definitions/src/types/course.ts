@@ -1,12 +1,18 @@
 import z from "zod";
 import { SCourseCreate } from "../validations";
 import type { IPaginatedResult } from "./common";
-import { IModule } from "./module";
+import type { IModule } from "./module";
 
 export enum ECourseStatus {
   DRAFT = "draft",
   PUBLISHED = "published",
   ARCHIVED = "archived",
+}
+
+export enum EEnrollmentStatus {
+  ACTIVE = "active",
+  EXPIRED = "expired",
+  REFUNDED = "refunded",
 }
 
 export interface ICourse {

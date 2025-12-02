@@ -3,6 +3,7 @@ import { User } from "../entity/account/ user";
 import { RefreshToken } from "../entity/account/refreshToken";
 import { Chapter } from "../entity/course/chapter";
 import { Course } from "../entity/course/course";
+import { CourseEnrollment } from "../entity/course/courseEnrollment";
 import { Lesson } from "../entity/course/lesson";
 import { LessonContentLink } from "../entity/course/lessonContentLink";
 import { Module } from "../entity/course/module";
@@ -21,3 +22,5 @@ export const QuizRepository = AppDataSource.getRepository(Quiz);
 export const QuizOptionRepository = AppDataSource.getRepository(QuizOption);
 export const LessonContentLinkRepository =
   AppDataSource.getRepository(LessonContentLink);
+export const CourseEnrollmentRepository =
+  AppDataSource.getRepository(CourseEnrollment);
