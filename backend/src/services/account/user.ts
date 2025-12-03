@@ -8,10 +8,18 @@ export class UserService extends BaseService<User> {
   }
 
   async getUserProfile(id: number) {
-    const user = await this.getById(id);
+    const user = await this.repository.findOne({
+      where: { id },
+      relations: ["courseEnrollments"],
+    });
+
     if (!user) return null;
     return {
       ...user,
+      courseEnrollments:
+        user.courseEnrollments?.map(
+          (enrollment: any) => enrollment?.courseId
+        ) || [],
     };
   }
 

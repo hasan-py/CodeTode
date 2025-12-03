@@ -5,6 +5,7 @@ import morgan from "morgan";
 import { corsConfig } from "./config/cors";
 import { initializedDatabase } from "./config/dataSource";
 import { Routes } from "./routes";
+import { rawBodyVerifyConfig } from "./config/rawBody";
 
 class Server {
   public app: express.Application;
@@ -29,6 +30,9 @@ class Server {
 
     // Middleware for logging HTTP requests
     this.app.use(morgan("tiny"));
+
+    // For raw body parsing in webhooks trigger verification
+    this.app.use(rawBodyVerifyConfig());
 
     // Help to parse JSON payloads and URL-encoded payloads
     this.app.use(express.json());

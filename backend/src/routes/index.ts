@@ -8,6 +8,10 @@ import { LemonSqueezyRouter } from "./course/lemonSqueezyProduct";
 import { ModuleRouter } from "./course/module";
 import { ChapterRouter } from "./course/chapter";
 import { LessonRouter } from "./course/lesson";
+import {
+  CourseEnrollmentRouter,
+  LearnerCourseEnrollmentRouter,
+} from "./course/courseEnrollment";
 
 export class Routes {
   static Endpoints(app: express.Application) {
@@ -19,6 +23,7 @@ export class Routes {
     app.use(`/api/auth`, AuthRouter);
 
     this.publicEndpoints(app);
+    this.learnerEndpoints(app);
     this.adminEndpoints(app);
 
     app.use((req: Request, res: Response) => {
@@ -37,6 +42,11 @@ export class Routes {
 
   static publicEndpoints(app: express.Application) {
     app.use(`/api/course`, CoursePublicRouter);
+    app.use(`/webhooks/enrollment`, CourseEnrollmentRouter);
+  }
+
+  static learnerEndpoints(app: express.Application) {
+    app.use(`/api/learner/enrollment`, LearnerCourseEnrollmentRouter);
   }
 
   static adminEndpoints(app: express.Application) {

@@ -3,9 +3,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+import { CourseEnrollment } from "../course/courseEnrollment";
 
 @Entity()
 export class User {
@@ -50,7 +52,6 @@ export class User {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  // It will be added when course enrollment entity is created
-  // @OneToMany(() => CourseEnrollment, (enrollment) => enrollment.user)
-  // courseEnrollments: CourseEnrollment[];
+  @OneToMany(() => CourseEnrollment, (enrollment) => enrollment.user)
+  courseEnrollments: CourseEnrollment[];
 }
