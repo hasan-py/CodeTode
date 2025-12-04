@@ -27,7 +27,7 @@ export class CourseEnrollmentController {
   @catchErrors()
   async getUserEnrolledCourses(req: Request, res: Response) {
     const userId =
-      req.user.role === EUserRole.ADMIN ? undefined : req.user.userId;
+      req?.user?.role === EUserRole.ADMIN ? undefined : req?.user?.userId;
 
     const courses = await courseEnrollmentService.getUserEnrolledCourses(
       userId

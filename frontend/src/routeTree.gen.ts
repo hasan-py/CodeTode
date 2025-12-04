@@ -16,6 +16,7 @@ import { Route as AdminLayoutRouteImport } from './routes/admin/_layout'
 import { Route as websiteLayoutRouteImport } from './routes/(website)/_layout'
 import { Route as websiteLayoutIndexRouteImport } from './routes/(website)/_layout/index'
 import { Route as LearnerLayoutProfileRouteImport } from './routes/learner/_layout/profile'
+import { Route as LearnerLayoutBillingRouteImport } from './routes/learner/_layout/billing'
 import { Route as AdminLayoutProfileRouteImport } from './routes/admin/_layout/profile'
 import { Route as websiteLayoutCoursesIndexRouteImport } from './routes/(website)/_layout/courses/index'
 import { Route as AdminLayoutModuleNewModuleRouteImport } from './routes/admin/_layout/module/new-module'
@@ -74,6 +75,11 @@ const websiteLayoutIndexRoute = websiteLayoutIndexRouteImport.update({
 const LearnerLayoutProfileRoute = LearnerLayoutProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => LearnerLayoutRoute,
+} as any)
+const LearnerLayoutBillingRoute = LearnerLayoutBillingRouteImport.update({
+  id: '/billing',
+  path: '/billing',
   getParentRoute: () => LearnerLayoutRoute,
 } as any)
 const AdminLayoutProfileRoute = AdminLayoutProfileRouteImport.update({
@@ -193,6 +199,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminLayoutRouteWithChildren
   '/learner': typeof LearnerLayoutRouteWithChildren
   '/admin/profile': typeof AdminLayoutProfileRoute
+  '/learner/billing': typeof LearnerLayoutBillingRoute
   '/learner/profile': typeof LearnerLayoutProfileRoute
   '/github-callback': typeof websiteLayoutauthGithubCallbackRoute
   '/signin': typeof websiteLayoutauthSigninRoute
@@ -217,6 +224,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminLayoutRouteWithChildren
   '/learner': typeof LearnerLayoutRouteWithChildren
   '/admin/profile': typeof AdminLayoutProfileRoute
+  '/learner/billing': typeof LearnerLayoutBillingRoute
   '/learner/profile': typeof LearnerLayoutProfileRoute
   '/': typeof websiteLayoutIndexRoute
   '/github-callback': typeof websiteLayoutauthGithubCallbackRoute
@@ -247,6 +255,7 @@ export interface FileRoutesById {
   '/learner': typeof LearnerRouteWithChildren
   '/learner/_layout': typeof LearnerLayoutRouteWithChildren
   '/admin/_layout/profile': typeof AdminLayoutProfileRoute
+  '/learner/_layout/billing': typeof LearnerLayoutBillingRoute
   '/learner/_layout/profile': typeof LearnerLayoutProfileRoute
   '/(website)/_layout/': typeof websiteLayoutIndexRoute
   '/(website)/_layout/(auth)/github-callback': typeof websiteLayoutauthGithubCallbackRoute
@@ -275,6 +284,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/learner'
     | '/admin/profile'
+    | '/learner/billing'
     | '/learner/profile'
     | '/github-callback'
     | '/signin'
@@ -299,6 +309,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/learner'
     | '/admin/profile'
+    | '/learner/billing'
     | '/learner/profile'
     | '/'
     | '/github-callback'
@@ -328,6 +339,7 @@ export interface FileRouteTypes {
     | '/learner'
     | '/learner/_layout'
     | '/admin/_layout/profile'
+    | '/learner/_layout/billing'
     | '/learner/_layout/profile'
     | '/(website)/_layout/'
     | '/(website)/_layout/(auth)/github-callback'
@@ -412,6 +424,13 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/learner/profile'
       preLoaderRoute: typeof LearnerLayoutProfileRouteImport
+      parentRoute: typeof LearnerLayoutRoute
+    }
+    '/learner/_layout/billing': {
+      id: '/learner/_layout/billing'
+      path: '/billing'
+      fullPath: '/learner/billing'
+      preLoaderRoute: typeof LearnerLayoutBillingRouteImport
       parentRoute: typeof LearnerLayoutRoute
     }
     '/admin/_layout/profile': {
@@ -637,10 +656,12 @@ const AdminRouteChildren: AdminRouteChildren = {
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface LearnerLayoutRouteChildren {
+  LearnerLayoutBillingRoute: typeof LearnerLayoutBillingRoute
   LearnerLayoutProfileRoute: typeof LearnerLayoutProfileRoute
 }
 
 const LearnerLayoutRouteChildren: LearnerLayoutRouteChildren = {
+  LearnerLayoutBillingRoute: LearnerLayoutBillingRoute,
   LearnerLayoutProfileRoute: LearnerLayoutProfileRoute,
 }
 

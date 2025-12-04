@@ -26,6 +26,7 @@ function RouteComponent() {
         <Sidebar
           menus={menus}
           userInfo={userInfo}
+          isAdmin={false}
           logoutHandler={handleLogout}
         />
 
