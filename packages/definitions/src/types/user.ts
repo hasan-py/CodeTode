@@ -25,6 +25,8 @@ export interface IUser {
   createdAt?: Date;
   updatedAt?: Date;
   courseEnrollments?: number[];
+  totalXp?: number;
+  currentStreak?: number;
 }
 
 export type TUpdateUserProfile = z.infer<typeof SUpdateUserProfile>;
