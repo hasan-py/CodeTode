@@ -2,7 +2,11 @@ import { Logger } from "@packages/logger";
 import express, { Request, Response } from "express";
 import { UserRouter } from "./account/user";
 import { AuthRouter } from "./account/auth";
-import { authenticateAdmin, authenticateJwt } from "../ middleware/auth";
+import {
+  authenticateAdmin,
+  authenticateJwt,
+  authenticateLearner,
+} from "../ middleware/auth";
 import { CoursePublicRouter, CourseRouter } from "./course/course";
 import { LemonSqueezyRouter } from "./course/lemonSqueezyProduct";
 import { ModuleRouter } from "./course/module";
@@ -12,6 +16,7 @@ import {
   CourseEnrollmentRouter,
   LearnerCourseEnrollmentRouter,
 } from "./course/courseEnrollment";
+import { LearnerActivityRouter } from "./learningProgress/learnerActivity";
 
 export class Routes {
   static Endpoints(app: express.Application) {
@@ -47,6 +52,11 @@ export class Routes {
 
   static learnerEndpoints(app: express.Application) {
     app.use(`/api/learner/enrollment`, LearnerCourseEnrollmentRouter);
+    app.use(
+      `/api/learner/activity`,
+      authenticateLearner,
+      LearnerActivityRouter
+    );
   }
 
   static adminEndpoints(app: express.Application) {

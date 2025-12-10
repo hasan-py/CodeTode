@@ -9,6 +9,9 @@ import { LessonContentLink } from "../entity/course/lessonContentLink";
 import { Module } from "../entity/course/module";
 import { Quiz } from "../entity/course/quiz";
 import { QuizOption } from "../entity/course/quizOption";
+import { LearnerActivity } from "../entity/learningProgress/learnerActivity";
+import { LearnerProgress } from "../entity/learningProgress/learnerProgress";
+import { LearnerStatistics } from "../entity/learningProgress/learnerStatistics";
 
 export const UserRepository = AppDataSource.getRepository(User);
 export const RefreshTokenRepository = AppDataSource.getRepository(RefreshToken);
@@ -24,3 +27,10 @@ export const LessonContentLinkRepository =
   AppDataSource.getRepository(LessonContentLink);
 export const CourseEnrollmentRepository =
   AppDataSource.getRepository(CourseEnrollment);
+
+export const LearnerActivityRepository =
+  AppDataSource.getRepository(LearnerActivity);
+export const LearnerProgressRepository =
+  AppDataSource.getRepository(LearnerProgress);
+export const LearnerStatisticsRepository =
+  AppDataSource.getRepository(LearnerStatistics);
