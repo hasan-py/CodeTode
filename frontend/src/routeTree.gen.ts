@@ -29,6 +29,7 @@ import { Route as AdminLayoutChapterAllChaptersRouteImport } from './routes/admi
 import { Route as websiteLayoutauthSigninRouteImport } from './routes/(website)/_layout/(auth)/signin'
 import { Route as websiteLayoutauthGithubCallbackRouteImport } from './routes/(website)/_layout/(auth)/github-callback'
 import { Route as websiteLayoutCoursesCourseIdIndexRouteImport } from './routes/(website)/_layout/courses/$courseId/index'
+import { Route as LearnerLayoutCoursesCourseIdModulesRouteImport } from './routes/learner/_layout/courses/$courseId/modules'
 import { Route as AdminLayoutModuleModuleIdEditModuleRouteImport } from './routes/admin/_layout/module/$moduleId.edit-module'
 import { Route as AdminLayoutLessonDQuizRouteImport } from './routes/admin/_layout/lesson/_d.quiz'
 import { Route as AdminLayoutLessonCLessonContentRouteImport } from './routes/admin/_layout/lesson/_c.lesson-content'
@@ -153,6 +154,12 @@ const websiteLayoutCoursesCourseIdIndexRoute =
     path: '/courses/$courseId/',
     getParentRoute: () => websiteLayoutRoute,
   } as any)
+const LearnerLayoutCoursesCourseIdModulesRoute =
+  LearnerLayoutCoursesCourseIdModulesRouteImport.update({
+    id: '/courses/$courseId/modules',
+    path: '/courses/$courseId/modules',
+    getParentRoute: () => LearnerLayoutRoute,
+  } as any)
 const AdminLayoutModuleModuleIdEditModuleRoute =
   AdminLayoutModuleModuleIdEditModuleRouteImport.update({
     id: '/module/$moduleId/edit-module',
@@ -226,6 +233,7 @@ export interface FileRoutesByFullPath {
   '/admin/lesson/lesson-content': typeof AdminLayoutLessonCLessonContentRoute
   '/admin/lesson/quiz': typeof AdminLayoutLessonDQuizRoute
   '/admin/module/$moduleId/edit-module': typeof AdminLayoutModuleModuleIdEditModuleRoute
+  '/learner/courses/$courseId/modules': typeof LearnerLayoutCoursesCourseIdModulesRoute
   '/courses/$courseId': typeof websiteLayoutCoursesCourseIdIndexRoute
 }
 export interface FileRoutesByTo {
@@ -253,6 +261,7 @@ export interface FileRoutesByTo {
   '/admin/lesson/lesson-content': typeof AdminLayoutLessonCLessonContentRoute
   '/admin/lesson/quiz': typeof AdminLayoutLessonDQuizRoute
   '/admin/module/$moduleId/edit-module': typeof AdminLayoutModuleModuleIdEditModuleRoute
+  '/learner/courses/$courseId/modules': typeof LearnerLayoutCoursesCourseIdModulesRoute
   '/courses/$courseId': typeof websiteLayoutCoursesCourseIdIndexRoute
 }
 export interface FileRoutesById {
@@ -285,6 +294,7 @@ export interface FileRoutesById {
   '/admin/_layout/lesson/_c/lesson-content': typeof AdminLayoutLessonCLessonContentRoute
   '/admin/_layout/lesson/_d/quiz': typeof AdminLayoutLessonDQuizRoute
   '/admin/_layout/module/$moduleId/edit-module': typeof AdminLayoutModuleModuleIdEditModuleRoute
+  '/learner/_layout/courses/$courseId/modules': typeof LearnerLayoutCoursesCourseIdModulesRoute
   '/(website)/_layout/courses/$courseId/': typeof websiteLayoutCoursesCourseIdIndexRoute
 }
 export interface FileRouteTypes {
@@ -314,6 +324,7 @@ export interface FileRouteTypes {
     | '/admin/lesson/lesson-content'
     | '/admin/lesson/quiz'
     | '/admin/module/$moduleId/edit-module'
+    | '/learner/courses/$courseId/modules'
     | '/courses/$courseId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -341,6 +352,7 @@ export interface FileRouteTypes {
     | '/admin/lesson/lesson-content'
     | '/admin/lesson/quiz'
     | '/admin/module/$moduleId/edit-module'
+    | '/learner/courses/$courseId/modules'
     | '/courses/$courseId'
   id:
     | '__root__'
@@ -372,6 +384,7 @@ export interface FileRouteTypes {
     | '/admin/_layout/lesson/_c/lesson-content'
     | '/admin/_layout/lesson/_d/quiz'
     | '/admin/_layout/module/$moduleId/edit-module'
+    | '/learner/_layout/courses/$courseId/modules'
     | '/(website)/_layout/courses/$courseId/'
   fileRoutesById: FileRoutesById
 }
@@ -530,6 +543,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof websiteLayoutCoursesCourseIdIndexRouteImport
       parentRoute: typeof websiteLayoutRoute
     }
+    '/learner/_layout/courses/$courseId/modules': {
+      id: '/learner/_layout/courses/$courseId/modules'
+      path: '/courses/$courseId/modules'
+      fullPath: '/learner/courses/$courseId/modules'
+      preLoaderRoute: typeof LearnerLayoutCoursesCourseIdModulesRouteImport
+      parentRoute: typeof LearnerLayoutRoute
+    }
     '/admin/_layout/module/$moduleId/edit-module': {
       id: '/admin/_layout/module/$moduleId/edit-module'
       path: '/module/$moduleId/edit-module'
@@ -679,12 +699,15 @@ interface LearnerLayoutRouteChildren {
   LearnerLayoutBillingRoute: typeof LearnerLayoutBillingRoute
   LearnerLayoutProfileRoute: typeof LearnerLayoutProfileRoute
   LearnerLayoutCoursesIndexRoute: typeof LearnerLayoutCoursesIndexRoute
+  LearnerLayoutCoursesCourseIdModulesRoute: typeof LearnerLayoutCoursesCourseIdModulesRoute
 }
 
 const LearnerLayoutRouteChildren: LearnerLayoutRouteChildren = {
   LearnerLayoutBillingRoute: LearnerLayoutBillingRoute,
   LearnerLayoutProfileRoute: LearnerLayoutProfileRoute,
   LearnerLayoutCoursesIndexRoute: LearnerLayoutCoursesIndexRoute,
+  LearnerLayoutCoursesCourseIdModulesRoute:
+    LearnerLayoutCoursesCourseIdModulesRoute,
 }
 
 const LearnerLayoutRouteWithChildren = LearnerLayoutRoute._addFileChildren(

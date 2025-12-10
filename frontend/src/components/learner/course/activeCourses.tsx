@@ -1,6 +1,8 @@
+import Button from "@/components/common/button";
 import ModuleHeader from "@/components/common/layout/moduleHeader";
 import NoDataFound from "@/components/common/noDataFound";
 import type { ICourseEnrollmentSummary } from "@packages/definitions";
+import { Link } from "@tanstack/react-router";
 
 function ActiveCourses({
   courses,
@@ -92,8 +94,8 @@ function ActiveCourses({
                   </span>{" "}
                   earned
                 </div>
-                {/* <div className="space-x-2">
-                  <Link
+                <div className="space-x-2">
+                  {/* <Link
                     to="/learner/courses/$courseId/$moduleId/$chapterId/lesson"
                     params={{
                       courseId: course?.id?.toString(),
@@ -102,7 +104,8 @@ function ActiveCourses({
                     }}
                   >
                     <Button size="sm">Continue</Button>
-                  </Link>
+                  </Link> */}
+
                   <Link
                     to="/learner/courses/$courseId/modules"
                     params={{ courseId: course?.id.toString() }}
@@ -111,7 +114,7 @@ function ActiveCourses({
                       Explore
                     </Button>
                   </Link>
-                </div> */}
+                </div>
               </div>
 
               {/* <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-600 flex justify-between items-center text-xs text-gray-600 dark:text-gray-400">
