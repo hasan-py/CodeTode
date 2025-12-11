@@ -1,5 +1,10 @@
 import { Router } from "express";
 import { LearnerActivityController } from "../../controllers/learningProgress/learnerActivity";
+import { validator } from "../../ middleware/validator";
+import {
+  SLearnerChaptersParams,
+  SLearnerModulesParams,
+} from "@packages/definitions";
 
 class LearnerActivityRoutes {
   router: Router;
@@ -12,10 +17,23 @@ class LearnerActivityRoutes {
   }
 
   routes() {
-    const { getLearnerActiveCoursesWithProgress } =
-      this.learnerActivityController;
+    const {
+      getLearnerActiveCoursesWithProgress,
+      getLearnerModulesWithProgress,
+      getLearnerChaptersWithProgress,
+    } = this.learnerActivityController;
 
     this.router.get("/courses", getLearnerActiveCoursesWithProgress);
+    this.router.get(
+      "/:courseId/modules",
+      validator({ params: SLearnerModulesParams }),
+      getLearnerModulesWithProgress
+    );
+    this.router.get(
+      "/:courseId/modules/:moduleId/chapters",
+      validator({ params: SLearnerChaptersParams }),
+      getLearnerChaptersWithProgress
+    );
   }
 }
 

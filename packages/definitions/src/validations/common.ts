@@ -28,3 +28,24 @@ export const SPaginationQuery = z.object({
   limit: z.coerce.number().int().positive().optional(),
   page: z.coerce.number().int().positive().optional(),
 });
+
+export const SLearnerModulesParams = z.object({
+  courseId: z.coerce
+    .number({ message: "Course ID is required" })
+    .int()
+    .positive("Course ID must be positive"),
+});
+
+export const SLearnerChaptersParams = SLearnerModulesParams.extend({
+  moduleId: z.coerce
+    .number({ message: "Module ID is required" })
+    .int()
+    .positive("Module ID must be positive"),
+});
+
+export const SLearnerLessonsParams = SLearnerChaptersParams.extend({
+  chapterId: z.coerce
+    .number({ message: "Chapter ID is required" })
+    .int()
+    .positive("Chapter ID must be positive"),
+});

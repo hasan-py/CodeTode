@@ -12,4 +12,32 @@ export class LearnerActivityController {
 
     sendSuccess(res, coursesWithProgress);
   }
+
+  @catchErrors()
+  async getLearnerModulesWithProgress(req: Request, res: Response) {
+    const userId = +req.user.userId;
+    const courseId = +req.params.courseId;
+
+    const modulesWithProgress =
+      await learnerActivityService.getLearnerModulesWithProgress(
+        userId,
+        courseId
+      );
+    sendSuccess(res, modulesWithProgress);
+  }
+
+  @catchErrors()
+  async getLearnerChaptersWithProgress(req: Request, res: Response) {
+    const userId = +req.user.userId;
+    const courseId = +req.params.courseId;
+    const moduleId = +req.params.moduleId;
+
+    const chaptersWithProgress =
+      await learnerActivityService.getLearnerChaptersWithProgress(
+        userId,
+        courseId,
+        moduleId
+      );
+    sendSuccess(res, chaptersWithProgress);
+  }
 }
