@@ -1,14 +1,15 @@
 import Loading from "@/components/common/loading";
-import { CourseHeader } from "@/components/website/course/courseHeader";
 import {
   CourseModules,
   MODULE_VIEW_COLORS,
-} from "@/components/website/course/courseModules";
+} from "@/components/learner/course/courseModules";
+import { CourseHeader } from "@/components/website/course/courseHeader";
 import { CoursePricing } from "@/components/website/course/coursePricing";
 import { useAuthController } from "@/hooks/controller/account/useAuthController";
 import { useLemonSqueezyCheckout } from "@/hooks/controller/course/lemonSqueezyCheckoutUrl";
 import { useGetCourseQuery } from "@/hooks/query/course";
-import { createFileRoute, Navigate } from "@tanstack/react-router";
+import { EUserRole } from "@packages/definitions";
+import { createFileRoute, Navigate, useNavigate } from "@tanstack/react-router";
 import { DynamicIcon, type IconName } from "lucide-react/dynamic";
 
 export const Route = createFileRoute("/(website)/_layout/courses/$courseId/")({
@@ -16,6 +17,8 @@ export const Route = createFileRoute("/(website)/_layout/courses/$courseId/")({
 });
 
 function RouteComponent() {
+  const navigate = useNavigate();
+
   const { courseId } = Route.useParams();
   const { user } = useAuthController();
   const { checkout, checkoutLoading } = useLemonSqueezyCheckout();
@@ -49,11 +52,10 @@ function RouteComponent() {
               checkout(course?.enrollLink, user, course?.id);
             },
             onPreview: () => {
-              // When Learner tracking is implemented, It will take to the modules page
-              // navigate({
-              //   to: `/learner/courses/$courseId/modules`,
-              //   params: { courseId },
-              // });
+              navigate({
+                to: `/learner/courses/${courseId}/modules`,
+                params: { courseId },
+              });
             },
             onEnrollLoading: checkoutLoading,
             isCoursePurchased,
@@ -74,6 +76,9 @@ function RouteComponent() {
                 ),
                 color: MODULE_VIEW_COLORS[index % MODULE_VIEW_COLORS.length],
                 locked: !isCoursePurchased ? true : index !== 0,
+                moduleId: module?.id,
+                courseId: module?.courseId,
+                isLearner: user?.role === EUserRole.LEARNER,
               }))}
             />
           </div>

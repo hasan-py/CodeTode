@@ -1,3 +1,4 @@
+import { useNavigate } from "@tanstack/react-router";
 import { LockIcon } from "lucide-react";
 
 export interface IModuleCardProps {
@@ -19,7 +20,12 @@ export default function ModuleCard({
   color,
   progress,
   locked = false,
+  isLearner = false,
+  courseId,
+  moduleId,
 }: IModuleCardProps) {
+  const navigate = useNavigate();
+
   const getColorClasses = (color: string) => {
     const colorMap: Record<
       string,
@@ -104,7 +110,18 @@ export default function ModuleCard({
 
   return (
     <div
-      onClick={() => {}}
+      onClick={() => {
+        if (courseId && moduleId && isLearner && !locked) {
+          navigate({
+            to: "/learner/courses/$courseId/$moduleId/chapters",
+            params: {
+              courseId: courseId.toString(),
+              moduleId: moduleId.toString(),
+            },
+            resetScroll: true,
+          });
+        }
+      }}
       className={`${
         colors.bg
       } rounded-xl p-4 transform hover:scale-[1.02] transition-all cursor-pointer border ${
