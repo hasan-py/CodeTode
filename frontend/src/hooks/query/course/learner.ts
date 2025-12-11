@@ -1,13 +1,22 @@
 import {
   getLearnerActiveCourses,
   getLearnerBillingSummaryApi,
+  getLearnerChaptersApi,
+  getLearnerModulesApi,
 } from "@/api/endpoints/learner";
-import type { ICourseEnrollmentSummary } from "@packages/definitions";
+import type {
+  IChapter,
+  ICourseEnrollmentSummary,
+  IModule,
+} from "@packages/definitions";
 import { useQuery } from "@tanstack/react-query";
 
 export const LEARNER_KEYS = {
   billingSummary: ["billingSummary"] as const,
   activeCourses: ["activeCourses"] as const,
+  modules: (id: number) => ["learner", "modules", id] as const,
+  chapters: (courseId: number, moduleId: number) =>
+    ["learner", "chapters", courseId, moduleId] as const,
 };
 
 export function useGetLearnerBillingSummaryQuery() {
@@ -27,5 +36,30 @@ export function useGetLearnerActiveCoursesQuery() {
       const response = await getLearnerActiveCourses();
       return response.data as ICourseEnrollmentSummary[];
     },
+    staleTime: 0,
+  });
+}
+
+export function useGetLearnerModulesQuery(courseId: number) {
+  return useQuery({
+    queryKey: LEARNER_KEYS.modules(courseId),
+    queryFn: async () => {
+      const response = await getLearnerModulesApi(courseId);
+      return response.data as IModule[];
+    },
+    enabled: !!courseId,
+    staleTime: 0,
+  });
+}
+
+export function useGetLearnerChapterQuery(courseId: number, moduleId: number) {
+  return useQuery({
+    queryKey: LEARNER_KEYS.chapters(courseId, moduleId),
+    queryFn: async () => {
+      const response = await getLearnerChaptersApi(courseId, moduleId);
+      return response.data as IChapter[];
+    },
+    enabled: !!courseId && !!moduleId,
+    staleTime: 0,
   });
 }

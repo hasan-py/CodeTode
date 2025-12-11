@@ -30,7 +30,7 @@ export function useGithubCallbackController() {
           data.user.role === EUserRole.ADMIN
             ? "/admin/profile"
             : data.user.role === EUserRole.LEARNER
-            ? "/learner/profile"
+            ? "/learner/courses"
             : "/";
         navigate({ to: redirectPath });
       }, 500);

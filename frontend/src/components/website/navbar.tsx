@@ -70,7 +70,7 @@ export default function Navbar({
                 )}
 
                 {auth.user?.role === EUserRole.LEARNER && (
-                  <Link to="/learner/profile">
+                  <Link to="/learner/courses">
                     <Button variant="outline">Learner Panel</Button>
                   </Link>
                 )}
