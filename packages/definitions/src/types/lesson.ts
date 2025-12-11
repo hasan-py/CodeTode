@@ -10,7 +10,7 @@ import {
   SQuizUpdate,
 } from "../validations";
 import type { IChapter } from "./chapter";
-import type { ICommonFilters, IPaginatedResult } from "./common";
+import type { ICommonFilters, IPaginatedResult, IProgress } from "./common";
 import type { ECourseStatus, ICourse } from "./course";
 import type { IModule } from "./module";
 
@@ -85,6 +85,23 @@ export interface IQuizOption {
   text: string;
   isCorrect: boolean;
   quizId: number;
+}
+
+export interface ICurrentLesson {
+  lesson: ILesson;
+  progress: IProgress;
+  navigation: {
+    nextLesson: {
+      id: number;
+      name: string;
+      position: number;
+    };
+    previousLesson: {
+      id: number;
+      name: string;
+      position: number;
+    };
+  };
 }
 
 export type TLessonCreate = z.infer<typeof SLessonCreate>;

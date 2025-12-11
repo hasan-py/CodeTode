@@ -3,6 +3,7 @@ import { LearnerActivityController } from "../../controllers/learningProgress/le
 import { validator } from "../../ middleware/validator";
 import {
   SLearnerChaptersParams,
+  SLearnerLessonsParams,
   SLearnerModulesParams,
 } from "@packages/definitions";
 
@@ -21,6 +22,7 @@ class LearnerActivityRoutes {
       getLearnerActiveCoursesWithProgress,
       getLearnerModulesWithProgress,
       getLearnerChaptersWithProgress,
+      getLearnerCurrentLesson,
     } = this.learnerActivityController;
 
     this.router.get("/courses", getLearnerActiveCoursesWithProgress);
@@ -33,6 +35,11 @@ class LearnerActivityRoutes {
       "/:courseId/modules/:moduleId/chapters",
       validator({ params: SLearnerChaptersParams }),
       getLearnerChaptersWithProgress
+    );
+    this.router.get(
+      "/:courseId/modules/:moduleId/chapters/:chapterId/current-lesson",
+      validator({ params: SLearnerLessonsParams }),
+      getLearnerCurrentLesson
     );
   }
 }

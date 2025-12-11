@@ -24,3 +24,14 @@ export const getLearnerChaptersApi = async (
   );
   return res;
 };
+
+export const getLearnerCurrentLessonApi = async (
+  courseId: number,
+  moduleId: number,
+  chapterId: number
+) => {
+  const res = await api.get(
+    `/learner/activity/${courseId}/modules/${moduleId}/chapters/${chapterId}/current-lesson`
+  );
+  return res;
+};

@@ -40,4 +40,21 @@ export class LearnerActivityController {
       );
     sendSuccess(res, chaptersWithProgress);
   }
+
+  @catchErrors()
+  async getLearnerCurrentLesson(req: Request, res: Response) {
+    const userId = +req.user.userId;
+    const courseId = +req.params.courseId;
+    const moduleId = +req.params.moduleId;
+    const chapterId = +req.params.chapterId;
+
+    const lessonsWithProgress =
+      await learnerActivityService.getLearnerCurrentLesson(
+        userId,
+        courseId,
+        moduleId,
+        chapterId
+      );
+    sendSuccess(res, lessonsWithProgress);
+  }
 }
