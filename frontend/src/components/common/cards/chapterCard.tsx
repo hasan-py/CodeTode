@@ -1,3 +1,4 @@
+import { useNavigate } from "@tanstack/react-router";
 import { Check, Lock, Play } from "lucide-react";
 
 export interface IChapterCardProps {
@@ -20,7 +21,11 @@ export const ChapterCard: React.FC<IChapterCardProps> = ({
   status,
   lessonNumber,
   progress = 0,
+  isLearner,
+  ids,
 }) => {
+  const navigate = useNavigate();
+
   const getStatusInfo = () => {
     switch (status) {
       case "completed":
@@ -87,6 +92,43 @@ export const ChapterCard: React.FC<IChapterCardProps> = ({
     <div
       onClick={() => {
         if (status === "locked") return;
+
+        // if (
+        //   isLearner &&
+        //   ids?.courseId &&
+        //   ids?.moduleId &&
+        //   ids?.chapterId &&
+        //   progress === 100
+        // ) {
+        //   return navigate({
+        //     to: "/learner/courses/$courseId/$moduleId/$chapterId/chapter-complete",
+        //     params: {
+        //       courseId: ids.courseId.toString(),
+        //       moduleId: ids.moduleId.toString(),
+        //       chapterId: ids.chapterId.toString(),
+        //     },
+        //   });
+        // }
+
+        return isLearner && ids?.courseId && ids?.moduleId && ids?.chapterId
+          ? navigate({
+              to: "/learner/courses/$courseId/$moduleId/$chapterId/lesson",
+              resetScroll: true,
+              params: {
+                courseId: ids.courseId?.toString(),
+                moduleId: ids.moduleId?.toString(),
+                chapterId: ids.chapterId?.toString(),
+              },
+            })
+          : navigate({
+              to: "/learner/courses/$courseId/$moduleId/$chapterId/lesson",
+              resetScroll: true,
+              params: {
+                courseId: "course1",
+                moduleId: "module1",
+                chapterId: "chapter1",
+              },
+            });
       }}
       className={`bg-gradient-to-r ${bgFrom} ${bgTo} rounded-2xl p-5 ${
         status !== "locked"

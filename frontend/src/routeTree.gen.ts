@@ -39,6 +39,7 @@ import { Route as AdminLayoutLessonLessonIdEditLessonRouteImport } from './route
 import { Route as AdminLayoutCourseCourseIdEditCourseRouteImport } from './routes/admin/_layout/course/$courseId.edit-course'
 import { Route as AdminLayoutChapterChapterIdEditChapterRouteImport } from './routes/admin/_layout/chapter/$chapterId.edit-chapter'
 import { Route as LearnerLayoutCoursesCourseIdModuleIdChaptersRouteImport } from './routes/learner/_layout/courses/$courseId/$moduleId/chapters'
+import { Route as LearnerLayoutCoursesCourseIdModuleIdChapterIdLessonRouteImport } from './routes/learner/_layout/courses/$courseId/$moduleId/$chapterId/lesson'
 
 const LearnerRouteImport = createFileRoute('/learner')()
 const AdminRouteImport = createFileRoute('/admin')()
@@ -214,6 +215,12 @@ const LearnerLayoutCoursesCourseIdModuleIdChaptersRoute =
     path: '/courses/$courseId/$moduleId/chapters',
     getParentRoute: () => LearnerLayoutRoute,
   } as any)
+const LearnerLayoutCoursesCourseIdModuleIdChapterIdLessonRoute =
+  LearnerLayoutCoursesCourseIdModuleIdChapterIdLessonRouteImport.update({
+    id: '/courses/$courseId/$moduleId/$chapterId/lesson',
+    path: '/courses/$courseId/$moduleId/$chapterId/lesson',
+    getParentRoute: () => LearnerLayoutRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof websiteLayoutIndexRoute
@@ -243,6 +250,7 @@ export interface FileRoutesByFullPath {
   '/learner/courses/$courseId/modules': typeof LearnerLayoutCoursesCourseIdModulesRoute
   '/courses/$courseId': typeof websiteLayoutCoursesCourseIdIndexRoute
   '/learner/courses/$courseId/$moduleId/chapters': typeof LearnerLayoutCoursesCourseIdModuleIdChaptersRoute
+  '/learner/courses/$courseId/$moduleId/$chapterId/lesson': typeof LearnerLayoutCoursesCourseIdModuleIdChapterIdLessonRoute
 }
 export interface FileRoutesByTo {
   '/admin': typeof AdminLayoutRouteWithChildren
@@ -272,6 +280,7 @@ export interface FileRoutesByTo {
   '/learner/courses/$courseId/modules': typeof LearnerLayoutCoursesCourseIdModulesRoute
   '/courses/$courseId': typeof websiteLayoutCoursesCourseIdIndexRoute
   '/learner/courses/$courseId/$moduleId/chapters': typeof LearnerLayoutCoursesCourseIdModuleIdChaptersRoute
+  '/learner/courses/$courseId/$moduleId/$chapterId/lesson': typeof LearnerLayoutCoursesCourseIdModuleIdChapterIdLessonRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -306,6 +315,7 @@ export interface FileRoutesById {
   '/learner/_layout/courses/$courseId/modules': typeof LearnerLayoutCoursesCourseIdModulesRoute
   '/(website)/_layout/courses/$courseId/': typeof websiteLayoutCoursesCourseIdIndexRoute
   '/learner/_layout/courses/$courseId/$moduleId/chapters': typeof LearnerLayoutCoursesCourseIdModuleIdChaptersRoute
+  '/learner/_layout/courses/$courseId/$moduleId/$chapterId/lesson': typeof LearnerLayoutCoursesCourseIdModuleIdChapterIdLessonRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -337,6 +347,7 @@ export interface FileRouteTypes {
     | '/learner/courses/$courseId/modules'
     | '/courses/$courseId'
     | '/learner/courses/$courseId/$moduleId/chapters'
+    | '/learner/courses/$courseId/$moduleId/$chapterId/lesson'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/admin'
@@ -366,6 +377,7 @@ export interface FileRouteTypes {
     | '/learner/courses/$courseId/modules'
     | '/courses/$courseId'
     | '/learner/courses/$courseId/$moduleId/chapters'
+    | '/learner/courses/$courseId/$moduleId/$chapterId/lesson'
   id:
     | '__root__'
     | '/(website)'
@@ -399,6 +411,7 @@ export interface FileRouteTypes {
     | '/learner/_layout/courses/$courseId/modules'
     | '/(website)/_layout/courses/$courseId/'
     | '/learner/_layout/courses/$courseId/$moduleId/chapters'
+    | '/learner/_layout/courses/$courseId/$moduleId/$chapterId/lesson'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -626,6 +639,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LearnerLayoutCoursesCourseIdModuleIdChaptersRouteImport
       parentRoute: typeof LearnerLayoutRoute
     }
+    '/learner/_layout/courses/$courseId/$moduleId/$chapterId/lesson': {
+      id: '/learner/_layout/courses/$courseId/$moduleId/$chapterId/lesson'
+      path: '/courses/$courseId/$moduleId/$chapterId/lesson'
+      fullPath: '/learner/courses/$courseId/$moduleId/$chapterId/lesson'
+      preLoaderRoute: typeof LearnerLayoutCoursesCourseIdModuleIdChapterIdLessonRouteImport
+      parentRoute: typeof LearnerLayoutRoute
+    }
   }
 }
 
@@ -721,6 +741,7 @@ interface LearnerLayoutRouteChildren {
   LearnerLayoutCoursesIndexRoute: typeof LearnerLayoutCoursesIndexRoute
   LearnerLayoutCoursesCourseIdModulesRoute: typeof LearnerLayoutCoursesCourseIdModulesRoute
   LearnerLayoutCoursesCourseIdModuleIdChaptersRoute: typeof LearnerLayoutCoursesCourseIdModuleIdChaptersRoute
+  LearnerLayoutCoursesCourseIdModuleIdChapterIdLessonRoute: typeof LearnerLayoutCoursesCourseIdModuleIdChapterIdLessonRoute
 }
 
 const LearnerLayoutRouteChildren: LearnerLayoutRouteChildren = {
@@ -731,6 +752,8 @@ const LearnerLayoutRouteChildren: LearnerLayoutRouteChildren = {
     LearnerLayoutCoursesCourseIdModulesRoute,
   LearnerLayoutCoursesCourseIdModuleIdChaptersRoute:
     LearnerLayoutCoursesCourseIdModuleIdChaptersRoute,
+  LearnerLayoutCoursesCourseIdModuleIdChapterIdLessonRoute:
+    LearnerLayoutCoursesCourseIdModuleIdChapterIdLessonRoute,
 }
 
 const LearnerLayoutRouteWithChildren = LearnerLayoutRoute._addFileChildren(
