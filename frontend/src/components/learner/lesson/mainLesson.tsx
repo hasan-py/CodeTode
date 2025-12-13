@@ -28,6 +28,32 @@ export default function MainLesson({
   onBack?: () => void;
 }) {
   const progress = data?.progress?.progressPercentage || 0;
+
+  // Helper functions for cleaner rendering logic
+  const getFirstContentLink = () => data?.lesson?.contentLinks?.[0];
+
+  const isVideoContent = () => {
+    if (hasMarkdownContent()) return false;
+    if (hasQuizzes()) return false;
+
+    const link = getFirstContentLink();
+    if (!link?.url) return false;
+
+    const linkType = link.linkType?.toLowerCase();
+    return (
+      linkType === ELessonContentLinkType.VIDEO ||
+      linkType === "video" ||
+      !linkType
+    );
+  };
+
+  const hasMarkdownContent = () => {
+    const link = getFirstContentLink();
+    return !!link?.content;
+  };
+
+  const hasQuizzes = () => !!data?.lesson?.quizzes?.length;
+
   return (
     <div className="bg-white dark:bg-gradient-to-b dark:from-gray-800 dark:to-gray-900 rounded-2xl max-w-5xl mx-auto p-6 border border-gray-200 dark:border-gray-700">
       <div className="fixed flex space-x-4 items-center top-1/2 -translate-y-1/2 right-8 z-50">
@@ -87,29 +113,28 @@ export default function MainLesson({
 
       <div className="flex-grow mt-8">
         <div className="">
-          {data?.lesson?.contentLinks?.length &&
-          data?.lesson?.contentLinks[0]?.linkType ===
-            ELessonContentLinkType.VIDEO ? (
-            <div>
-              <LessonVideos
-                urls={data?.lesson?.contentLinks.map((link) => link.url)}
-              />
+          {/* Video Content */}
+          {isVideoContent() && (
+            <div className="mb-6">
+              <LessonVideos url={getFirstContentLink()!.url} />
             </div>
-          ) : null}
+          )}
 
-          {data?.lesson?.contentLinks?.length &&
-          data?.lesson?.contentLinks[0]?.content ? (
-            <div className="w-full">
+          {/* Markdown Content */}
+          {hasMarkdownContent() && (
+            <div className="w-full mb-6">
               <MarkdownViewer
-                markdownContent={data?.lesson?.contentLinks[0]?.content}
+                markdownContent={getFirstContentLink()!.content!}
               />
             </div>
-          ) : null}
+          )}
 
-          {data?.lesson?.quizzes?.length ? (
+          {/* Quiz Content */}
+          {hasQuizzes() && (
             <div className="w-full">
-              {data?.lesson?.quizzes?.map((quiz) => (
+              {data!.lesson.quizzes!.map((quiz, index) => (
                 <QuizSection
+                  key={index}
                   question={quiz?.question}
                   options={quiz?.options?.map((option) => option?.text)}
                   correctAnswer={
@@ -120,7 +145,7 @@ export default function MainLesson({
                 />
               ))}
             </div>
-          ) : null}
+          )}
         </div>
       </div>
     </div>

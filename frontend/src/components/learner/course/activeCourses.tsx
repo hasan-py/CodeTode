@@ -95,7 +95,7 @@ function ActiveCourses({
                   earned
                 </div>
                 <div className="space-x-2">
-                  {/* <Link
+                  <Link
                     to="/learner/courses/$courseId/$moduleId/$chapterId/lesson"
                     params={{
                       courseId: course?.id?.toString(),
@@ -104,7 +104,7 @@ function ActiveCourses({
                     }}
                   >
                     <Button size="sm">Continue</Button>
-                  </Link> */}
+                  </Link>
 
                   <Link
                     to="/learner/courses/$courseId/modules"

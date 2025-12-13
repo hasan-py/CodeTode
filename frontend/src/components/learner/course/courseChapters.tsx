@@ -23,7 +23,7 @@ export function CourseChapters({
     <div className="bg-gradient-to-b from-white to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-3xl p-8 mb-8 border border-gray-200 dark:border-gray-700">
       <MaterialsProgress
         name={moduleName}
-        type="Module"
+        type="Chapter"
         progress={progress}
         xpEarned={xpEarned}
         onBack={onBack}

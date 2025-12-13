@@ -46,7 +46,7 @@ function RouteComponent() {
             (sum, module) =>
               sum + ((module as IModule).progress?.totalXpEarned ?? 0),
             0
-          ) / data.length
+          )
         )
       : 0;
 
