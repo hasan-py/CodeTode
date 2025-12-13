@@ -1,7 +1,11 @@
 import Loading from "@/components/common/loading";
 import MainLesson from "@/components/learner/lesson/mainLesson";
-import { useGetLearnerCurrentLessonQuery } from "@/hooks/query/course/learner";
+import {
+  useGetLearnerCurrentLessonQuery,
+  useLessonCompleteMutation,
+} from "@/hooks/query/course/learner";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import toast from "react-hot-toast";
 
 export const Route = createFileRoute(
   "/learner/_layout/courses/$courseId/$moduleId/$chapterId/lesson"
@@ -18,12 +22,65 @@ function RouteComponent() {
   const { data: currentLessonData, isLoading } =
     useGetLearnerCurrentLessonQuery(+courseId, +moduleId, +chapterId, lessonId);
 
+  const { mutateAsync: completeLessonMutation, isPending } =
+    useLessonCompleteMutation({
+      courseId: +courseId,
+      moduleId: +moduleId,
+      chapterId: +chapterId,
+    });
+
   const data = currentLessonData;
   const isCurrentLesson = !data?.lesson?.isLocked && !data?.lesson?.isCompleted;
 
-  const onCompleteHandler = async () => {};
+  const onCompleteHandler = async () => {
+    if (!data?.lesson?.id || isPending) return;
 
-  const onPreviousHandler = () => {};
+    if (!isCurrentLesson && data.navigation?.nextLesson?.id) {
+      return navigate({
+        to: "/learner/courses/$courseId/$moduleId/$chapterId/lesson",
+        params: { courseId, moduleId, chapterId },
+        search: {
+          lessonId: data.navigation?.nextLesson?.id,
+        },
+      });
+    }
+
+    if (!data?.lesson?.isCompleted) {
+      await toast.promise(completeLessonMutation(data?.lesson?.id), {
+        loading: "Loading...",
+        success: "Lesson completed!",
+        error: "Failed to complete lesson",
+      });
+    }
+
+    if (
+      data?.progress?.totalLessons - 1 === data?.progress?.completedLessons ||
+      !data?.navigation?.nextLesson
+    ) {
+      navigate({
+        to: "/learner/courses/$courseId/$moduleId/$chapterId/chapter-complete",
+        params: { courseId, moduleId, chapterId },
+      });
+    } else {
+      navigate({
+        to: "/learner/courses/$courseId/$moduleId/$chapterId/lesson",
+        params: { courseId, moduleId, chapterId },
+        search: {},
+      });
+    }
+  };
+
+  const onPreviousHandler = () => {
+    if (data?.navigation.previousLesson) {
+      navigate({
+        to: "/learner/courses/$courseId/$moduleId/$chapterId/lesson",
+        params: { courseId, moduleId, chapterId },
+        search: {
+          lessonId: data.navigation?.previousLesson?.id,
+        },
+      });
+    }
+  };
 
   if (isLoading) {
     return <Loading fullscreen />;

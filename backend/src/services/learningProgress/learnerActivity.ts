@@ -10,6 +10,9 @@ import {
 } from "../../repository";
 import { BaseService } from "../common/base";
 import { markdownService } from "../course/markdown";
+import { CourseEnrollment } from "../../entity/course/courseEnrollment";
+import { learnerProgressService } from "./learnerProgress";
+import { learnerStatisticsService } from "./learnerStatistics";
 
 export class LearnerActivityService extends BaseService<LearnerActivity> {
   constructor() {
@@ -573,6 +576,112 @@ export class LearnerActivityService extends BaseService<LearnerActivity> {
     };
   }
 
+  async completeLesson(userId: number, lessonId: number) {
+    // Use transaction for data consistency
+    return await LessonRepository.manager.transaction(
+      async (transactionalEntityManager) => {
+        // Get lesson details using optimized query
+        const lessonResult = await transactionalEntityManager
+          .createQueryBuilder()
+          .select([
+            "lesson.id as lessonId",
+            "lesson.name as lessonName",
+            "lesson.position as lessonPosition",
+            "lesson.xpPoints as xpPoints",
+            "lesson.courseId as courseId",
+            "lesson.moduleId as moduleId",
+            "lesson.chapterId as chapterId",
+            "module.position as modulePosition",
+            "chapter.position as chapterPosition",
+          ])
+          .from("lesson", "lesson")
+          .innerJoin("course", "course", "course.id = lesson.courseId")
+          .innerJoin("module", "module", "module.id = lesson.moduleId")
+          .innerJoin("chapter", "chapter", "chapter.id = lesson.chapterId")
+          .where("lesson.id = :lessonId", { lessonId })
+          .getRawOne();
+
+        if (!lessonResult) {
+          throw new Error("Lesson not found");
+        }
+
+        // Check enrollment and existing completion in parallel
+        const [enrollment, existingCompletion] = await Promise.all([
+          transactionalEntityManager.findOne(CourseEnrollment, {
+            where: {
+              userId,
+              courseId: lessonResult.courseid,
+              status: EEnrollmentStatus.ACTIVE,
+            },
+          }),
+          transactionalEntityManager.findOne(LearnerActivity, {
+            where: { userId, lessonId },
+          }),
+        ]);
+
+        if (!enrollment) {
+          throw new Error("You are not enrolled in this course");
+        }
+
+        if (existingCompletion) {
+          throw new Error("Lesson already completed");
+        }
+
+        // Check if lesson is unlocked
+        const isUnlocked = await this.isLessonUnlocked(userId, lessonId);
+        if (!isUnlocked) {
+          throw new Error(
+            "This lesson is locked. Complete previous lessons first."
+          );
+        }
+        const todayDateOnly = new Date().toISOString().slice(0, 10); // 'YYYY-MM-DD'
+
+        // Create completion record
+        const completion = await transactionalEntityManager.save(
+          LearnerActivity,
+          {
+            userId,
+            lessonId,
+            courseId: lessonResult.courseid,
+            moduleId: lessonResult.moduleid,
+            chapterId: lessonResult.chapterid,
+            xpEarned: lessonResult.xppoints,
+            date: todayDateOnly,
+          }
+        );
+
+        // Update learner statistics (streak, XP) within the same transaction
+        await learnerStatisticsService.updateStatistics(
+          userId,
+          lessonResult.xppoints,
+          transactionalEntityManager,
+          lessonId // Pass the current lesson ID to exclude it from streak calculation
+        );
+
+        // Find next lesson to update learner_progress
+        const nextLesson = await this.findNextLesson(
+          lessonResult.courseid,
+          lessonResult.moduleid,
+          lessonResult.chapterid,
+          lessonResult.lessonposition
+        );
+
+        if (nextLesson) {
+          // Update progress with next lesson
+          await learnerProgressService.updatePosition(
+            userId,
+            lessonResult.courseid,
+            nextLesson.moduleId,
+            nextLesson.chapterId,
+            nextLesson.lessonId
+          );
+        }
+
+        return completion;
+      }
+    );
+  }
+
   private async isLessonUnlocked(
     userId: number,
     lessonId: number
@@ -615,6 +724,105 @@ export class LearnerActivityService extends BaseService<LearnerActivity> {
       console.error(`Failed to fetch markdown content for ${url}:`, error);
       return null;
     }
+  }
+
+  private async findNextLesson(
+    courseId: number,
+    currentModuleId: number,
+    currentChapterId: number,
+    currentLessonPosition: number
+  ): Promise<{ lessonId: number; moduleId: number; chapterId: number } | null> {
+    // Try to find next lesson in same chapter first
+    let nextLesson = await LessonRepository.createQueryBuilder("lesson")
+      .select([
+        "lesson.id as lessonId",
+        "lesson.moduleId as moduleId",
+        "lesson.chapterId as chapterId",
+      ])
+      .where("lesson.courseId = :courseId AND lesson.status = :status", {
+        courseId,
+        status: ECourseStatus.PUBLISHED,
+      })
+      .andWhere("lesson.chapterId = :currentChapterId", { currentChapterId })
+      .andWhere("lesson.position > :currentPosition", {
+        currentPosition: currentLessonPosition,
+      })
+      .orderBy("lesson.position", "ASC")
+      .limit(1)
+      .getRawOne();
+
+    if (nextLesson) {
+      return {
+        lessonId: Number(nextLesson.lessonid),
+        moduleId: Number(nextLesson.moduleid),
+        chapterId: Number(nextLesson.chapterid),
+      };
+    }
+
+    // If no next lesson in same chapter, find first lesson in next chapter of same module
+    nextLesson = await LessonRepository.createQueryBuilder("lesson")
+      .innerJoin("chapter", "chapter", "chapter.id = lesson.chapterId")
+      .select([
+        "lesson.id as lessonId",
+        "lesson.moduleId as moduleId",
+        "lesson.chapterId as chapterId",
+        "chapter.position as chapterPosition",
+      ])
+      .where("lesson.courseId = :courseId AND lesson.status = :status", {
+        courseId,
+        status: ECourseStatus.PUBLISHED,
+      })
+      .andWhere("lesson.moduleId = :currentModuleId", { currentModuleId })
+      .andWhere(
+        "chapter.position > (SELECT c2.position FROM chapter c2 WHERE c2.id = :currentChapterId)",
+        { currentChapterId }
+      )
+      .orderBy("chapter.position", "ASC")
+      .addOrderBy("lesson.position", "ASC")
+      .limit(1)
+      .getRawOne();
+
+    if (nextLesson) {
+      return {
+        lessonId: Number(nextLesson.lessonid),
+        moduleId: Number(nextLesson.moduleid),
+        chapterId: Number(nextLesson.chapterid),
+      };
+    }
+
+    // If no next lesson in same module, find first lesson in next module
+    nextLesson = await LessonRepository.createQueryBuilder("lesson")
+      .innerJoin("chapter", "chapter", "chapter.id = lesson.chapterId")
+      .innerJoin("module", "module", "module.id = chapter.moduleId")
+      .select([
+        "lesson.id as lessonId",
+        "lesson.moduleId as moduleId",
+        "lesson.chapterId as chapterId",
+        "module.position as modulePosition",
+      ])
+      .where("lesson.courseId = :courseId AND lesson.status = :status", {
+        courseId,
+        status: ECourseStatus.PUBLISHED,
+      })
+      .andWhere(
+        "module.position > (SELECT m2.position FROM module m2 WHERE m2.id = :currentModuleId)",
+        { currentModuleId }
+      )
+      .orderBy("module.position", "ASC")
+      .addOrderBy("chapter.position", "ASC")
+      .addOrderBy("lesson.position", "ASC")
+      .limit(1)
+      .getRawOne();
+
+    if (!nextLesson) {
+      return null;
+    }
+
+    return {
+      lessonId: Number(nextLesson.lessonid),
+      moduleId: Number(nextLesson.moduleid),
+      chapterId: Number(nextLesson.chapterid),
+    };
   }
 }
 

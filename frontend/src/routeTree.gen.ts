@@ -40,6 +40,7 @@ import { Route as AdminLayoutCourseCourseIdEditCourseRouteImport } from './route
 import { Route as AdminLayoutChapterChapterIdEditChapterRouteImport } from './routes/admin/_layout/chapter/$chapterId.edit-chapter'
 import { Route as LearnerLayoutCoursesCourseIdModuleIdChaptersRouteImport } from './routes/learner/_layout/courses/$courseId/$moduleId/chapters'
 import { Route as LearnerLayoutCoursesCourseIdModuleIdChapterIdLessonRouteImport } from './routes/learner/_layout/courses/$courseId/$moduleId/$chapterId/lesson'
+import { Route as LearnerLayoutCoursesCourseIdModuleIdChapterIdChapterCompleteRouteImport } from './routes/learner/_layout/courses/$courseId/$moduleId/$chapterId/chapter-complete'
 
 const LearnerRouteImport = createFileRoute('/learner')()
 const AdminRouteImport = createFileRoute('/admin')()
@@ -221,6 +222,14 @@ const LearnerLayoutCoursesCourseIdModuleIdChapterIdLessonRoute =
     path: '/courses/$courseId/$moduleId/$chapterId/lesson',
     getParentRoute: () => LearnerLayoutRoute,
   } as any)
+const LearnerLayoutCoursesCourseIdModuleIdChapterIdChapterCompleteRoute =
+  LearnerLayoutCoursesCourseIdModuleIdChapterIdChapterCompleteRouteImport.update(
+    {
+      id: '/courses/$courseId/$moduleId/$chapterId/chapter-complete',
+      path: '/courses/$courseId/$moduleId/$chapterId/chapter-complete',
+      getParentRoute: () => LearnerLayoutRoute,
+    } as any,
+  )
 
 export interface FileRoutesByFullPath {
   '/': typeof websiteLayoutIndexRoute
@@ -250,6 +259,7 @@ export interface FileRoutesByFullPath {
   '/learner/courses/$courseId/modules': typeof LearnerLayoutCoursesCourseIdModulesRoute
   '/courses/$courseId': typeof websiteLayoutCoursesCourseIdIndexRoute
   '/learner/courses/$courseId/$moduleId/chapters': typeof LearnerLayoutCoursesCourseIdModuleIdChaptersRoute
+  '/learner/courses/$courseId/$moduleId/$chapterId/chapter-complete': typeof LearnerLayoutCoursesCourseIdModuleIdChapterIdChapterCompleteRoute
   '/learner/courses/$courseId/$moduleId/$chapterId/lesson': typeof LearnerLayoutCoursesCourseIdModuleIdChapterIdLessonRoute
 }
 export interface FileRoutesByTo {
@@ -280,6 +290,7 @@ export interface FileRoutesByTo {
   '/learner/courses/$courseId/modules': typeof LearnerLayoutCoursesCourseIdModulesRoute
   '/courses/$courseId': typeof websiteLayoutCoursesCourseIdIndexRoute
   '/learner/courses/$courseId/$moduleId/chapters': typeof LearnerLayoutCoursesCourseIdModuleIdChaptersRoute
+  '/learner/courses/$courseId/$moduleId/$chapterId/chapter-complete': typeof LearnerLayoutCoursesCourseIdModuleIdChapterIdChapterCompleteRoute
   '/learner/courses/$courseId/$moduleId/$chapterId/lesson': typeof LearnerLayoutCoursesCourseIdModuleIdChapterIdLessonRoute
 }
 export interface FileRoutesById {
@@ -315,6 +326,7 @@ export interface FileRoutesById {
   '/learner/_layout/courses/$courseId/modules': typeof LearnerLayoutCoursesCourseIdModulesRoute
   '/(website)/_layout/courses/$courseId/': typeof websiteLayoutCoursesCourseIdIndexRoute
   '/learner/_layout/courses/$courseId/$moduleId/chapters': typeof LearnerLayoutCoursesCourseIdModuleIdChaptersRoute
+  '/learner/_layout/courses/$courseId/$moduleId/$chapterId/chapter-complete': typeof LearnerLayoutCoursesCourseIdModuleIdChapterIdChapterCompleteRoute
   '/learner/_layout/courses/$courseId/$moduleId/$chapterId/lesson': typeof LearnerLayoutCoursesCourseIdModuleIdChapterIdLessonRoute
 }
 export interface FileRouteTypes {
@@ -347,6 +359,7 @@ export interface FileRouteTypes {
     | '/learner/courses/$courseId/modules'
     | '/courses/$courseId'
     | '/learner/courses/$courseId/$moduleId/chapters'
+    | '/learner/courses/$courseId/$moduleId/$chapterId/chapter-complete'
     | '/learner/courses/$courseId/$moduleId/$chapterId/lesson'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -377,6 +390,7 @@ export interface FileRouteTypes {
     | '/learner/courses/$courseId/modules'
     | '/courses/$courseId'
     | '/learner/courses/$courseId/$moduleId/chapters'
+    | '/learner/courses/$courseId/$moduleId/$chapterId/chapter-complete'
     | '/learner/courses/$courseId/$moduleId/$chapterId/lesson'
   id:
     | '__root__'
@@ -411,6 +425,7 @@ export interface FileRouteTypes {
     | '/learner/_layout/courses/$courseId/modules'
     | '/(website)/_layout/courses/$courseId/'
     | '/learner/_layout/courses/$courseId/$moduleId/chapters'
+    | '/learner/_layout/courses/$courseId/$moduleId/$chapterId/chapter-complete'
     | '/learner/_layout/courses/$courseId/$moduleId/$chapterId/lesson'
   fileRoutesById: FileRoutesById
 }
@@ -646,6 +661,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LearnerLayoutCoursesCourseIdModuleIdChapterIdLessonRouteImport
       parentRoute: typeof LearnerLayoutRoute
     }
+    '/learner/_layout/courses/$courseId/$moduleId/$chapterId/chapter-complete': {
+      id: '/learner/_layout/courses/$courseId/$moduleId/$chapterId/chapter-complete'
+      path: '/courses/$courseId/$moduleId/$chapterId/chapter-complete'
+      fullPath: '/learner/courses/$courseId/$moduleId/$chapterId/chapter-complete'
+      preLoaderRoute: typeof LearnerLayoutCoursesCourseIdModuleIdChapterIdChapterCompleteRouteImport
+      parentRoute: typeof LearnerLayoutRoute
+    }
   }
 }
 
@@ -741,6 +763,7 @@ interface LearnerLayoutRouteChildren {
   LearnerLayoutCoursesIndexRoute: typeof LearnerLayoutCoursesIndexRoute
   LearnerLayoutCoursesCourseIdModulesRoute: typeof LearnerLayoutCoursesCourseIdModulesRoute
   LearnerLayoutCoursesCourseIdModuleIdChaptersRoute: typeof LearnerLayoutCoursesCourseIdModuleIdChaptersRoute
+  LearnerLayoutCoursesCourseIdModuleIdChapterIdChapterCompleteRoute: typeof LearnerLayoutCoursesCourseIdModuleIdChapterIdChapterCompleteRoute
   LearnerLayoutCoursesCourseIdModuleIdChapterIdLessonRoute: typeof LearnerLayoutCoursesCourseIdModuleIdChapterIdLessonRoute
 }
 
@@ -752,6 +775,8 @@ const LearnerLayoutRouteChildren: LearnerLayoutRouteChildren = {
     LearnerLayoutCoursesCourseIdModulesRoute,
   LearnerLayoutCoursesCourseIdModuleIdChaptersRoute:
     LearnerLayoutCoursesCourseIdModuleIdChaptersRoute,
+  LearnerLayoutCoursesCourseIdModuleIdChapterIdChapterCompleteRoute:
+    LearnerLayoutCoursesCourseIdModuleIdChapterIdChapterCompleteRoute,
   LearnerLayoutCoursesCourseIdModuleIdChapterIdLessonRoute:
     LearnerLayoutCoursesCourseIdModuleIdChapterIdLessonRoute,
 }

@@ -4,6 +4,7 @@ import {
   getLearnerChaptersApi,
   getLearnerCurrentLessonApi,
   getLearnerModulesApi,
+  postLessonCompleteApi,
 } from "@/api/endpoints/learner";
 import type {
   IChapter,
@@ -11,7 +12,7 @@ import type {
   ICurrentLesson,
   IModule,
 } from "@packages/definitions";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const LEARNER_KEYS = {
   billingSummary: ["billingSummary"] as const,
@@ -86,5 +87,38 @@ export function useGetLearnerCurrentLessonQuery(
     },
     enabled: !lessonId ? true : false,
     staleTime: 0,
+  });
+}
+
+export function useLessonCompleteMutation({
+  courseId,
+  moduleId,
+  chapterId,
+}: {
+  courseId: number;
+  moduleId: number;
+  chapterId: number;
+}) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (lessonId: number) => {
+      const response = await postLessonCompleteApi(lessonId);
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: LEARNER_KEYS.currentLesson(courseId, moduleId, chapterId),
+      });
+      queryClient.invalidateQueries({
+        queryKey: LEARNER_KEYS.activeCourses,
+      });
+      queryClient.invalidateQueries({
+        queryKey: LEARNER_KEYS.modules(courseId),
+      });
+      queryClient.invalidateQueries({
+        queryKey: LEARNER_KEYS.chapters(courseId, moduleId),
+      });
+    },
   });
 }

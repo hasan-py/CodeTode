@@ -35,3 +35,8 @@ export const getLearnerCurrentLessonApi = async (
   );
   return res;
 };
+
+export const postLessonCompleteApi = async (lessonId: number) => {
+  const res = await api.post(`/learner/activity/complete-lesson/${lessonId}`);
+  return res;
+};

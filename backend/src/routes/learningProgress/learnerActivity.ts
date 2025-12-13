@@ -2,6 +2,7 @@ import { Router } from "express";
 import { LearnerActivityController } from "../../controllers/learningProgress/learnerActivity";
 import { validator } from "../../ middleware/validator";
 import {
+  SIdParams,
   SLearnerChaptersParams,
   SLearnerLessonsParams,
   SLearnerModulesParams,
@@ -23,9 +24,17 @@ class LearnerActivityRoutes {
       getLearnerModulesWithProgress,
       getLearnerChaptersWithProgress,
       getLearnerCurrentLesson,
+      completeLesson,
     } = this.learnerActivityController;
 
     this.router.get("/courses", getLearnerActiveCoursesWithProgress);
+
+    this.router.post(
+      "/complete-lesson/:id",
+      validator({ params: SIdParams }),
+      completeLesson
+    );
+
     this.router.get(
       "/:courseId/modules",
       validator({ params: SLearnerModulesParams }),
