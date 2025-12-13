@@ -26,9 +26,16 @@ class LearnerActivityRoutes {
       getLearnerCurrentLesson,
       completeLesson,
       getCompletedLessonsForChapter,
+      getLearnerAccessibleLesson,
     } = this.learnerActivityController;
 
     this.router.get("/courses", getLearnerActiveCoursesWithProgress);
+
+    this.router.get(
+      "/accessible-lesson/:id",
+      validator({ params: SIdParams }), // lessonId
+      getLearnerAccessibleLesson
+    );
 
     this.router.post(
       "/complete-lesson/:id",

@@ -1,6 +1,7 @@
 import Loading from "@/components/common/loading";
 import MainLesson from "@/components/learner/lesson/mainLesson";
 import {
+  useGetLearnerAccessibleLessonQuery,
   useGetLearnerCurrentLessonQuery,
   useLessonCompleteMutation,
 } from "@/hooks/query/course/learner";
@@ -22,6 +23,9 @@ function RouteComponent() {
   const { data: currentLessonData, isLoading } =
     useGetLearnerCurrentLessonQuery(+courseId, +moduleId, +chapterId, lessonId);
 
+  const { data: accessibleLessonData } =
+    useGetLearnerAccessibleLessonQuery(lessonId);
+
   const { mutateAsync: completeLessonMutation, isPending } =
     useLessonCompleteMutation({
       courseId: +courseId,
@@ -29,7 +33,7 @@ function RouteComponent() {
       chapterId: +chapterId,
     });
 
-  const data = currentLessonData;
+  const data = lessonId ? accessibleLessonData : currentLessonData;
   const isCurrentLesson = !data?.lesson?.isLocked && !data?.lesson?.isCompleted;
 
   const onCompleteHandler = async () => {

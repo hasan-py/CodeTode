@@ -45,3 +45,8 @@ export const getCompletedLessonsApi = async (chapterId: number) => {
   const res = await api.get(`/learner/activity/completed-lessons/${chapterId}`);
   return res;
 };
+
+export const getLearnerAccessibleLessonApi = async (lessonId: number) => {
+  const res = await api.get(`/learner/activity/accessible-lesson/${lessonId}`);
+  return res;
+};

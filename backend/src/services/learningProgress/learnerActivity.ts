@@ -736,6 +736,320 @@ export class LearnerActivityService extends BaseService<LearnerActivity> {
     };
   }
 
+  async getLearnerAccessibleLesson(userId: number, lessonId: number) {
+    // Step 1: Get lesson details with hierarchy positions
+    const lessonData = await LessonRepository.createQueryBuilder("lesson")
+      .innerJoin("course", "course", "course.id = lesson.courseId")
+      .innerJoin("module", "module", "module.id = lesson.moduleId")
+      .innerJoin("chapter", "chapter", "chapter.id = lesson.chapterId")
+      .leftJoin(
+        "learner_activity",
+        "activity",
+        "activity.lessonId = lesson.id AND activity.userId = :userId",
+        { userId }
+      )
+      .select([
+        "lesson.id as lessonId",
+        "lesson.name as lessonName",
+        "lesson.description as lessonDescription",
+        "lesson.position as lessonPosition",
+        "lesson.status as lessonStatus",
+        "lesson.xpPoints as lessonXpPoints",
+        "lesson.type as lessonType",
+        "lesson.createdAt as lessonCreatedAt",
+        "lesson.courseId as courseId",
+        "lesson.moduleId as moduleId",
+        "lesson.chapterId as chapterId",
+        "course.name as courseName",
+        "module.name as moduleName",
+        "module.position as modulePosition",
+        "chapter.name as chapterName",
+        "chapter.position as chapterPosition",
+        "CASE WHEN activity.id IS NOT NULL THEN true ELSE false END as isCompleted",
+        "activity.xpEarned as activityXpEarned",
+        "activity.createdAt as activityCompletedAt",
+      ])
+      .where("lesson.id = :lessonId", { lessonId })
+      .getRawOne();
+
+    if (!lessonData) {
+      throw new Error("Lesson not found");
+    }
+
+    // Step 2: Check if user is enrolled in this course
+    const enrollment = await CourseEnrollmentRepository.findOne({
+      where: {
+        userId,
+        courseId: lessonData.courseid,
+        status: EEnrollmentStatus.ACTIVE,
+      },
+    });
+
+    if (!enrollment) {
+      throw new Error("You are not enrolled in this course");
+    }
+
+    // Step 3: Get user's current progress to determine accessibility
+    const currentProgress = await LearnerProgressRepository.findOne({
+      where: { userId, courseId: lessonData.courseid },
+      select: ["moduleId", "chapterId", "lessonId"],
+    });
+
+    // Step 4: Check if lesson is accessible
+    const isAccessible = await this.checkLessonAccessibilityFixed(
+      lessonData,
+      currentProgress,
+      lessonData.courseid
+    );
+
+    if (!isAccessible) {
+      // Return locked lesson response
+      return {
+        lesson: {
+          id: Number(lessonData.lessonid) || 0,
+          name: lessonData.lessonname,
+          description: lessonData.lessondescription,
+          position: Number(lessonData.lessonposition) || 0,
+          status: lessonData.lessonstatus,
+          xpPoints: Number(lessonData.lessonxppoints) || 0,
+          type: lessonData.lessontype,
+          createdAt: lessonData.lessoncreatedat,
+          courseId: Number(lessonData.courseid) || 0,
+          moduleId: Number(lessonData.moduleid) || 0,
+          chapterId: Number(lessonData.chapterid) || 0,
+          courseName: lessonData.coursename,
+          moduleName: lessonData.modulename,
+          chapterName: lessonData.chaptername,
+          isCompleted: false,
+          isLocked: true,
+          xpEarned: null as number | null,
+          completedAt: null as string | null,
+          contentLinks: [] as any[],
+          quizzes: [] as any[],
+        },
+        navigation: {
+          previousLesson: null as any,
+          nextLesson: null as any,
+        },
+        progress: {
+          totalLessons: 0,
+          completedLessons: 0,
+          progressPercentage: 0,
+          totalXpEarned: 0,
+        },
+      };
+    }
+
+    // Step 5: If accessible, get full lesson data (reuse existing logic from getLearnerCurrentLesson)
+    const fullLessonData = await LessonRepository.createQueryBuilder("lesson")
+      .leftJoin(
+        "lesson_content_link",
+        "contentLinks",
+        "contentLinks.lessonId = lesson.id"
+      )
+      .leftJoin("quiz", "quizzes", "quizzes.lessonId = lesson.id")
+      .leftJoin("quiz_option", "quizOptions", "quizOptions.quizId = quizzes.id")
+      .select([
+        // Content links
+        "contentLinks.id as contentLinkId",
+        "contentLinks.title as contentLinkTitle",
+        "contentLinks.url as contentLinkUrl",
+        "contentLinks.linkType as contentLinkType",
+        "contentLinks.position as contentLinkPosition",
+        // Quiz data
+        "quizzes.id as quizId",
+        "quizzes.question as quizQuestion",
+        "quizzes.explanation as quizExplanation",
+        "quizzes.position as quizPosition",
+        "quizOptions.id as optionId",
+        "quizOptions.text as optionText",
+        "quizOptions.isCorrect as optionIsCorrect",
+        "quizOptions.position as optionPosition",
+      ])
+      .where("lesson.id = :lessonId", { lessonId })
+      .getRawMany();
+
+    // Step 6: Get navigation and progress data
+    const [previousLesson, nextLesson, chapterProgress] = await Promise.all([
+      // Previous lesson
+      LessonRepository.createQueryBuilder("lesson")
+        .select([
+          "lesson.id as id",
+          "lesson.name as name",
+          "lesson.position as position",
+        ])
+        .where(
+          "lesson.chapterId = :chapterId AND lesson.position < :position AND lesson.status = :status",
+          {
+            chapterId: lessonData.chapterid,
+            position: lessonData.lessonposition,
+            status: ECourseStatus.PUBLISHED,
+          }
+        )
+        .orderBy("lesson.position", "DESC")
+        .limit(1)
+        .getRawOne(),
+      // Next lesson
+      LessonRepository.createQueryBuilder("lesson")
+        .select([
+          "lesson.id as id",
+          "lesson.name as name",
+          "lesson.position as position",
+        ])
+        .where(
+          "lesson.chapterId = :chapterId AND lesson.position > :position AND lesson.status = :status",
+          {
+            chapterId: lessonData.chapterid,
+            position: lessonData.lessonposition,
+            status: ECourseStatus.PUBLISHED,
+          }
+        )
+        .orderBy("lesson.position", "ASC")
+        .limit(1)
+        .getRawOne(),
+      // Chapter progress
+      LessonRepository.createQueryBuilder("lesson")
+        .select([
+          "COUNT(lesson.id) as totalLessons",
+          "COUNT(activity.id) as completedLessons",
+          "COALESCE(SUM(activity.xpEarned), 0) as totalXpEarned",
+        ])
+        .leftJoin(
+          "learner_activity",
+          "activity",
+          "activity.lessonId = lesson.id AND activity.userId = :userId",
+          { userId }
+        )
+        .where(
+          "lesson.chapterId = :chapterId AND lesson.status = :lessonStatus",
+          {
+            chapterId: lessonData.chapterid,
+            lessonStatus: ECourseStatus.PUBLISHED,
+          }
+        )
+        .getRawOne(),
+    ]);
+
+    // Step 7: Process content links and quizzes
+    const contentLinksData = fullLessonData
+      .filter((row) => row.contentlinkid)
+      .map((row) => ({
+        id: Number(row.contentlinkid) || 0,
+        title: row.contentlinktitle,
+        url: row.contentlinkurl,
+        linkType: row.contentlinktype,
+        position: Number(row.contentlinkposition) || 0,
+      }))
+      .filter(
+        (link, index, self) => self.findIndex((l) => l.id === link.id) === index
+      )
+      .sort((a, b) => a.position - b.position);
+
+    const contentLinks = await Promise.allSettled(
+      contentLinksData.map(async (link) => {
+        let content = null;
+        if (link.url && link.url.endsWith(".md")) {
+          content = await this.getMarkdownLessonContent(link.url);
+        }
+        return { ...link, content };
+      })
+    ).then((results) =>
+      results
+        .filter(
+          (result): result is PromiseFulfilledResult<any> =>
+            result.status === "fulfilled"
+        )
+        .map((result) => result.value)
+    );
+
+    const quizzesMap = new Map();
+    fullLessonData.forEach((row) => {
+      if (row.quizid) {
+        if (!quizzesMap.has(row.quizid)) {
+          quizzesMap.set(row.quizid, {
+            id: Number(row.quizid) || 0,
+            question: row.quizquestion,
+            explanation: row.quizexplanation,
+            position: Number(row.quizposition) || 0,
+            options: [],
+          });
+        }
+        if (row.optionid) {
+          quizzesMap.get(row.quizid).options.push({
+            id: Number(row.optionid) || 0,
+            text: row.optiontext,
+            isCorrect: row.optioniscorrect,
+            position: Number(row.optionposition) || 0,
+          });
+        }
+      }
+    });
+
+    const quizzes = Array.from(quizzesMap.values())
+      .sort((a, b) => a.position - b.position)
+      .map((quiz) => ({
+        ...quiz,
+        options: quiz.options.sort((a: any, b: any) => a.position - b.position),
+      }));
+
+    // Step 8: Return full lesson response
+    return {
+      lesson: {
+        id: Number(lessonData.lessonid) || 0,
+        name: lessonData.lessonname,
+        description: lessonData.lessondescription,
+        position: Number(lessonData.lessonposition) || 0,
+        status: lessonData.lessonstatus,
+        xpPoints: Number(lessonData.lessonxppoints) || 0,
+        type: lessonData.lessontype,
+        createdAt: lessonData.lessoncreatedat,
+        courseId: Number(lessonData.courseid) || 0,
+        moduleId: Number(lessonData.moduleid) || 0,
+        chapterId: Number(lessonData.chapterid) || 0,
+        courseName: lessonData.coursename,
+        moduleName: lessonData.modulename,
+        chapterName: lessonData.chaptername,
+        isCompleted: lessonData.iscompleted,
+        isLocked: false,
+        xpEarned: lessonData.activityxpearned
+          ? Number(lessonData.activityxpearned)
+          : null,
+        completedAt: lessonData.activitycompletedat || null,
+        contentLinks,
+        quizzes,
+      },
+      navigation: {
+        previousLesson: previousLesson
+          ? {
+              id: Number(previousLesson.id) || 0,
+              name: previousLesson.name,
+              position: Number(previousLesson.position) || 0,
+            }
+          : null,
+        nextLesson: nextLesson
+          ? {
+              id: Number(nextLesson.id) || 0,
+              name: nextLesson.name,
+              position: Number(nextLesson.position) || 0,
+            }
+          : null,
+      },
+      progress: {
+        totalLessons: Number(chapterProgress.totallessons) || 0,
+        completedLessons: Number(chapterProgress.completedlessons) || 0,
+        progressPercentage:
+          Number(chapterProgress.totallessons) > 0
+            ? Math.round(
+                (Number(chapterProgress.completedlessons) /
+                  Number(chapterProgress.totallessons)) *
+                  100
+              )
+            : 0,
+        totalXpEarned: Number(chapterProgress.totalxpearned) || 0,
+      },
+    };
+  }
+
   private async isLessonUnlocked(
     userId: number,
     lessonId: number
@@ -877,6 +1191,98 @@ export class LearnerActivityService extends BaseService<LearnerActivity> {
       moduleId: Number(nextLesson.moduleid),
       chapterId: Number(nextLesson.chapterid),
     };
+  }
+
+  private async checkLessonAccessibilityFixed(
+    lessonData: any,
+    currentProgress: any,
+    courseId: number
+  ): Promise<boolean> {
+    // If no progress exists, only first lesson of first chapter of first module is accessible
+    if (!currentProgress) {
+      const firstLesson = await LessonRepository.createQueryBuilder("lesson")
+        .innerJoin("module", "module", "module.id = lesson.moduleId")
+        .innerJoin("chapter", "chapter", "chapter.id = lesson.chapterId")
+        .select("lesson.id")
+        .where("lesson.courseId = :courseId AND lesson.status = :status", {
+          courseId,
+          status: ECourseStatus.PUBLISHED,
+        })
+        .orderBy("module.position", "ASC")
+        .addOrderBy("chapter.position", "ASC")
+        .addOrderBy("lesson.position", "ASC")
+        .limit(1)
+        .getRawOne();
+
+      return (
+        firstLesson &&
+        Number(firstLesson.lesson_id) === Number(lessonData.lessonid)
+      );
+    }
+
+    // Get positions for current progress lesson
+    const currentProgressPosition = await LessonRepository.createQueryBuilder(
+      "lesson"
+    )
+      .innerJoin("module", "module", "module.id = lesson.moduleId")
+      .innerJoin("chapter", "chapter", "chapter.id = lesson.chapterId")
+      .select([
+        "module.position as modulePosition",
+        "chapter.position as chapterPosition",
+        "lesson.position as lessonPosition",
+      ])
+      .where("lesson.id = :lessonId", { lessonId: currentProgress.lessonId })
+      .getRawOne();
+
+    if (!currentProgressPosition) {
+      return false;
+    }
+
+    // Use hierarchy comparison
+    return this.isLessonAccessibleByPosition(
+      {
+        modulePosition: lessonData.moduleposition,
+        chapterPosition: lessonData.chapterposition,
+        lessonPosition: lessonData.lessonposition,
+      },
+      {
+        modulePosition: currentProgressPosition.moduleposition,
+        chapterPosition: currentProgressPosition.chapterposition,
+        lessonPosition: currentProgressPosition.lessonposition,
+      }
+    );
+  }
+
+  private isLessonAccessibleByPosition(
+    requestedLesson: {
+      modulePosition: number;
+      chapterPosition: number;
+      lessonPosition: number;
+    },
+    currentProgress: {
+      modulePosition: number;
+      chapterPosition: number;
+      lessonPosition: number;
+    }
+  ): boolean {
+    // Compare module positions first
+    if (requestedLesson.modulePosition < currentProgress.modulePosition) {
+      return true; // Previous module - accessible
+    }
+    if (requestedLesson.modulePosition > currentProgress.modulePosition) {
+      return false; // Future module - locked
+    }
+
+    // Same module - compare chapter positions
+    if (requestedLesson.chapterPosition < currentProgress.chapterPosition) {
+      return true; // Previous chapter - accessible
+    }
+    if (requestedLesson.chapterPosition > currentProgress.chapterPosition) {
+      return false; // Future chapter - locked
+    }
+
+    // Same chapter - compare lesson positions (allow current and previous lessons)
+    return requestedLesson.lessonPosition <= currentProgress.lessonPosition;
   }
 }
 

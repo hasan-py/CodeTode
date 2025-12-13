@@ -1,5 +1,6 @@
 import {
   getCompletedLessonsApi,
+  getLearnerAccessibleLessonApi,
   getLearnerActiveCourses,
   getLearnerBillingSummaryApi,
   getLearnerChaptersApi,
@@ -25,6 +26,8 @@ export const LEARNER_KEYS = {
   currentLesson: (courseId: number, moduleId: number, chapterId: number) =>
     ["learner", "currentLesson", courseId, moduleId, chapterId] as const,
   completedLesson: ["completedLesson"] as const,
+  accessibleLesson: (lessonId?: string) =>
+    ["learner", "accessibleLesson", lessonId] as const,
 };
 
 export function useGetLearnerBillingSummaryQuery() {
@@ -135,5 +138,18 @@ export function useGetCompletedLessonsQuery(chapterId: number) {
     },
     staleTime: 0,
     enabled: !!chapterId,
+  });
+}
+
+export function useGetLearnerAccessibleLessonQuery(lessonId?: string) {
+  return useQuery({
+    queryKey: LEARNER_KEYS.accessibleLesson(lessonId),
+    queryFn: async () => {
+      if (!lessonId) return;
+      const response = await getLearnerAccessibleLessonApi(+lessonId);
+      return response.data as ICurrentLesson;
+    },
+    enabled: !!lessonId,
+    staleTime: 0,
   });
 }

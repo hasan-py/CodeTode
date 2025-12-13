@@ -82,4 +82,16 @@ export class LearnerActivityController {
       );
     sendSuccess(res, lessonCompleted);
   }
+
+  @catchErrors()
+  async getLearnerAccessibleLesson(req: Request, res: Response) {
+    const userId = +req.user.userId;
+    const lessonId = +req.params.id;
+
+    const lesson = await learnerActivityService.getLearnerAccessibleLesson(
+      userId,
+      lessonId
+    );
+    sendSuccess(res, lesson);
+  }
 }
