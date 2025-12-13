@@ -40,3 +40,8 @@ export const postLessonCompleteApi = async (lessonId: number) => {
   const res = await api.post(`/learner/activity/complete-lesson/${lessonId}`);
   return res;
 };
+
+export const getCompletedLessonsApi = async (chapterId: number) => {
+  const res = await api.get(`/learner/activity/completed-lessons/${chapterId}`);
+  return res;
+};

@@ -1,4 +1,5 @@
 import {
+  getCompletedLessonsApi,
   getLearnerActiveCourses,
   getLearnerBillingSummaryApi,
   getLearnerChaptersApi,
@@ -8,6 +9,7 @@ import {
 } from "@/api/endpoints/learner";
 import type {
   IChapter,
+  ICompletedLesson,
   ICourseEnrollmentSummary,
   ICurrentLesson,
   IModule,
@@ -22,6 +24,7 @@ export const LEARNER_KEYS = {
     ["learner", "chapters", courseId, moduleId] as const,
   currentLesson: (courseId: number, moduleId: number, chapterId: number) =>
     ["learner", "currentLesson", courseId, moduleId, chapterId] as const,
+  completedLesson: ["completedLesson"] as const,
 };
 
 export function useGetLearnerBillingSummaryQuery() {
@@ -120,5 +123,17 @@ export function useLessonCompleteMutation({
         queryKey: LEARNER_KEYS.chapters(courseId, moduleId),
       });
     },
+  });
+}
+
+export function useGetCompletedLessonsQuery(chapterId: number) {
+  return useQuery({
+    queryKey: [...LEARNER_KEYS.completedLesson, chapterId],
+    queryFn: async () => {
+      const response = await getCompletedLessonsApi(chapterId);
+      return response.data as ICompletedLesson;
+    },
+    staleTime: 0,
+    enabled: !!chapterId,
   });
 }

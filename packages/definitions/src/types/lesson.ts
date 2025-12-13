@@ -104,6 +104,24 @@ export interface ICurrentLesson {
   };
 }
 
+export interface ICompletedLesson {
+  completedLessons: {
+    lessonId: number;
+    courseId: number;
+    moduleId: number;
+    chapterId: number;
+    xpEarned: number;
+    completedAt: string;
+    lessonName: string;
+    lessonDescription: string;
+    courseName: string;
+    moduleName: string;
+    chapterName: string;
+  }[];
+  totalLessons: number;
+  totalCompleted: number;
+}
+
 export type TLessonCreate = z.infer<typeof SLessonCreate>;
 export type TLessonUpdate = z.infer<typeof SLessonUpdate>;
 

@@ -93,22 +93,22 @@ export const ChapterCard: React.FC<IChapterCardProps> = ({
       onClick={() => {
         if (status === "locked") return;
 
-        // if (
-        //   isLearner &&
-        //   ids?.courseId &&
-        //   ids?.moduleId &&
-        //   ids?.chapterId &&
-        //   progress === 100
-        // ) {
-        //   return navigate({
-        //     to: "/learner/courses/$courseId/$moduleId/$chapterId/chapter-complete",
-        //     params: {
-        //       courseId: ids.courseId.toString(),
-        //       moduleId: ids.moduleId.toString(),
-        //       chapterId: ids.chapterId.toString(),
-        //     },
-        //   });
-        // }
+        if (
+          isLearner &&
+          ids?.courseId &&
+          ids?.moduleId &&
+          ids?.chapterId &&
+          progress === 100
+        ) {
+          return navigate({
+            to: "/learner/courses/$courseId/$moduleId/$chapterId/chapter-complete",
+            params: {
+              courseId: ids.courseId.toString(),
+              moduleId: ids.moduleId.toString(),
+              chapterId: ids.chapterId.toString(),
+            },
+          });
+        }
 
         return isLearner && ids?.courseId && ids?.moduleId && ids?.chapterId
           ? navigate({

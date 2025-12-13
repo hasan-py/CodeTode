@@ -682,6 +682,60 @@ export class LearnerActivityService extends BaseService<LearnerActivity> {
     );
   }
 
+  async getCompletedLessonsForChapter(userId: number, chapterId: number) {
+    // Single optimized query with window function for millions of records
+    const result = await LearnerActivityRepository.createQueryBuilder(
+      "activity"
+    )
+      .innerJoin("lesson", "lesson", "lesson.id = activity.lessonId")
+      .innerJoin("course", "course", "course.id = activity.courseId")
+      .innerJoin("module", "module", "module.id = activity.moduleId")
+      .innerJoin("chapter", "chapter", "chapter.id = activity.chapterId")
+      .select([
+        "activity.lessonId as lessonId",
+        "activity.courseId as courseId",
+        "activity.moduleId as moduleId",
+        "activity.chapterId as chapterId",
+        "activity.xpEarned as xpEarned",
+        "activity.createdAt as completedAt",
+        "lesson.position as position",
+        "lesson.name as lessonName",
+        "lesson.description as lessonDescription",
+        "course.name as courseName",
+        "module.name as moduleName",
+        "chapter.name as chapterName",
+        "COUNT(*) OVER() as totalCompleted",
+        '(SELECT COUNT(*) FROM lesson l WHERE l."chapterId" = :chapterId) as totalLessons',
+      ])
+      .where("activity.userId = :userId", { userId })
+      .andWhere("activity.chapterId = :chapterId", { chapterId })
+      .orderBy("lesson.position", "ASC")
+      .cache(60000) // 1 minute cache
+      .getRawMany();
+
+    const completedLessons = result.map((lesson: any) => ({
+      lessonId: Number(lesson.lessonid),
+      courseId: Number(lesson.courseid),
+      moduleId: Number(lesson.moduleid),
+      chapterId: Number(lesson.chapterid),
+      xpEarned: Number(lesson.xpearned),
+      completedAt: lesson.completedat,
+      lessonName: lesson.lessonname,
+      lessonDescription: lesson.lessondescription,
+      courseName: lesson.coursename,
+      moduleName: lesson.modulename,
+      chapterName: lesson.chaptername,
+    }));
+
+    const totalLessons = result.length > 0 ? Number(result[0].totallessons) : 0;
+
+    return {
+      completedLessons,
+      totalLessons,
+      totalCompleted: result.length > 0 ? Number(result[0].totalcompleted) : 0,
+    };
+  }
+
   private async isLessonUnlocked(
     userId: number,
     lessonId: number

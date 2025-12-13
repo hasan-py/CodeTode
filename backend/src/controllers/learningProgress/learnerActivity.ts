@@ -69,4 +69,17 @@ export class LearnerActivityController {
     );
     sendSuccess(res, lessonCompletion);
   }
+
+  @catchErrors()
+  async getCompletedLessonsForChapter(req: Request, res: Response) {
+    const userId = +req.user.userId;
+    const chapterId = +req.params.id;
+
+    const lessonCompleted =
+      await learnerActivityService.getCompletedLessonsForChapter(
+        userId,
+        chapterId
+      );
+    sendSuccess(res, lessonCompleted);
+  }
 }

@@ -25,14 +25,21 @@ class LearnerActivityRoutes {
       getLearnerChaptersWithProgress,
       getLearnerCurrentLesson,
       completeLesson,
+      getCompletedLessonsForChapter,
     } = this.learnerActivityController;
 
     this.router.get("/courses", getLearnerActiveCoursesWithProgress);
 
     this.router.post(
       "/complete-lesson/:id",
-      validator({ params: SIdParams }),
+      validator({ params: SIdParams }), // lesson
       completeLesson
+    );
+
+    this.router.get(
+      "/completed-lessons/:id",
+      validator({ params: SIdParams }), // chapterId
+      getCompletedLessonsForChapter
     );
 
     this.router.get(
