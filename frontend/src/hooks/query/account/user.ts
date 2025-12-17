@@ -3,7 +3,7 @@ import { authStore } from "@/stores/authStore";
 import type { IUser, TUpdateUserProfileWithId } from "@packages/definitions";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-const PROFILE_KEYS = {
+export const PROFILE_KEYS = {
   userData: ["userData"] as const,
 };
 

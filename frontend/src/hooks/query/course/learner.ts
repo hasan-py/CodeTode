@@ -16,6 +16,7 @@ import type {
   IModule,
 } from "@packages/definitions";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { PROFILE_KEYS } from "../account/user";
 
 export const LEARNER_KEYS = {
   billingSummary: ["billingSummary"] as const,
@@ -124,6 +125,9 @@ export function useLessonCompleteMutation({
       });
       queryClient.invalidateQueries({
         queryKey: LEARNER_KEYS.chapters(courseId, moduleId),
+      });
+      queryClient.invalidateQueries({
+        queryKey: PROFILE_KEYS.userData,
       });
     },
   });

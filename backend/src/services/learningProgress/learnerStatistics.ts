@@ -58,6 +58,15 @@ export class LearnerStatisticsService extends BaseService<LearnerStatistics> {
     return await transactionalEntityManager.save(stats);
   }
 
+  async getLearnerStatistics(
+    userId: number
+  ): Promise<LearnerStatistics | null> {
+    return await LearnerStatisticsRepository.findOne({
+      where: { userId },
+      cache: 30000, // Cache for 30 seconds for high-traffic scenarios
+    });
+  }
+
   /**
    * Calculate streak based on consecutive days of activity
    * This is the core streak logic that handles all scenarios properly

@@ -1,6 +1,7 @@
 import { User } from "../../entity/account/ user";
 import { UserRepository } from "../../repository";
 import { BaseService } from "../../services/common/base";
+import { learnerStatisticsService } from "../learningProgress/learnerStatistics";
 
 export class UserService extends BaseService<User> {
   constructor() {
@@ -14,12 +15,19 @@ export class UserService extends BaseService<User> {
     });
 
     if (!user) return null;
+
+    const learnerStatistics =
+      await learnerStatisticsService.getLearnerStatistics(user.id);
+
     return {
       ...user,
       courseEnrollments:
         user.courseEnrollments?.map(
           (enrollment: any) => enrollment?.courseId
         ) || [],
+      currentStreak: learnerStatistics?.currentStreak || 0,
+      longestStreak: learnerStatistics?.longestStreak || 0,
+      totalXp: learnerStatistics?.totalXp || 0,
     };
   }
 
