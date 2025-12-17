@@ -1050,6 +1050,33 @@ export class LearnerActivityService extends BaseService<LearnerActivity> {
     };
   }
 
+  async getLearnerActivityGraph(userId: number, year?: number) {
+    const targetYear = year || new Date().getUTCFullYear();
+
+    // Use the date field for grouping (much simpler and faster)
+    const activityData = await LearnerActivityRepository.createQueryBuilder(
+      "activity"
+    )
+      .select("activity.date", "date")
+      .addSelect("SUM(activity.xpEarned)", "xpEarned")
+      .addSelect("COUNT(DISTINCT activity.lessonId)", "lessons")
+      .where("activity.userId = :userId", { userId })
+      .andWhere("EXTRACT(YEAR FROM activity.date::DATE) = :year", {
+        year: targetYear,
+      })
+      .groupBy("activity.date")
+      .orderBy("activity.date", "ASC")
+      .getRawMany();
+
+    const formattedActivityData = activityData.map((day) => ({
+      date: day.date,
+      xpEarned: parseInt(day.xpEarned) || 0,
+      lessons: parseInt(day.lessons) || 0,
+    }));
+
+    return formattedActivityData;
+  }
+
   private async isLessonUnlocked(
     userId: number,
     lessonId: number

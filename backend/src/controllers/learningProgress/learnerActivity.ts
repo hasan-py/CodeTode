@@ -93,5 +93,16 @@ export class LearnerActivityController {
       lessonId
     );
     sendSuccess(res, lesson);
+}
+
+  @catchErrors()
+  async getLearnerActivityGraph(req: Request, res: Response) {
+    const userId = +req.user.userId;
+    const year = +req.query.year || new Date().getFullYear();
+    const activityGraph = await learnerActivityService.getLearnerActivityGraph(
+      userId,
+      year
+    );
+    sendSuccess(res, activityGraph);
   }
 }

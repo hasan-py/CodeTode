@@ -27,9 +27,12 @@ class LearnerActivityRoutes {
       completeLesson,
       getCompletedLessonsForChapter,
       getLearnerAccessibleLesson,
+      getLearnerActivityGraph,
     } = this.learnerActivityController;
 
     this.router.get("/courses", getLearnerActiveCoursesWithProgress);
+
+    this.router.get("/activity-graph", getLearnerActivityGraph);
 
     this.router.get(
       "/accessible-lesson/:id",

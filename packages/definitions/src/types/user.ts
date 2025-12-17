@@ -29,5 +29,12 @@ export interface IUser {
   currentStreak?: number;
 }
 
+export interface IActivityGraph {
+  date: string;
+  activityLevel: number;
+  xpEarned: number;
+  lessons: number;
+}
+
 export type TUpdateUserProfile = z.infer<typeof SUpdateUserProfile>;
 export type TUpdateUserProfileWithId = z.infer<typeof SUpdateUserProfileWithId>;

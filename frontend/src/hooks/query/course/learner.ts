@@ -2,6 +2,7 @@ import {
   getCompletedLessonsApi,
   getLearnerAccessibleLessonApi,
   getLearnerActiveCourses,
+  getLearnerActivityGraphApi,
   getLearnerBillingSummaryApi,
   getLearnerChaptersApi,
   getLearnerCurrentLessonApi,
@@ -9,6 +10,7 @@ import {
   postLessonCompleteApi,
 } from "@/api/endpoints/learner";
 import type {
+  IActivityGraph,
   IChapter,
   ICompletedLesson,
   ICourseEnrollmentSummary,
@@ -17,6 +19,7 @@ import type {
 } from "@packages/definitions";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { PROFILE_KEYS } from "../account/user";
+import { convertDatesWithTimezoneArray } from "@/utilities/helper/convertDateWithTimezone";
 
 export const LEARNER_KEYS = {
   billingSummary: ["billingSummary"] as const,
@@ -29,6 +32,7 @@ export const LEARNER_KEYS = {
   completedLesson: ["completedLesson"] as const,
   accessibleLesson: (lessonId?: string) =>
     ["learner", "accessibleLesson", lessonId] as const,
+  leaderBoard: ["leaderboard"] as const,
 };
 
 export function useGetLearnerBillingSummaryQuery() {
@@ -129,6 +133,9 @@ export function useLessonCompleteMutation({
       queryClient.invalidateQueries({
         queryKey: PROFILE_KEYS.userData,
       });
+      queryClient.invalidateQueries({
+        queryKey: [...LEARNER_KEYS.leaderBoard, new Date().getFullYear()],
+      });
     },
   });
 }
@@ -155,5 +162,17 @@ export function useGetLearnerAccessibleLessonQuery(lessonId?: string) {
     },
     enabled: !!lessonId,
     staleTime: 0,
+  });
+}
+
+export function useGetLearnerActivityGraphQuery(year?: number) {
+  return useQuery({
+    queryKey: [...LEARNER_KEYS.leaderBoard, year],
+    queryFn: async () => {
+      const response = await getLearnerActivityGraphApi(year);
+      return convertDatesWithTimezoneArray(response.data) as IActivityGraph[];
+    },
+    staleTime: 0,
+    enabled: !!year,
   });
 }

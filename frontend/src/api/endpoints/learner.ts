@@ -50,3 +50,10 @@ export const getLearnerAccessibleLessonApi = async (lessonId: number) => {
   const res = await api.get(`/learner/activity/accessible-lesson/${lessonId}`);
   return res;
 };
+
+export const getLearnerActivityGraphApi = async (year?: number) => {
+  const res = await api.get(
+    `/learner/activity/activity-graph${year ? `?year=${year}` : ""}`
+  );
+  return res;
+};
