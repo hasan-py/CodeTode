@@ -18,6 +18,7 @@ import { Route as websiteLayoutIndexRouteImport } from './routes/(website)/_layo
 import { Route as LearnerLayoutProfileRouteImport } from './routes/learner/_layout/profile'
 import { Route as LearnerLayoutBillingRouteImport } from './routes/learner/_layout/billing'
 import { Route as AdminLayoutProfileRouteImport } from './routes/admin/_layout/profile'
+import { Route as AdminLayoutLearnersRouteImport } from './routes/admin/_layout/learners'
 import { Route as LearnerLayoutCoursesIndexRouteImport } from './routes/learner/_layout/courses/index'
 import { Route as websiteLayoutCoursesIndexRouteImport } from './routes/(website)/_layout/courses/index'
 import { Route as AdminLayoutModuleNewModuleRouteImport } from './routes/admin/_layout/module/new-module'
@@ -90,6 +91,11 @@ const LearnerLayoutBillingRoute = LearnerLayoutBillingRouteImport.update({
 const AdminLayoutProfileRoute = AdminLayoutProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => AdminLayoutRoute,
+} as any)
+const AdminLayoutLearnersRoute = AdminLayoutLearnersRouteImport.update({
+  id: '/learners',
+  path: '/learners',
   getParentRoute: () => AdminLayoutRoute,
 } as any)
 const LearnerLayoutCoursesIndexRoute =
@@ -235,6 +241,7 @@ export interface FileRoutesByFullPath {
   '/': typeof websiteLayoutIndexRoute
   '/admin': typeof AdminLayoutRouteWithChildren
   '/learner': typeof LearnerLayoutRouteWithChildren
+  '/admin/learners': typeof AdminLayoutLearnersRoute
   '/admin/profile': typeof AdminLayoutProfileRoute
   '/learner/billing': typeof LearnerLayoutBillingRoute
   '/learner/profile': typeof LearnerLayoutProfileRoute
@@ -265,6 +272,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/admin': typeof AdminLayoutRouteWithChildren
   '/learner': typeof LearnerLayoutRouteWithChildren
+  '/admin/learners': typeof AdminLayoutLearnersRoute
   '/admin/profile': typeof AdminLayoutProfileRoute
   '/learner/billing': typeof LearnerLayoutBillingRoute
   '/learner/profile': typeof LearnerLayoutProfileRoute
@@ -301,6 +309,7 @@ export interface FileRoutesById {
   '/admin/_layout': typeof AdminLayoutRouteWithChildren
   '/learner': typeof LearnerRouteWithChildren
   '/learner/_layout': typeof LearnerLayoutRouteWithChildren
+  '/admin/_layout/learners': typeof AdminLayoutLearnersRoute
   '/admin/_layout/profile': typeof AdminLayoutProfileRoute
   '/learner/_layout/billing': typeof LearnerLayoutBillingRoute
   '/learner/_layout/profile': typeof LearnerLayoutProfileRoute
@@ -335,6 +344,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/learner'
+    | '/admin/learners'
     | '/admin/profile'
     | '/learner/billing'
     | '/learner/profile'
@@ -365,6 +375,7 @@ export interface FileRouteTypes {
   to:
     | '/admin'
     | '/learner'
+    | '/admin/learners'
     | '/admin/profile'
     | '/learner/billing'
     | '/learner/profile'
@@ -400,6 +411,7 @@ export interface FileRouteTypes {
     | '/admin/_layout'
     | '/learner'
     | '/learner/_layout'
+    | '/admin/_layout/learners'
     | '/admin/_layout/profile'
     | '/learner/_layout/billing'
     | '/learner/_layout/profile'
@@ -505,6 +517,13 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/admin/profile'
       preLoaderRoute: typeof AdminLayoutProfileRouteImport
+      parentRoute: typeof AdminLayoutRoute
+    }
+    '/admin/_layout/learners': {
+      id: '/admin/_layout/learners'
+      path: '/learners'
+      fullPath: '/admin/learners'
+      preLoaderRoute: typeof AdminLayoutLearnersRouteImport
       parentRoute: typeof AdminLayoutRoute
     }
     '/learner/_layout/courses/': {
@@ -704,6 +723,7 @@ const websiteRouteWithChildren =
   websiteRoute._addFileChildren(websiteRouteChildren)
 
 interface AdminLayoutRouteChildren {
+  AdminLayoutLearnersRoute: typeof AdminLayoutLearnersRoute
   AdminLayoutProfileRoute: typeof AdminLayoutProfileRoute
   AdminLayoutChapterAllChaptersRoute: typeof AdminLayoutChapterAllChaptersRoute
   AdminLayoutChapterNewChapterRoute: typeof AdminLayoutChapterNewChapterRoute
@@ -722,6 +742,7 @@ interface AdminLayoutRouteChildren {
 }
 
 const AdminLayoutRouteChildren: AdminLayoutRouteChildren = {
+  AdminLayoutLearnersRoute: AdminLayoutLearnersRoute,
   AdminLayoutProfileRoute: AdminLayoutProfileRoute,
   AdminLayoutChapterAllChaptersRoute: AdminLayoutChapterAllChaptersRoute,
   AdminLayoutChapterNewChapterRoute: AdminLayoutChapterNewChapterRoute,

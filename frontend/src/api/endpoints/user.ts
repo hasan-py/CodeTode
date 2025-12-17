@@ -10,3 +10,8 @@ export const putUpdateProfileApi = async (data: TUpdateUserProfileWithId) => {
   const res = await api.put("/profile", data);
   return res;
 };
+
+export const getAllActiveLearnerApi = async () => {
+  const res = await api.get("/admin/user/learners");
+  return res;
+};

@@ -1,6 +1,6 @@
 import { Logger } from "@packages/logger";
 import express, { Request, Response } from "express";
-import { UserRouter } from "./account/user";
+import { AdminUserRouter, UserRouter } from "./account/user";
 import { AuthRouter } from "./account/auth";
 import {
   authenticateAdmin,
@@ -65,5 +65,6 @@ export class Routes {
     app.use(`/api/admin/module`, authenticateAdmin, ModuleRouter);
     app.use(`/api/admin/chapter`, authenticateAdmin, ChapterRouter);
     app.use(`/api/admin/lesson`, authenticateAdmin, LessonRouter);
+    app.use(`/api/admin/user`, authenticateAdmin, AdminUserRouter);
   }
 }

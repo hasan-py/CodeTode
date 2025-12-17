@@ -1,10 +1,20 @@
-import { getUserProfileApi, putUpdateProfileApi } from "@/api/endpoints/user";
+import {
+  getAllActiveLearnerApi,
+  getUserProfileApi,
+  putUpdateProfileApi,
+} from "@/api/endpoints/user";
 import { authStore } from "@/stores/authStore";
-import type { IUser, TUpdateUserProfileWithId } from "@packages/definitions";
+import { formattedLearnerStats } from "@/utilities/helper/learnerStats";
+import type {
+  IUser,
+  TLearnerStats,
+  TUpdateUserProfileWithId,
+} from "@packages/definitions";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 export const PROFILE_KEYS = {
   userData: ["userData"] as const,
+  learner: ["learner"] as const,
 };
 
 export function useGetUserProfileQuery() {
@@ -42,5 +52,16 @@ export function useUpdateProfileMutation() {
         updateUser(data);
       }
     },
+  });
+}
+
+export function useGetAllLearnerQuery() {
+  return useQuery({
+    queryKey: PROFILE_KEYS.learner,
+    queryFn: async () => {
+      const response = await getAllActiveLearnerApi();
+      return formattedLearnerStats(response.data as TLearnerStats[]);
+    },
+    staleTime: 0,
   });
 }

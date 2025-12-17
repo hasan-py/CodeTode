@@ -33,4 +33,10 @@ export class UserController {
 
     sendSuccess(res, updatedUser);
   }
+
+  @catchErrors("Failed to retrieve users")
+  async getAllActiveLearner(req: Request, res: Response) {
+    const users = await userService.getAllActiveLearner();
+    sendSuccess(res, users);
+  }
 }

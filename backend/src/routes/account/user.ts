@@ -5,11 +5,15 @@ import { UserController } from "../../controllers/account/user";
 
 class UserRoutes {
   router: Router;
+  adminRouter: Router;
+
   private userController: UserController = new UserController();
 
   constructor() {
     this.router = Router();
+    this.adminRouter = Router();
     this.routes();
+    this.adminRoutes();
   }
 
   routes() {
@@ -22,6 +26,12 @@ class UserRoutes {
       updateUserProfile
     );
   }
+
+  adminRoutes() {
+    const { getAllActiveLearner } = this.userController;
+    this.adminRouter.get("/learners", getAllActiveLearner);
+  }
 }
 
 export const UserRouter = new UserRoutes().router;
+export const AdminUserRouter = new UserRoutes().adminRouter;
