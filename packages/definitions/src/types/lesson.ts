@@ -122,6 +122,22 @@ export interface ICompletedLesson {
   totalCompleted: number;
 }
 
+export interface IDashboardStatistics {
+  monthlySales: Array<{
+    name: string;
+    sales: number;
+  }>;
+  courseEnrollments: Array<{
+    name: string;
+    students: number;
+  }>;
+  completionRate: Array<{
+    name: string;
+    value: number;
+    color: string;
+  }>;
+}
+
 export type TLessonCreate = z.infer<typeof SLessonCreate>;
 export type TLessonUpdate = z.infer<typeof SLessonUpdate>;
 

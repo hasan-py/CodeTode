@@ -7,6 +7,7 @@ import {
   getLearnerChaptersApi,
   getLearnerCurrentLessonApi,
   getLearnerModulesApi,
+  getStatisticsDataApi,
   postLessonCompleteApi,
 } from "@/api/endpoints/learner";
 import type {
@@ -15,6 +16,7 @@ import type {
   ICompletedLesson,
   ICourseEnrollmentSummary,
   ICurrentLesson,
+  IDashboardStatistics,
   IModule,
 } from "@packages/definitions";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -33,6 +35,7 @@ export const LEARNER_KEYS = {
   accessibleLesson: (lessonId?: string) =>
     ["learner", "accessibleLesson", lessonId] as const,
   leaderBoard: ["leaderboard"] as const,
+  statistics: ["statistics"] as const,
 };
 
 export function useGetLearnerBillingSummaryQuery(isAdmin?: boolean) {
@@ -174,5 +177,15 @@ export function useGetLearnerActivityGraphQuery(year?: number) {
     },
     staleTime: 0,
     enabled: !!year,
+  });
+}
+
+export function useGetStatisticsDataQuery() {
+  return useQuery({
+    queryKey: [...LEARNER_KEYS.statistics],
+    queryFn: async () => {
+      const response = await getStatisticsDataApi();
+      return response.data as IDashboardStatistics;
+    },
   });
 }

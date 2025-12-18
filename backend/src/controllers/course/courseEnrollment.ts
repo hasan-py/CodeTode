@@ -34,6 +34,12 @@ export class CourseEnrollmentController {
     );
     sendSuccess(res, courses);
   }
+
+  @catchErrors()
+  async getStatisticsData(req: Request, res: Response) {
+    const statistics = await courseEnrollmentService.statisticsData();
+    sendSuccess(res, statistics);
+  }
 }
 
 export const courseEnrollmentController = new CourseEnrollmentController();

@@ -59,3 +59,8 @@ export const getLearnerActivityGraphApi = async (year?: number) => {
   );
   return res;
 };
+
+export const getStatisticsDataApi = async () => {
+  const res = await api.get("/admin/user/statistics");
+  return res;
+};

@@ -1,13 +1,16 @@
-import { SIdParams, SUpdateUserProfileWithId } from "@packages/definitions";
+import { SUpdateUserProfileWithId } from "@packages/definitions";
 import { Router } from "express";
 import { validator } from "../../ middleware/validator";
 import { UserController } from "../../controllers/account/user";
+import { CourseEnrollmentController } from "../../controllers/course/courseEnrollment";
 
 class UserRoutes {
   router: Router;
   adminRouter: Router;
 
   private userController: UserController = new UserController();
+  private userEnrolledCourse: CourseEnrollmentController =
+    new CourseEnrollmentController();
 
   constructor() {
     this.router = Router();
@@ -29,7 +32,10 @@ class UserRoutes {
 
   adminRoutes() {
     const { getAllActiveLearner } = this.userController;
+    const { getStatisticsData } = this.userEnrolledCourse;
+
     this.adminRouter.get("/learners", getAllActiveLearner);
+    this.adminRouter.get("/statistics", getStatisticsData);
   }
 }
 
