@@ -2,7 +2,7 @@ import z from "zod";
 import { SCourseCreate } from "../validations";
 import type { IPaginatedResult, IProgress } from "./common";
 import type { IModule } from "./module";
-import { IUser } from "./user";
+import type { IUser } from "./user";
 
 export enum ECourseStatus {
   DRAFT = "draft",

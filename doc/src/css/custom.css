@@ -1,0 +1,30 @@
+/**
+ * Any CSS included here will be global. The classic template
+ * bundles Infima by default. Infima is a CSS framework designed to
+ * work well for content-centric websites.
+ */
+
+/* Tailwind CSS v3 Indigo Colors */
+:root {
+  --ifm-color-primary: #4338ca; /* indigo-700 */
+  --ifm-color-primary-dark: #3730a3; /* indigo-800 */
+  --ifm-color-primary-darker: #312e81; /* indigo-900 */
+  --ifm-color-primary-darkest: #1e1b4b; /* indigo-950 */
+  --ifm-color-primary-light: #4f46e5; /* indigo-600 */
+  --ifm-color-primary-lighter: #6366f1; /* indigo-500 */
+  --ifm-color-primary-lightest: #818cf8; /* indigo-400 */
+  --ifm-code-font-size: 95%;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+}
+
+/* For readability concerns, using lighter indigo shades in dark mode */
+[data-theme='dark'] {
+  --ifm-color-primary: #4f46e5; /* indigo-600 */
+  --ifm-color-primary-dark: #4338ca; /* indigo-700 */
+  --ifm-color-primary-darker: #3730a3; /* indigo-800 */
+  --ifm-color-primary-darkest: #312e81; /* indigo-900 */
+  --ifm-color-primary-light: #a5b4fc; /* indigo-300 */
+  --ifm-color-primary-lighter: #c7d2fe; /* indigo-200 */
+  --ifm-color-primary-lightest: #e0e7ff; /* indigo-100 */
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+}

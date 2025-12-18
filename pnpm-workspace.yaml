@@ -2,3 +2,4 @@ packages:
   - "packages/*"
   - "frontend"
   - "backend"
+  - "doc"
