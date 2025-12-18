@@ -35,11 +35,11 @@ export const LEARNER_KEYS = {
   leaderBoard: ["leaderboard"] as const,
 };
 
-export function useGetLearnerBillingSummaryQuery() {
+export function useGetLearnerBillingSummaryQuery(isAdmin?: boolean) {
   return useQuery({
     queryKey: LEARNER_KEYS.billingSummary,
     queryFn: async () => {
-      const response = await getLearnerBillingSummaryApi();
+      const response = await getLearnerBillingSummaryApi(isAdmin);
       return response.data as ICourseEnrollmentSummary[];
     },
   });

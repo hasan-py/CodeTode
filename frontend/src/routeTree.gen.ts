@@ -23,6 +23,7 @@ import { Route as LearnerLayoutCoursesIndexRouteImport } from './routes/learner/
 import { Route as websiteLayoutCoursesIndexRouteImport } from './routes/(website)/_layout/courses/index'
 import { Route as AdminLayoutModuleNewModuleRouteImport } from './routes/admin/_layout/module/new-module'
 import { Route as AdminLayoutModuleAllModulesRouteImport } from './routes/admin/_layout/module/all-modules'
+import { Route as AdminLayoutDashboardOverviewRouteImport } from './routes/admin/_layout/dashboard/overview'
 import { Route as AdminLayoutCourseNewCourseRouteImport } from './routes/admin/_layout/course/new-course'
 import { Route as AdminLayoutCourseAllCoursesRouteImport } from './routes/admin/_layout/course/all-courses'
 import { Route as AdminLayoutChapterNewChapterRouteImport } from './routes/admin/_layout/chapter/new-chapter'
@@ -120,6 +121,12 @@ const AdminLayoutModuleAllModulesRoute =
   AdminLayoutModuleAllModulesRouteImport.update({
     id: '/module/all-modules',
     path: '/module/all-modules',
+    getParentRoute: () => AdminLayoutRoute,
+  } as any)
+const AdminLayoutDashboardOverviewRoute =
+  AdminLayoutDashboardOverviewRouteImport.update({
+    id: '/dashboard/overview',
+    path: '/dashboard/overview',
     getParentRoute: () => AdminLayoutRoute,
   } as any)
 const AdminLayoutCourseNewCourseRoute =
@@ -251,6 +258,7 @@ export interface FileRoutesByFullPath {
   '/admin/chapter/new-chapter': typeof AdminLayoutChapterNewChapterRoute
   '/admin/course/all-courses': typeof AdminLayoutCourseAllCoursesRoute
   '/admin/course/new-course': typeof AdminLayoutCourseNewCourseRoute
+  '/admin/dashboard/overview': typeof AdminLayoutDashboardOverviewRoute
   '/admin/module/all-modules': typeof AdminLayoutModuleAllModulesRoute
   '/admin/module/new-module': typeof AdminLayoutModuleNewModuleRoute
   '/courses': typeof websiteLayoutCoursesIndexRoute
@@ -283,6 +291,7 @@ export interface FileRoutesByTo {
   '/admin/chapter/new-chapter': typeof AdminLayoutChapterNewChapterRoute
   '/admin/course/all-courses': typeof AdminLayoutCourseAllCoursesRoute
   '/admin/course/new-course': typeof AdminLayoutCourseNewCourseRoute
+  '/admin/dashboard/overview': typeof AdminLayoutDashboardOverviewRoute
   '/admin/module/all-modules': typeof AdminLayoutModuleAllModulesRoute
   '/admin/module/new-module': typeof AdminLayoutModuleNewModuleRoute
   '/courses': typeof websiteLayoutCoursesIndexRoute
@@ -320,6 +329,7 @@ export interface FileRoutesById {
   '/admin/_layout/chapter/new-chapter': typeof AdminLayoutChapterNewChapterRoute
   '/admin/_layout/course/all-courses': typeof AdminLayoutCourseAllCoursesRoute
   '/admin/_layout/course/new-course': typeof AdminLayoutCourseNewCourseRoute
+  '/admin/_layout/dashboard/overview': typeof AdminLayoutDashboardOverviewRoute
   '/admin/_layout/module/all-modules': typeof AdminLayoutModuleAllModulesRoute
   '/admin/_layout/module/new-module': typeof AdminLayoutModuleNewModuleRoute
   '/(website)/_layout/courses/': typeof websiteLayoutCoursesIndexRoute
@@ -354,6 +364,7 @@ export interface FileRouteTypes {
     | '/admin/chapter/new-chapter'
     | '/admin/course/all-courses'
     | '/admin/course/new-course'
+    | '/admin/dashboard/overview'
     | '/admin/module/all-modules'
     | '/admin/module/new-module'
     | '/courses'
@@ -386,6 +397,7 @@ export interface FileRouteTypes {
     | '/admin/chapter/new-chapter'
     | '/admin/course/all-courses'
     | '/admin/course/new-course'
+    | '/admin/dashboard/overview'
     | '/admin/module/all-modules'
     | '/admin/module/new-module'
     | '/courses'
@@ -422,6 +434,7 @@ export interface FileRouteTypes {
     | '/admin/_layout/chapter/new-chapter'
     | '/admin/_layout/course/all-courses'
     | '/admin/_layout/course/new-course'
+    | '/admin/_layout/dashboard/overview'
     | '/admin/_layout/module/all-modules'
     | '/admin/_layout/module/new-module'
     | '/(website)/_layout/courses/'
@@ -552,6 +565,13 @@ declare module '@tanstack/react-router' {
       path: '/module/all-modules'
       fullPath: '/admin/module/all-modules'
       preLoaderRoute: typeof AdminLayoutModuleAllModulesRouteImport
+      parentRoute: typeof AdminLayoutRoute
+    }
+    '/admin/_layout/dashboard/overview': {
+      id: '/admin/_layout/dashboard/overview'
+      path: '/dashboard/overview'
+      fullPath: '/admin/dashboard/overview'
+      preLoaderRoute: typeof AdminLayoutDashboardOverviewRouteImport
       parentRoute: typeof AdminLayoutRoute
     }
     '/admin/_layout/course/new-course': {
@@ -729,6 +749,7 @@ interface AdminLayoutRouteChildren {
   AdminLayoutChapterNewChapterRoute: typeof AdminLayoutChapterNewChapterRoute
   AdminLayoutCourseAllCoursesRoute: typeof AdminLayoutCourseAllCoursesRoute
   AdminLayoutCourseNewCourseRoute: typeof AdminLayoutCourseNewCourseRoute
+  AdminLayoutDashboardOverviewRoute: typeof AdminLayoutDashboardOverviewRoute
   AdminLayoutModuleAllModulesRoute: typeof AdminLayoutModuleAllModulesRoute
   AdminLayoutModuleNewModuleRoute: typeof AdminLayoutModuleNewModuleRoute
   AdminLayoutChapterChapterIdEditChapterRoute: typeof AdminLayoutChapterChapterIdEditChapterRoute
@@ -748,6 +769,7 @@ const AdminLayoutRouteChildren: AdminLayoutRouteChildren = {
   AdminLayoutChapterNewChapterRoute: AdminLayoutChapterNewChapterRoute,
   AdminLayoutCourseAllCoursesRoute: AdminLayoutCourseAllCoursesRoute,
   AdminLayoutCourseNewCourseRoute: AdminLayoutCourseNewCourseRoute,
+  AdminLayoutDashboardOverviewRoute: AdminLayoutDashboardOverviewRoute,
   AdminLayoutModuleAllModulesRoute: AdminLayoutModuleAllModulesRoute,
   AdminLayoutModuleNewModuleRoute: AdminLayoutModuleNewModuleRoute,
   AdminLayoutChapterChapterIdEditChapterRoute:

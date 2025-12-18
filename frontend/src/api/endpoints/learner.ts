@@ -1,7 +1,9 @@
 import { api } from "..";
 
-export const getLearnerBillingSummaryApi = async () => {
-  const res = await api.get("/learner/enrollment/courses");
+export const getLearnerBillingSummaryApi = async (isAdmin?: boolean) => {
+  const res = isAdmin
+    ? await api.get("/admin/learner-enrollment/courses")
+    : await api.get("/learner/enrollment/courses");
   return res;
 };
 

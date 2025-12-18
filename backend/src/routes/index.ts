@@ -66,5 +66,10 @@ export class Routes {
     app.use(`/api/admin/chapter`, authenticateAdmin, ChapterRouter);
     app.use(`/api/admin/lesson`, authenticateAdmin, LessonRouter);
     app.use(`/api/admin/user`, authenticateAdmin, AdminUserRouter);
+    app.use(
+      `/api/admin/learner-enrollment`,
+      authenticateAdmin,
+      LearnerCourseEnrollmentRouter
+    );
   }
 }
