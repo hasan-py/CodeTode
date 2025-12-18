@@ -64,3 +64,8 @@ export const getStatisticsDataApi = async () => {
   const res = await api.get("/admin/user/statistics");
   return res;
 };
+
+export const getLeaderboardApi = async () => {
+  const res = await api.get(`/public/learner/leaderboard`);
+  return res;
+};

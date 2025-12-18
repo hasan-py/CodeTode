@@ -16,7 +16,10 @@ import {
   CourseEnrollmentRouter,
   LearnerCourseEnrollmentRouter,
 } from "./course/courseEnrollment";
-import { LearnerActivityRouter } from "./learningProgress/learnerActivity";
+import {
+  LearnerActivityPublicRouter,
+  LearnerActivityRouter,
+} from "./learningProgress/learnerActivity";
 
 export class Routes {
   static Endpoints(app: express.Application) {
@@ -48,6 +51,7 @@ export class Routes {
   static publicEndpoints(app: express.Application) {
     app.use(`/api/course`, CoursePublicRouter);
     app.use(`/webhooks/enrollment`, CourseEnrollmentRouter);
+    app.use("/api/public/learner", LearnerActivityPublicRouter);
   }
 
   static learnerEndpoints(app: express.Application) {

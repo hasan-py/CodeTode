@@ -10,12 +10,20 @@ import {
 
 class LearnerActivityRoutes {
   router: Router;
+  publicRouter: Router;
+
   learnerActivityController: LearnerActivityController;
 
   constructor() {
     this.router = Router();
+    this.publicRouter = Router();
     this.learnerActivityController = new LearnerActivityController();
-    this.routes();
+    this.publicRoutes();
+  }
+
+  publicRoutes() {
+    const { getLeaderboard } = this.learnerActivityController;
+    this.publicRouter.get("/leaderboard", getLeaderboard);
   }
 
   routes() {
@@ -71,3 +79,5 @@ class LearnerActivityRoutes {
 }
 
 export const LearnerActivityRouter = new LearnerActivityRoutes().router;
+export const LearnerActivityPublicRouter = new LearnerActivityRoutes()
+  .publicRouter;

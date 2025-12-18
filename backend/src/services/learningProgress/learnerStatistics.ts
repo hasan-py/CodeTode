@@ -2,6 +2,7 @@ import { EntityManager } from "typeorm";
 import { LearnerStatistics } from "../../entity/learningProgress/learnerStatistics";
 import { LearnerStatisticsRepository } from "../../repository";
 import { BaseService } from "../common/base";
+import { Cacheable } from "../../decorators/cacheDecorator";
 
 export class LearnerStatisticsService extends BaseService<LearnerStatistics> {
   constructor() {
@@ -65,6 +66,38 @@ export class LearnerStatisticsService extends BaseService<LearnerStatistics> {
       where: { userId },
       cache: 30000, // Cache for 30 seconds for high-traffic scenarios
     });
+  }
+
+  @Cacheable({
+    key: "products:leaderboard",
+    ttl: "oneHour",
+  })
+  async getLeaderboard(
+    limit: number = 100,
+    sortBy: "totalXp" | "currentStreak" | "longestStreak" = "totalXp"
+  ): Promise<
+    Array<
+      { userId: number; name: string; imageUrl: string | null } & Pick<
+        LearnerStatistics,
+        "totalXp" | "currentStreak" | "longestStreak"
+      >
+    >
+  > {
+    return await LearnerStatisticsRepository.createQueryBuilder("stats")
+      .innerJoin("user", "user", "user.id = stats.userId")
+      .select([
+        'stats.userId as "userId"',
+        'user.name as "name"',
+        'user.imageUrl as "imageUrl"',
+        'stats.totalXp as "totalXp"',
+        'stats.currentStreak as "currentStreak"',
+        'stats.longestStreak as "longestStreak"',
+      ])
+      .where("user.status = 'active'")
+      .orderBy(`stats.${sortBy}`, "DESC")
+      .limit(limit)
+      .cache(60000)
+      .getRawMany();
   }
 
   /**

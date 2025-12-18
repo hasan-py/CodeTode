@@ -91,5 +91,14 @@ export type TAggregatedLearnerStats = {
   totalSpent: number;
 };
 
+export interface ILeaderboard {
+  currentStreak: number;
+  imageUrl: string | null;
+  longestStreak: number;
+  name: string;
+  totalXp: number;
+  userId: number;
+}
+
 export type TUpdateUserProfile = z.infer<typeof SUpdateUserProfile>;
 export type TUpdateUserProfileWithId = z.infer<typeof SUpdateUserProfileWithId>;

@@ -19,6 +19,7 @@ import { Route as LearnerLayoutProfileRouteImport } from './routes/learner/_layo
 import { Route as LearnerLayoutBillingRouteImport } from './routes/learner/_layout/billing'
 import { Route as AdminLayoutProfileRouteImport } from './routes/admin/_layout/profile'
 import { Route as AdminLayoutLearnersRouteImport } from './routes/admin/_layout/learners'
+import { Route as websiteLayoutLeaderboardRouteImport } from './routes/(website)/_layout/leaderboard'
 import { Route as LearnerLayoutCoursesIndexRouteImport } from './routes/learner/_layout/courses/index'
 import { Route as websiteLayoutCoursesIndexRouteImport } from './routes/(website)/_layout/courses/index'
 import { Route as AdminLayoutModuleNewModuleRouteImport } from './routes/admin/_layout/module/new-module'
@@ -100,6 +101,12 @@ const AdminLayoutLearnersRoute = AdminLayoutLearnersRouteImport.update({
   path: '/learners',
   getParentRoute: () => AdminLayoutRoute,
 } as any)
+const websiteLayoutLeaderboardRoute =
+  websiteLayoutLeaderboardRouteImport.update({
+    id: '/leaderboard',
+    path: '/leaderboard',
+    getParentRoute: () => websiteLayoutRoute,
+  } as any)
 const LearnerLayoutCoursesIndexRoute =
   LearnerLayoutCoursesIndexRouteImport.update({
     id: '/courses/',
@@ -255,6 +262,7 @@ export interface FileRoutesByFullPath {
   '/': typeof websiteLayoutIndexRoute
   '/admin': typeof AdminLayoutRouteWithChildren
   '/learner': typeof LearnerLayoutRouteWithChildren
+  '/leaderboard': typeof websiteLayoutLeaderboardRoute
   '/admin/learners': typeof AdminLayoutLearnersRoute
   '/admin/profile': typeof AdminLayoutProfileRoute
   '/learner/billing': typeof LearnerLayoutBillingRoute
@@ -288,6 +296,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/admin': typeof AdminLayoutRouteWithChildren
   '/learner': typeof LearnerLayoutRouteWithChildren
+  '/leaderboard': typeof websiteLayoutLeaderboardRoute
   '/admin/learners': typeof AdminLayoutLearnersRoute
   '/admin/profile': typeof AdminLayoutProfileRoute
   '/learner/billing': typeof LearnerLayoutBillingRoute
@@ -327,6 +336,7 @@ export interface FileRoutesById {
   '/admin/_layout': typeof AdminLayoutRouteWithChildren
   '/learner': typeof LearnerRouteWithChildren
   '/learner/_layout': typeof LearnerLayoutRouteWithChildren
+  '/(website)/_layout/leaderboard': typeof websiteLayoutLeaderboardRoute
   '/admin/_layout/learners': typeof AdminLayoutLearnersRoute
   '/admin/_layout/profile': typeof AdminLayoutProfileRoute
   '/learner/_layout/billing': typeof LearnerLayoutBillingRoute
@@ -364,6 +374,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/learner'
+    | '/leaderboard'
     | '/admin/learners'
     | '/admin/profile'
     | '/learner/billing'
@@ -397,6 +408,7 @@ export interface FileRouteTypes {
   to:
     | '/admin'
     | '/learner'
+    | '/leaderboard'
     | '/admin/learners'
     | '/admin/profile'
     | '/learner/billing'
@@ -435,6 +447,7 @@ export interface FileRouteTypes {
     | '/admin/_layout'
     | '/learner'
     | '/learner/_layout'
+    | '/(website)/_layout/leaderboard'
     | '/admin/_layout/learners'
     | '/admin/_layout/profile'
     | '/learner/_layout/billing'
@@ -551,6 +564,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/learners'
       preLoaderRoute: typeof AdminLayoutLearnersRouteImport
       parentRoute: typeof AdminLayoutRoute
+    }
+    '/(website)/_layout/leaderboard': {
+      id: '/(website)/_layout/leaderboard'
+      path: '/leaderboard'
+      fullPath: '/leaderboard'
+      preLoaderRoute: typeof websiteLayoutLeaderboardRouteImport
+      parentRoute: typeof websiteLayoutRoute
     }
     '/learner/_layout/courses/': {
       id: '/learner/_layout/courses/'
@@ -731,6 +751,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface websiteLayoutRouteChildren {
+  websiteLayoutLeaderboardRoute: typeof websiteLayoutLeaderboardRoute
   websiteLayoutIndexRoute: typeof websiteLayoutIndexRoute
   websiteLayoutauthGithubCallbackRoute: typeof websiteLayoutauthGithubCallbackRoute
   websiteLayoutauthSigninRoute: typeof websiteLayoutauthSigninRoute
@@ -739,6 +760,7 @@ interface websiteLayoutRouteChildren {
 }
 
 const websiteLayoutRouteChildren: websiteLayoutRouteChildren = {
+  websiteLayoutLeaderboardRoute: websiteLayoutLeaderboardRoute,
   websiteLayoutIndexRoute: websiteLayoutIndexRoute,
   websiteLayoutauthGithubCallbackRoute: websiteLayoutauthGithubCallbackRoute,
   websiteLayoutauthSigninRoute: websiteLayoutauthSigninRoute,

@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { catchErrors } from "../../decorators/catchErrors";
 import { learnerActivityService } from "../../services/learningProgress/learnerActivity";
 import { sendSuccess } from "../../utils/response";
+import { learnerStatisticsService } from "../../services/learningProgress/learnerStatistics";
 
 export class LearnerActivityController {
   @catchErrors()
@@ -93,7 +94,7 @@ export class LearnerActivityController {
       lessonId
     );
     sendSuccess(res, lesson);
-}
+  }
 
   @catchErrors()
   async getLearnerActivityGraph(req: Request, res: Response) {
@@ -104,5 +105,11 @@ export class LearnerActivityController {
       year
     );
     sendSuccess(res, activityGraph);
+  }
+
+  @catchErrors()
+  async getLeaderboard(req: Request, res: Response) {
+    const leaderboard = await learnerStatisticsService.getLeaderboard();
+    sendSuccess(res, leaderboard);
   }
 }

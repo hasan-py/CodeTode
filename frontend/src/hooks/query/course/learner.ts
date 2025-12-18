@@ -1,5 +1,6 @@
 import {
   getCompletedLessonsApi,
+  getLeaderboardApi,
   getLearnerAccessibleLessonApi,
   getLearnerActiveCourses,
   getLearnerActivityGraphApi,
@@ -17,6 +18,7 @@ import type {
   ICourseEnrollmentSummary,
   ICurrentLesson,
   IDashboardStatistics,
+  ILeaderboard,
   IModule,
 } from "@packages/definitions";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -187,5 +189,16 @@ export function useGetStatisticsDataQuery() {
       const response = await getStatisticsDataApi();
       return response.data as IDashboardStatistics;
     },
+  });
+}
+
+export function useGetLeaderboardQuery() {
+  return useQuery({
+    queryKey: [...LEARNER_KEYS.leaderBoard],
+    queryFn: async () => {
+      const response = await getLeaderboardApi();
+      return response.data as ILeaderboard[];
+    },
+    staleTime: 0,
   });
 }
