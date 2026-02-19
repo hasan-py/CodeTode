@@ -19,6 +19,7 @@ class LearnerActivityRoutes {
     this.publicRouter = Router();
     this.learnerActivityController = new LearnerActivityController();
     this.publicRoutes();
+    this.routes();
   }
 
   publicRoutes() {
