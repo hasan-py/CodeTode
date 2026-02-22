@@ -1,5 +1,5 @@
 import { EUserRole, EUserStatus } from "@packages/definitions";
-import { User } from "../../entity/account/ user";
+import { User } from "../../entity/account/user";
 import { UserRepository } from "../../repository";
 import { BaseService } from "../../services/common/base";
 import { learnerStatisticsService } from "../learningProgress/learnerStatistics";

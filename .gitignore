@@ -24,4 +24,4 @@ dist-ssr
 *.sw?
 .env
 
-/course
+/backend/src/seed/data/complete-seed-data.json

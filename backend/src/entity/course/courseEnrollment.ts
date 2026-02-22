@@ -8,7 +8,7 @@ import {
   UpdateDateColumn,
 } from "typeorm";
 import { Course } from "./course";
-import { User } from "../account/ user";
+import { User } from "../account/user";
 import { EEnrollmentStatus } from "@packages/definitions";
 
 @Entity()

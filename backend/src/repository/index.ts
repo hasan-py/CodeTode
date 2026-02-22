@@ -1,5 +1,5 @@
 import { AppDataSource } from "../config/dataSource";
-import { User } from "../entity/account/ user";
+import { User } from "../entity/account/user";
 import { RefreshToken } from "../entity/account/refreshToken";
 import { Chapter } from "../entity/course/chapter";
 import { Course } from "../entity/course/course";

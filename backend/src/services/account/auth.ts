@@ -7,7 +7,7 @@ import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from "uuid";
 import { RefreshToken } from "../../entity/account/refreshToken";
 import { RefreshTokenRepository, UserRepository } from "../../repository";
-import { User } from "../../entity/account/ user";
+import { User } from "../../entity/account/user";
 
 const TOKEN_CONFIG = {
   accessTokenExpiration: process.env.ACCESS_TOKEN_EXPIRES_IN || "60s",
