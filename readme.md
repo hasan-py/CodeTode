@@ -396,6 +396,12 @@ pnpm --filter backend start
 
 Set environment variables in Render dashboard.
 
+Make sure add this value in render env to get markdown content list:
+
+```
+COURSES_PATH=/opt/render/project/src/backend/course
+```
+
 ---
 
 # Frontend Deployment (Netlify)

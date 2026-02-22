@@ -55,7 +55,7 @@ export class Routes {
   }
 
   static learnerEndpoints(app: express.Application) {
-    app.use(`/api/learner/enrollment`, LearnerCourseEnrollmentRouter);
+    app.use(`/api/learner/enrollment`, authenticateLearner, LearnerCourseEnrollmentRouter);
     app.use(
       `/api/learner/activity`,
       authenticateLearner,
