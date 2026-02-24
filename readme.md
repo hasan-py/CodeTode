@@ -33,6 +33,7 @@ If you want a complete understanding of the project architecture, setup, and imp
 - ▶️ Part 2: [https://youtu.be/7qP-xAnQhLc](https://youtu.be/7qP-xAnQhLc)
 - ▶️ Part 3: [https://youtu.be/TH5K2ebqar8](https://youtu.be/TH5K2ebqar8)
 - ▶️ Final Part: [https://youtu.be/\_-w6VZlO30Y](https://youtu.be/_-w6VZlO30Y)
+- ▶️ Deployment: [https://youtu.be/IVfM_tpFlUc?si=yBByGfgD3qvSgiHk](https://youtu.be/IVfM_tpFlUc?si=yBByGfgD3qvSgiHk)
 
 ---
 
